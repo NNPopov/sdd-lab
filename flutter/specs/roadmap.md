@@ -38,4 +38,5 @@
 | 0034 | posts | pending_posts | ✅ | [specs/features/posts/0034_pending_posts/](features/posts/0034_pending_posts/) |
 | 0035 | posts | moderate_post | ✅ | [specs/features/posts/0035_moderate_post/](features/posts/0035_moderate_post/) |
 | 0036 | posts | revise_post | ✅ | [specs/features/posts/0036_revise_post/](features/posts/0036_revise_post/) |
-| 0037 | posts | post_status_display | 📋 | [specs/features/posts/0037_post_status_display/](features/posts/0037_post_status_display/) |
+| 0037 | posts | post_status_display | ✅ | [specs/features/posts/0037_post_status_display/](features/posts/0037_post_status_display/) |
+| 0038 | users | owner_only_user_edit | ✅ | [specs/features/users/0038_owner_only_user_edit/](features/users/0038_owner_only_user_edit/) |

@@ -53,7 +53,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   final isMe =
                       authState is AuthAuthenticated &&
                       authState.currentUser?.username == widget.username;
-                  final canEdit = permissions.contains(Permission.editUsers);
                   final canErase = permissions.contains(Permission.eraseUsers);
                   final canEditTier = permissions.contains(
                     Permission.editUserTier,
@@ -62,7 +61,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     Permission.manageModerators,
                   );
 
-                  final showEdit = isMe || canEdit;
+                  final showEdit = isMe;
                   final showDelete = isMe;
                   final showErase = canErase;
 

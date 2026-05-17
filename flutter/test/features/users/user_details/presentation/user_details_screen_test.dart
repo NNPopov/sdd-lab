@@ -241,6 +241,22 @@ void main() {
       expect(find.byIcon(Icons.edit), findsNothing);
       expect(find.byIcon(Icons.delete_outline), findsNothing);
     });
+
+    testWidgets(
+      'T-05: Edit button is hidden for non-owner even when '
+      'editUsers permission is held',
+      (tester) async {
+        when(() => authCubit.state).thenReturn(
+          const AuthState.authenticated(currentUser: _meBob),
+        );
+        when(() => permissionCubit.state).thenReturn({Permission.editUsers});
+
+        await tester.pumpWidget(buildScreen());
+
+        expect(find.byIcon(Icons.edit), findsNothing);
+        expect(find.byIcon(Icons.delete_outline), findsNothing);
+      },
+    );
   });
 
   group('UserDetailsScreen — Posts navigation', () {
