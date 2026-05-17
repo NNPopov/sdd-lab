@@ -1,0 +1,5 @@
+.claude/settings.local.json
+api/.claude/settings.local.json
+flutter/.claude/settings.local.json
+api/.claude/settings.json
+flutter/.claude/settings.json
