@@ -1,0 +1,1 @@
+# STABLE: Database adapter.

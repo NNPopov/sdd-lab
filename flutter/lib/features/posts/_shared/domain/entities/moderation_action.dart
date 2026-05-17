@@ -1,0 +1,1 @@
+enum ModerationAction { approved, changesRequested }

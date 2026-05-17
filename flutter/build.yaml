@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      # slang runs via `dart run slang` (slang.yaml config), not build_runner
+      slang_build_runner:
+        enabled: false

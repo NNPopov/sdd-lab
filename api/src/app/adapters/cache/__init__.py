@@ -1,0 +1,1 @@
+# STABLE: Cache adapter layer.

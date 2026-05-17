@@ -1,0 +1,13 @@
+# FEATURE: update_user — port protocol.
+from typing import Protocol, runtime_checkable
+
+from ..commands import UpdateUserCommand
+from ..entities import ExistingUser
+
+
+@runtime_checkable
+class UpdateUserPort(Protocol):
+    async def get_by_username(self, username: str) -> ExistingUser | None: ...
+    async def email_exists(self, email: str) -> bool: ...
+    async def username_exists(self, username: str) -> bool: ...
+    async def update(self, command: UpdateUserCommand) -> None: ...

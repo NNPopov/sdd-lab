@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Recurse \"d:\\\\flutter_app\\\\02\\\\flutter_application_1\\\\lib\\\\features\\\\posts\\\\\" | Select-Object FullName)"
+    ]
+  }
+}

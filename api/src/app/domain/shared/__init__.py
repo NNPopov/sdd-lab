@@ -1,0 +1,1 @@
+# STABLE: Shared domain primitives.

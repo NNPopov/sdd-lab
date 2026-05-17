@@ -1,0 +1,1 @@
+enum ModerationEventType { moderatorReview, authorRevision }

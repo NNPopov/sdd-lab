@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from app.adapters.db.base import Base; from app.adapters.db.session import async_get_db; from app.adapters.http.middleware.logger_middleware import LoggerMiddleware; from app.adapters.http.middleware.client_cache_middleware import ClientCacheMiddleware; from app.adapters.cache.redis_cache import cache; from app.adapters.queue.arq_queue import pool; from app.adapters.db.token_blacklist.model import TokenBlacklist; print\\(''All adapter imports OK''\\)\")",
+      "Read(//c/dev/t_automation/**)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.adapters.db.base import Base; print\\(''Base OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.adapters.db.base import Base; from app.adapters.db.session import async_get_db; from app.adapters.http.middleware.logger_middleware import LoggerMiddleware; from app.adapters.cache.redis_cache import cache; from app.adapters.queue.arq_queue import pool; from app.adapters.db.token_blacklist.model import TokenBlacklist; print\\(''All adapter imports OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.core.db.database import Base, async_get_db, async_engine; from app.core.db.models import UUIDMixin, TimestampMixin; from app.core.db.token_blacklist import TokenBlacklist; from app.core.db.crud_token_blacklist import crud_token_blacklist; from app.middleware.logger_middleware import LoggerMiddleware; from app.middleware.client_cache_middleware import ClientCacheMiddleware; from app.core.utils.rate_limit import rate_limiter; print\\(''All shim re-exports OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.core.setup import create_application, lifespan_factory; print\\(''setup.py OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.api.dependencies import get_current_user, rate_limiter_dependency; from app.core.security import authenticate_user, verify_token; print\\(''dependencies & security OK''\\)\")",
+      "Bash(.venv/Scripts/python -c \"import sys; sys.path.insert\\(0, ''src''\\); from app.main import app; print\\(''app created OK''\\)\")",
+      "Bash(.venv/Scripts/pytest tests/ -x -q)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(.venv/Scripts/python.exe -m pip install faker -q)",
+      "Bash(.venv/Scripts/python.exe -m pytest tests/ -x -q)",
+      "Bash(uv --version)",
+      "Bash(uv add:*)",
+      "Bash(.venv/Scripts/python.exe -c \"import sys; sys.path.insert\\(0, ''src''\\); from src.app.core.config import settings; from src.app.main import app; print\\(''conftest imports OK \\(app + config\\)''\\)\")",
+      "Bash(.venv/Scripts/python.exe -c \":*)",
+      "Bash(python -c \":*)",
+      "Bash(uv run python -c \":*)",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\dev\\\\t_automation\\\\src\\\\app\\\\core\\\\db\")",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\dev\\\\t_automation\\\\src\\\\app\\\\domain\\\\models\")"
+    ]
+  }
+}

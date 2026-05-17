@@ -1,0 +1,335 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Sign in",
+      "signInButton": "Sign in",
+      "errors": {
+        "required": "Required",
+        "invalidCredentials": "Invalid username or password",
+        "generic": "Sign in failed. Try again."
+      }
+    },
+    "logout": {
+      "confirmTitle": "Sign out?",
+      "confirmMessage": "You will need to sign in again.",
+      "confirm": "Sign out",
+      "cancel": "Cancel"
+    },
+    "sessionExpired": "Session expired. Please sign in again."
+  },
+  "app": {
+    "title": "Flutter App"
+  },
+  "nav": {
+    "users": "Users",
+    "posts": "Posts",
+    "tiers": "Tiers",
+    "pending": "Pending"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "back": "Back",
+    "cancel": "Cancel"
+  },
+  "tiers": {
+    "listTiers": {
+      "title": "Tiers",
+      "loadError": "Failed to load tiers",
+      "loadMoreError": "Failed to load more tiers",
+      "empty": "No tiers found"
+    },
+    "createTier": {
+      "title": "Create Tier",
+      "name": "Name",
+      "submit": "Create",
+      "fabTooltip": "Add tier",
+      "success": "Tier created",
+      "errors": {
+        "required": "This field is required",
+        "generic": "Failed to create tier"
+      }
+    },
+    "tierDetails": {
+      "title": "Tier details",
+      "id": "ID",
+      "createdAt": "Created",
+      "notFound": "Tier not found",
+      "loadError": "Failed to load tier",
+      "permissionDenied": "Access denied"
+    },
+    "editTier": {
+      "title": "Edit Tier",
+      "name": "Name",
+      "save": "Save",
+      "success": "Tier updated",
+      "errors": {
+        "required": "This field is required",
+        "notFound": "Tier not found",
+        "permissionDenied": "Access denied",
+        "generic": "Failed to update tier"
+      }
+    },
+    "deleteTier": {
+      "tooltip": "Delete tier",
+      "confirmTitle": "Delete tier",
+      "confirmMessage": "Are you sure you want to delete tier \"{name}\"? This action cannot be undone.",
+      "confirmButton": "Delete",
+      "cancelButton": "Cancel",
+      "success": "Tier deleted",
+      "errors": {
+        "notFound": "Tier not found",
+        "forbidden": "Access denied",
+        "unauthorized": "Session expired",
+        "generic": "Failed to delete tier"
+      }
+    }
+  },
+  "posts": {
+    "postDetails": {
+      "title": "Post",
+      "loadError": "Failed to load post"
+    },
+    "postStatus": {
+      "pendingReview": "Pending Review",
+      "approved": "Approved",
+      "changesRequested": "Changes Requested"
+    },
+    "editPost": {
+      "title": "Edit Post",
+      "titleLabel": "Title",
+      "titleHint": "Post title",
+      "mediaUrlLabel": "Media URL (optional)",
+      "mediaUrlHint": "https://...",
+      "textLabel": "Text (Markdown)",
+      "textHint": "Write your post...",
+      "previewLabel": "Preview",
+      "saveButton": "Save",
+      "tabs": {
+        "edit": "Edit",
+        "log": "Moderation Log"
+      },
+      "revisionMessage": {
+        "label": "Revision message",
+        "hint": "Describe what you changed to address the moderator's feedback"
+      },
+      "approvedHint": "This post is approved and can no longer be edited.",
+      "log": {
+        "empty": "No moderation history yet",
+        "loadError": "Failed to load moderation history"
+      },
+      "errors": {
+        "titleTooShort": "Title must be at least 2 characters",
+        "titleTooLong": "Title must be at most 30 characters",
+        "mediaUrlEmpty": "Media URL cannot be empty if provided",
+        "textTooShort": "Text must be at least 100 characters",
+        "textTooLong": "Text must be at most 63206 characters",
+        "forbidden": "You can only edit your own posts",
+        "generic": "Failed to save post. Please try again.",
+        "revisionMessageRequired": "A revision message is required.",
+        "conflict": "The post status changed while you were editing. Check the current status.",
+        "notFound": "Post not found."
+      }
+    },
+    "listPosts": {
+      "empty": "No posts yet",
+      "loadError": "Failed to load posts",
+      "fabTooltip": "New post",
+      "openPost": "Open"
+    },
+    "userPosts": {
+      "title": "$username's posts",
+      "empty": "No posts yet",
+      "loadError": "Failed to load posts",
+      "openPost": "Open"
+    },
+    "deletePost": {
+      "tooltip": "Delete post",
+      "confirmTitle": "Delete post?",
+      "confirmMessage": "This action is irreversible. The post will be permanently removed.",
+      "confirmButton": "Delete",
+      "cancelButton": "Cancel",
+      "success": "Post deleted",
+      "errors": {
+        "forbidden": "You can only delete your own posts",
+        "generic": "Failed to delete post. Please try again."
+      }
+    },
+    "eraseDbPost": {
+      "tooltip": "Erase post (superuser)",
+      "confirmTitle": "Erase post?",
+      "confirmMessage": "This post will be permanently erased. This action cannot be undone.",
+      "confirmButton": "Erase",
+      "cancelButton": "Cancel",
+      "success": "Post erased",
+      "errors": {
+        "forbidden": "You do not have permission to erase posts",
+        "generic": "Failed to erase post. Please try again."
+      }
+    },
+    "pendingPosts": {
+      "title": "Pending Posts",
+      "empty": "No pending posts",
+      "loadError": "Failed to load pending posts",
+      "loadMoreError": "Failed to load more",
+      "eventCount": "Events"
+    },
+    "moderatePost": {
+      "title": "Moderate Post",
+      "tabs": {
+        "post": "Post",
+        "moderation": "Moderation"
+      },
+      "log": {
+        "empty": "No moderation history yet",
+        "loadError": "Failed to load moderation history",
+        "eventTypes": {
+          "moderatorReview": "Moderator Review",
+          "authorRevision": "Author Revision"
+        },
+        "actions": {
+          "approved": "Approved",
+          "changesRequested": "Changes Requested"
+        }
+      },
+      "actions": {
+        "approve": "Approve",
+        "requestChanges": "Request Changes",
+        "messageHint": "Add a comment (required for rejection)",
+        "messageRequiredError": "A message is required when requesting changes"
+      },
+      "errors": {
+        "forbidden": "You do not have permission to moderate this post",
+        "notFound": "Post not found",
+        "conflict": "This post has already been moderated. Return to the queue.",
+        "generic": "Failed to submit. Please try again."
+      }
+    },
+    "createPost": {
+      "title": "New Post",
+      "titleLabel": "Title",
+      "titleHint": "Post title",
+      "mediaUrlLabel": "Media URL (optional)",
+      "mediaUrlHint": "https://...",
+      "textLabel": "Text (Markdown)",
+      "textHint": "Write your post...",
+      "previewLabel": "Preview",
+      "publishButton": "Publish",
+      "fabTooltip": "New post",
+      "errors": {
+        "titleTooShort": "Title must be at least 2 characters",
+        "titleTooLong": "Title must be at most 30 characters",
+        "mediaUrlEmpty": "Media URL cannot be empty if provided",
+        "textTooShort": "Text must be at least 100 characters",
+        "textTooLong": "Text must be at most 63206 characters",
+        "forbidden": "You can only publish posts as yourself",
+        "generic": "Failed to publish post. Please try again."
+      }
+    }
+  },
+  "users": {
+    "title": "Users",
+    "list": {
+      "loadMoreError": "Failed to load more users",
+      "userDetails": "Details",
+      "userPosts": "Posts"
+    },
+    "details": {
+      "email": "Email",
+      "tier": "Tier",
+      "tierSince": "Tier since",
+      "notFound": "User not found",
+      "loadError": "Failed to load user"
+    },
+    "create": {
+      "title": "Create User",
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create",
+      "success": "User created successfully",
+      "errors": {
+        "required": "This field is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "usernameTaken": "Username already taken",
+        "emailTaken": "Email already taken",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "delete": {
+      "tooltip": "Delete account",
+      "confirmTitle": "Delete account?",
+      "confirmMessage": "This will permanently delete your account. This action cannot be undone.",
+      "confirmButton": "Delete",
+      "success": "Account deleted",
+      "errors": {
+        "forbidden": "You can only delete your own account.",
+        "unauthorized": "Session expired.",
+        "notFound": "User not found.",
+        "generic": "Failed to delete account."
+      }
+    },
+    "eraseDbUser": {
+      "tooltip": "Erase from database",
+      "confirmTitle": "Erase account permanently?",
+      "confirmMessage": "This will permanently delete your account from the database. This action cannot be undone.",
+      "confirmButton": "Erase permanently",
+      "success": "Account erased from the database",
+      "errors": {
+        "forbidden": "You can only erase your own account",
+        "unauthorized": "Session expired. Please log in again",
+        "notFound": "User not found",
+        "generic": "Failed to erase account. Please try again"
+      }
+    },
+    "edit": {
+      "title": "Edit User",
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "profileImageUrl": "Profile Image URL",
+      "save": "Save",
+      "success": "User updated successfully",
+      "errors": {
+        "required": "This field is required",
+        "emailInvalid": "Please enter a valid email address",
+        "usernameTaken": "Username already taken",
+        "notFound": "User not found",
+        "nothingToUpdate": "No changes to save",
+        "forbidden": "You can only edit your own profile.",
+        "unauthorized": "Session expired.",
+        "generic": "Something went wrong. Please try again."
+      }
+    },
+    "updateTier": {
+      "tooltip": "Change tier",
+      "sheetTitle": "Change User Tier",
+      "selectTier": "Select tier",
+      "confirm": "Confirm",
+      "success": "User tier updated",
+      "errors": {
+        "permissionDenied": "You don't have permission to change tiers.",
+        "notFound": "User or tier not found.",
+        "forbidden": "Permission denied.",
+        "unauthorized": "Session expired.",
+        "generic": "Failed to update tier. Please try again."
+      }
+    },
+    "moderator": {
+      "badge": "Moderator",
+      "assign": "Assign Moderator",
+      "revoke": "Revoke Moderator",
+      "errors": {
+        "conflict": "Action not applicable — moderator status is already in sync.",
+        "forbidden": "You do not have permission to manage moderators.",
+        "generic": "Failed to update moderator status. Please try again."
+      }
+    }
+  }
+}

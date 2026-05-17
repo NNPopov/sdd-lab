@@ -1,0 +1,41 @@
+# Roadmap
+
+| # | Feature | Slice | Status | Spec |
+|---|---|---|---|---|
+| 0001 | users | erase_db_user | ✅ | [specs/features/users/0001_erase_db_user/](features/users/0001_erase_db_user/) |
+| 0002 | core/rbac | permission_cubit | ✅ | [specs/features/core/0002_permission_cubit/](features/core/0002_permission_cubit/) |
+| 0003 | users | permission_gated_buttons | ✅ | [specs/features/users/0003_permission_gated_buttons/](features/users/0003_permission_gated_buttons/) |
+| 0004 | tiers | list_tiers | ✅ | [specs/features/tiers/0004_list_tiers/](features/tiers/0004_list_tiers/) |
+| 0005 | tiers | list_tiers | ✅ | [specs/features/tiers/0005_list_tiers/](features/tiers/0005_list_tiers/) |
+| 0006 | tiers | create_tier | ✅ | [specs/features/tiers/0006_create_tier/](features/tiers/0006_create_tier/) |
+| 0007 | core/routing | app_shell | ✅ | [specs/features/core/0007_app_shell/](features/core/0007_app_shell/) |
+| 0008 | users | get_user_tier | ✅ | [specs/features/users/0008_get_user_tier/](features/users/0008_get_user_tier/) |
+| 0009 | users | update_user_tier | ✅ | [specs/features/users/0009_update_user_tier/](features/users/0009_update_user_tier/) |
+| 0010 | tiers | tier_details | ✅ | [specs/features/tiers/0010_tier_details/](features/tiers/0010_tier_details/) |
+| 0011 | tiers | edit_tier | ✅ | [specs/features/tiers/0011_edit_tier/](features/tiers/0011_edit_tier/) |
+| 0012 | tiers | delete_tier | ✅ | [specs/features/tiers/0012_delete_tier/](features/tiers/0012_delete_tier/) |
+| 0013 | posts | list_posts | ✅ | [specs/features/posts/0013_list_posts/](features/posts/0013_list_posts/) |
+| 0014 | posts | user_posts | ✅ | [specs/features/posts/0014_user_posts/](features/posts/0014_user_posts/) |
+| 0015 | posts | create_post | ✅ | [specs/features/posts/0015_create_post/](features/posts/0015_create_post/) |
+| 0016 | posts | post_details | ✅ | [specs/features/posts/0016_post_details/](features/posts/0016_post_details/) |
+| 0017 | users | list_users_navigation | ✅ | [specs/features/users/0017_list_users_navigation/](features/users/0017_list_users_navigation/) |
+| 0018 | users | user_details_posts_navigation | ✅ | [specs/features/users/0018_user_details_posts_navigation/](features/users/0018_user_details_posts_navigation/) |
+| 0019 | posts | user_posts_navigation | ✅ | [specs/features/posts/0019_user_posts_navigation/](features/posts/0019_user_posts_navigation/) |
+| 0020 | core/i18n | locale_selector | ✅ | [specs/features/core/0020_locale_selector/](features/core/0020_locale_selector/) |
+| 0021 | posts | edit_post | ✅ | [specs/features/posts/0021_edit_post/](features/posts/0021_edit_post/) |
+| 0022 | posts | delete_post | ✅ | [specs/features/posts/0022_delete_post/](features/posts/0022_delete_post/) |
+| 0023 | posts | erase_db_post | ✅ | [specs/features/posts/0023_erase_db_post/](features/posts/0023_erase_db_post/) |
+| 0024 | posts | add_create_post_fab | ✅ | [specs/features/posts/0024_add_create_post_fab/](features/posts/0024_add_create_post_fab/) |
+| 0025 | core/routing | persistent_shell_navigation | ✅ | [specs/features/core/0025_persistent_shell_navigation/](features/core/0025_persistent_shell_navigation/) |
+| 0026 | core/routing | tab_root_reset_on_tap | ✅ | [specs/features/core/0026_tab_root_reset_on_tap/](features/core/0026_tab_root_reset_on_tap/) |
+| 0027 | core/routing | fix_duplicate_back_arrow | ✅ | [specs/features/core/0027_fix_duplicate_back_arrow/](features/core/0027_fix_duplicate_back_arrow/) |
+| 0028 | core/auth | server_side_logout | ✅ | [specs/features/core/0028_server_side_logout/](features/core/0028_server_side_logout/) |
+| 0029 | users | adapt_paginated_users_contract | ✅ | [specs/features/users/0029_adapt_paginated_users_contract/](features/users/0029_adapt_paginated_users_contract/) |
+| 0030 | posts | adapt_paginated_posts_contract | ✅ | [specs/features/posts/0030_adapt_paginated_posts_contract/](features/posts/0030_adapt_paginated_posts_contract/) |
+| 0031 | posts | list_posts_feed | ✅ | [specs/features/posts/0031_list_posts_feed/](features/posts/0031_list_posts_feed/) |
+| 0032 | posts | post_status_contract | ✅ | [specs/features/posts/0032_post_status_contract/](features/posts/0032_post_status_contract/) |
+| 0033 | users | moderator_contract | ✅ | [specs/features/users/0033_moderator_contract/](features/users/0033_moderator_contract/) |
+| 0034 | posts | pending_posts | ✅ | [specs/features/posts/0034_pending_posts/](features/posts/0034_pending_posts/) |
+| 0035 | posts | moderate_post | ✅ | [specs/features/posts/0035_moderate_post/](features/posts/0035_moderate_post/) |
+| 0036 | posts | revise_post | ✅ | [specs/features/posts/0036_revise_post/](features/posts/0036_revise_post/) |
+| 0037 | posts | post_status_display | 📋 | [specs/features/posts/0037_post_status_display/](features/posts/0037_post_status_display/) |
