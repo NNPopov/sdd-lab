@@ -142,10 +142,12 @@ Every Cubit has a `bloc_test`. Every use-case has a unit test. See
   UI localize it.
 - ❌ Collecting cubit states into a list with `stream.listen` + `await cancel()` in
   outside-in or integration tests. In bloc 9, `BlocBase._stateController` is an async
-  broadcast stream; each `emit()` schedules the listener notification via
-  `scheduleMicrotask`. `await cubit.someMethod()` returns before the last microtask
-  fires, so `await sub.cancel()` cancels the subscription and the last state is dropped.
-  Always use `expectLater`/`emitsInOrder` set up **before** the action:
+  broadcast stream (`sync: false`); each `emit()` schedules the listener notification via
+  `scheduleMicrotask`. `await cubit.someMethod()` returns before that microtask fires, so
+  `await sub.cancel()` removes the subscription before the event is delivered — the last
+  state is silently dropped. Confirmed in bloc source and `bloc_test` internals (which
+  always add `await Future<void>.delayed(Duration.zero)` after `act` for exactly this
+  reason). Always use `expectLater`/`emitsInOrder` set up **before** the action:
 
   ```dart
   // ❌ loses the last state
@@ -168,3 +170,21 @@ Every Cubit has a `bloc_test`. Every use-case has a unit test. See
   // individual field assertions go on cubit.state
   final loaded = cubit.state as MyStateLoaded;
   ```
+
+- ❌ **Emergency only — when the outside-in test is a locked spec contract and cannot be
+  changed:** if it uses `stream.listen` + `cancel`, add
+  `await Future<void>.delayed(Duration.zero)` **after `emit`** in the cubit method under
+  test. This flushes the microtask queue before the method's Future resolves, so the
+  caller that `await`s it sees the stream event already delivered:
+
+  ```dart
+  Future<void> setLocale(AppLocale locale) async {
+    final applied = await LocaleSettings.setLocale(locale);
+    await _storage.saveLocale(applied);
+    emit(applied);
+    await Future<void>.delayed(Duration.zero); // flush — only because test is locked
+  }
+  ```
+
+  Do **not** apply this as a general rule to all cubit methods. Fix the test pattern
+  first; use this only when the test file genuinely cannot be touched.

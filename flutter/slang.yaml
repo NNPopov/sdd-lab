@@ -1,4 +1,4 @@
-base_locale: en
+base_locale: en-US
 input_directory: lib/core/i18n/i18n
 input_file_pattern: .json
 output_directory: lib/core/i18n

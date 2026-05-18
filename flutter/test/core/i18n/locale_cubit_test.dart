@@ -11,7 +11,7 @@ void main() {
   late _MockLocaleStoragePort mockStorage;
 
   setUpAll(() {
-    registerFallbackValue(AppLocale.en);
+    registerFallbackValue(AppLocale.enUs);
   });
 
   setUp(() {
@@ -23,18 +23,18 @@ void main() {
   group('init()', () {
     blocTest<LocaleCubit, AppLocale>(
       'emits saved locale and calls saveLocale '
-      'when loadLocale returns AppLocale.ru',
+      'when loadLocale returns AppLocale.ruRu',
       build: buildCubit,
       setUp: () {
         when(
           () => mockStorage.loadLocale(),
-        ).thenAnswer((_) async => AppLocale.ru);
+        ).thenAnswer((_) async => AppLocale.ruRu);
         when(() => mockStorage.saveLocale(any())).thenAnswer((_) async {});
       },
       act: (cubit) => cubit.init(),
-      expect: () => [AppLocale.ru],
+      expect: () => [AppLocale.ruRu],
       verify: (_) {
-        verify(() => mockStorage.saveLocale(AppLocale.ru)).called(1);
+        verify(() => mockStorage.saveLocale(AppLocale.ruRu)).called(1);
       },
     );
 
@@ -51,28 +51,54 @@ void main() {
 
   group('setLocale()', () {
     blocTest<LocaleCubit, AppLocale>(
-      'emits AppLocale.ru and calls saveLocale(AppLocale.ru)',
+      'emits AppLocale.ruRu and calls saveLocale(AppLocale.ruRu)',
       build: buildCubit,
       setUp: () {
         when(() => mockStorage.saveLocale(any())).thenAnswer((_) async {});
       },
-      act: (cubit) => cubit.setLocale(AppLocale.ru),
-      expect: () => [AppLocale.ru],
+      act: (cubit) => cubit.setLocale(AppLocale.ruRu),
+      expect: () => [AppLocale.ruRu],
       verify: (_) {
-        verify(() => mockStorage.saveLocale(AppLocale.ru)).called(1);
+        verify(() => mockStorage.saveLocale(AppLocale.ruRu)).called(1);
       },
     );
 
     blocTest<LocaleCubit, AppLocale>(
-      'emits AppLocale.en and calls saveLocale(AppLocale.en)',
+      'emits AppLocale.enUs and calls saveLocale(AppLocale.enUs)',
       build: buildCubit,
       setUp: () {
         when(() => mockStorage.saveLocale(any())).thenAnswer((_) async {});
       },
-      act: (cubit) => cubit.setLocale(AppLocale.en),
-      expect: () => [AppLocale.en],
+      act: (cubit) => cubit.setLocale(AppLocale.enUs),
+      expect: () => [AppLocale.enUs],
       verify: (_) {
-        verify(() => mockStorage.saveLocale(AppLocale.en)).called(1);
+        verify(() => mockStorage.saveLocale(AppLocale.enUs)).called(1);
+      },
+    );
+
+    blocTest<LocaleCubit, AppLocale>(
+      'emits AppLocale.esEs and calls saveLocale(AppLocale.esEs)',
+      build: buildCubit,
+      setUp: () {
+        when(() => mockStorage.saveLocale(any())).thenAnswer((_) async {});
+      },
+      act: (cubit) => cubit.setLocale(AppLocale.esEs),
+      expect: () => [AppLocale.esEs],
+      verify: (_) {
+        verify(() => mockStorage.saveLocale(AppLocale.esEs)).called(1);
+      },
+    );
+
+    blocTest<LocaleCubit, AppLocale>(
+      'emits AppLocale.ukUa and calls saveLocale(AppLocale.ukUa)',
+      build: buildCubit,
+      setUp: () {
+        when(() => mockStorage.saveLocale(any())).thenAnswer((_) async {});
+      },
+      act: (cubit) => cubit.setLocale(AppLocale.ukUa),
+      expect: () => [AppLocale.ukUa],
+      verify: (_) {
+        verify(() => mockStorage.saveLocale(AppLocale.ukUa)).called(1);
       },
     );
   });

@@ -11,13 +11,13 @@ import 'package:slang/generated.dart';
 import 'translations.g.dart';
 
 // Path: <root>
-class TranslationsRu with BaseTranslations<AppLocale, Translations> implements Translations {
+class TranslationsRuRu with BaseTranslations<AppLocale, Translations> implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
-	TranslationsRu({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
+	TranslationsRuRu({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
 		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
 		  $meta = meta ?? TranslationMetadata(
-		    locale: AppLocale.ru,
+		    locale: AppLocale.ruRu,
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
@@ -25,54 +25,54 @@ class TranslationsRu with BaseTranslations<AppLocale, Translations> implements T
 		$meta.setFlatMapFunction(_flatMapFunction);
 	}
 
-	/// Metadata for the translations of <ru>.
+	/// Metadata for the translations of <ru-RU>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
 
 	/// Access flat map
 	@override dynamic operator[](String key) => $meta.getTranslation(key);
 
-	late final TranslationsRu _root = this; // ignore: unused_field
+	late final TranslationsRuRu _root = this; // ignore: unused_field
 
 	@override 
-	TranslationsRu $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsRu(meta: meta ?? this.$meta);
+	TranslationsRuRu $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsRuRu(meta: meta ?? this.$meta);
 
 	// Translations
-	@override late final _TranslationsAuthRu auth = _TranslationsAuthRu._(_root);
-	@override late final _TranslationsAppRu app = _TranslationsAppRu._(_root);
-	@override late final _TranslationsNavRu nav = _TranslationsNavRu._(_root);
-	@override late final _TranslationsCommonRu common = _TranslationsCommonRu._(_root);
-	@override late final _TranslationsTiersRu tiers = _TranslationsTiersRu._(_root);
-	@override late final _TranslationsPostsRu posts = _TranslationsPostsRu._(_root);
-	@override late final _TranslationsUsersRu users = _TranslationsUsersRu._(_root);
+	@override late final _TranslationsAuthRuRu auth = _TranslationsAuthRuRu._(_root);
+	@override late final _TranslationsAppRuRu app = _TranslationsAppRuRu._(_root);
+	@override late final _TranslationsNavRuRu nav = _TranslationsNavRuRu._(_root);
+	@override late final _TranslationsCommonRuRu common = _TranslationsCommonRuRu._(_root);
+	@override late final _TranslationsTiersRuRu tiers = _TranslationsTiersRuRu._(_root);
+	@override late final _TranslationsPostsRuRu posts = _TranslationsPostsRuRu._(_root);
+	@override late final _TranslationsUsersRuRu users = _TranslationsUsersRuRu._(_root);
 }
 
 // Path: auth
-class _TranslationsAuthRu implements TranslationsAuthEn {
-	_TranslationsAuthRu._(this._root);
+class _TranslationsAuthRuRu implements TranslationsAuthEnUs {
+	_TranslationsAuthRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsAuthLoginRu login = _TranslationsAuthLoginRu._(_root);
-	@override late final _TranslationsAuthLogoutRu logout = _TranslationsAuthLogoutRu._(_root);
+	@override late final _TranslationsAuthLoginRuRu login = _TranslationsAuthLoginRuRu._(_root);
+	@override late final _TranslationsAuthLogoutRuRu logout = _TranslationsAuthLogoutRuRu._(_root);
 	@override String get sessionExpired => 'Сессия истекла. Войдите снова.';
 }
 
 // Path: app
-class _TranslationsAppRu implements TranslationsAppEn {
-	_TranslationsAppRu._(this._root);
+class _TranslationsAppRuRu implements TranslationsAppEnUs {
+	_TranslationsAppRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Flutter App';
 }
 
 // Path: nav
-class _TranslationsNavRu implements TranslationsNavEn {
-	_TranslationsNavRu._(this._root);
+class _TranslationsNavRuRu implements TranslationsNavEnUs {
+	_TranslationsNavRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get users => 'Пользователи';
@@ -82,10 +82,10 @@ class _TranslationsNavRu implements TranslationsNavEn {
 }
 
 // Path: common
-class _TranslationsCommonRu implements TranslationsCommonEn {
-	_TranslationsCommonRu._(this._root);
+class _TranslationsCommonRuRu implements TranslationsCommonEnUs {
+	_TranslationsCommonRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get loading => 'Загрузка...';
@@ -96,61 +96,61 @@ class _TranslationsCommonRu implements TranslationsCommonEn {
 }
 
 // Path: tiers
-class _TranslationsTiersRu implements TranslationsTiersEn {
-	_TranslationsTiersRu._(this._root);
+class _TranslationsTiersRuRu implements TranslationsTiersEnUs {
+	_TranslationsTiersRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsTiersListTiersRu listTiers = _TranslationsTiersListTiersRu._(_root);
-	@override late final _TranslationsTiersCreateTierRu createTier = _TranslationsTiersCreateTierRu._(_root);
-	@override late final _TranslationsTiersTierDetailsRu tierDetails = _TranslationsTiersTierDetailsRu._(_root);
-	@override late final _TranslationsTiersEditTierRu editTier = _TranslationsTiersEditTierRu._(_root);
-	@override late final _TranslationsTiersDeleteTierRu deleteTier = _TranslationsTiersDeleteTierRu._(_root);
+	@override late final _TranslationsTiersListTiersRuRu listTiers = _TranslationsTiersListTiersRuRu._(_root);
+	@override late final _TranslationsTiersCreateTierRuRu createTier = _TranslationsTiersCreateTierRuRu._(_root);
+	@override late final _TranslationsTiersTierDetailsRuRu tierDetails = _TranslationsTiersTierDetailsRuRu._(_root);
+	@override late final _TranslationsTiersEditTierRuRu editTier = _TranslationsTiersEditTierRuRu._(_root);
+	@override late final _TranslationsTiersDeleteTierRuRu deleteTier = _TranslationsTiersDeleteTierRuRu._(_root);
 }
 
 // Path: posts
-class _TranslationsPostsRu implements TranslationsPostsEn {
-	_TranslationsPostsRu._(this._root);
+class _TranslationsPostsRuRu implements TranslationsPostsEnUs {
+	_TranslationsPostsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
-	@override late final _TranslationsPostsPostDetailsRu postDetails = _TranslationsPostsPostDetailsRu._(_root);
-	@override late final _TranslationsPostsPostStatusRu postStatus = _TranslationsPostsPostStatusRu._(_root);
-	@override late final _TranslationsPostsEditPostRu editPost = _TranslationsPostsEditPostRu._(_root);
-	@override late final _TranslationsPostsListPostsRu listPosts = _TranslationsPostsListPostsRu._(_root);
-	@override late final _TranslationsPostsUserPostsRu userPosts = _TranslationsPostsUserPostsRu._(_root);
-	@override late final _TranslationsPostsDeletePostRu deletePost = _TranslationsPostsDeletePostRu._(_root);
-	@override late final _TranslationsPostsEraseDbPostRu eraseDbPost = _TranslationsPostsEraseDbPostRu._(_root);
-	@override late final _TranslationsPostsPendingPostsRu pendingPosts = _TranslationsPostsPendingPostsRu._(_root);
-	@override late final _TranslationsPostsModeratePostRu moderatePost = _TranslationsPostsModeratePostRu._(_root);
-	@override late final _TranslationsPostsCreatePostRu createPost = _TranslationsPostsCreatePostRu._(_root);
+	@override late final _TranslationsPostsPostDetailsRuRu postDetails = _TranslationsPostsPostDetailsRuRu._(_root);
+	@override late final _TranslationsPostsPostStatusRuRu postStatus = _TranslationsPostsPostStatusRuRu._(_root);
+	@override late final _TranslationsPostsEditPostRuRu editPost = _TranslationsPostsEditPostRuRu._(_root);
+	@override late final _TranslationsPostsListPostsRuRu listPosts = _TranslationsPostsListPostsRuRu._(_root);
+	@override late final _TranslationsPostsUserPostsRuRu userPosts = _TranslationsPostsUserPostsRuRu._(_root);
+	@override late final _TranslationsPostsDeletePostRuRu deletePost = _TranslationsPostsDeletePostRuRu._(_root);
+	@override late final _TranslationsPostsEraseDbPostRuRu eraseDbPost = _TranslationsPostsEraseDbPostRuRu._(_root);
+	@override late final _TranslationsPostsPendingPostsRuRu pendingPosts = _TranslationsPostsPendingPostsRuRu._(_root);
+	@override late final _TranslationsPostsModeratePostRuRu moderatePost = _TranslationsPostsModeratePostRuRu._(_root);
+	@override late final _TranslationsPostsCreatePostRuRu createPost = _TranslationsPostsCreatePostRuRu._(_root);
 }
 
 // Path: users
-class _TranslationsUsersRu implements TranslationsUsersEn {
-	_TranslationsUsersRu._(this._root);
+class _TranslationsUsersRuRu implements TranslationsUsersEnUs {
+	_TranslationsUsersRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Пользователи';
-	@override late final _TranslationsUsersListRu list = _TranslationsUsersListRu._(_root);
-	@override late final _TranslationsUsersDetailsRu details = _TranslationsUsersDetailsRu._(_root);
-	@override late final _TranslationsUsersCreateRu create = _TranslationsUsersCreateRu._(_root);
-	@override late final _TranslationsUsersDeleteRu delete = _TranslationsUsersDeleteRu._(_root);
-	@override late final _TranslationsUsersEraseDbUserRu eraseDbUser = _TranslationsUsersEraseDbUserRu._(_root);
-	@override late final _TranslationsUsersEditRu edit = _TranslationsUsersEditRu._(_root);
-	@override late final _TranslationsUsersUpdateTierRu updateTier = _TranslationsUsersUpdateTierRu._(_root);
-	@override late final _TranslationsUsersModeratorRu moderator = _TranslationsUsersModeratorRu._(_root);
+	@override late final _TranslationsUsersListRuRu list = _TranslationsUsersListRuRu._(_root);
+	@override late final _TranslationsUsersDetailsRuRu details = _TranslationsUsersDetailsRuRu._(_root);
+	@override late final _TranslationsUsersCreateRuRu create = _TranslationsUsersCreateRuRu._(_root);
+	@override late final _TranslationsUsersDeleteRuRu delete = _TranslationsUsersDeleteRuRu._(_root);
+	@override late final _TranslationsUsersEraseDbUserRuRu eraseDbUser = _TranslationsUsersEraseDbUserRuRu._(_root);
+	@override late final _TranslationsUsersEditRuRu edit = _TranslationsUsersEditRuRu._(_root);
+	@override late final _TranslationsUsersUpdateTierRuRu updateTier = _TranslationsUsersUpdateTierRuRu._(_root);
+	@override late final _TranslationsUsersModeratorRuRu moderator = _TranslationsUsersModeratorRuRu._(_root);
 }
 
 // Path: auth.login
-class _TranslationsAuthLoginRu implements TranslationsAuthLoginEn {
-	_TranslationsAuthLoginRu._(this._root);
+class _TranslationsAuthLoginRuRu implements TranslationsAuthLoginEnUs {
+	_TranslationsAuthLoginRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Вход';
@@ -158,14 +158,14 @@ class _TranslationsAuthLoginRu implements TranslationsAuthLoginEn {
 	@override String get password => 'Пароль';
 	@override String get submit => 'Войти';
 	@override String get signInButton => 'Войти';
-	@override late final _TranslationsAuthLoginErrorsRu errors = _TranslationsAuthLoginErrorsRu._(_root);
+	@override late final _TranslationsAuthLoginErrorsRuRu errors = _TranslationsAuthLoginErrorsRuRu._(_root);
 }
 
 // Path: auth.logout
-class _TranslationsAuthLogoutRu implements TranslationsAuthLogoutEn {
-	_TranslationsAuthLogoutRu._(this._root);
+class _TranslationsAuthLogoutRuRu implements TranslationsAuthLogoutEnUs {
+	_TranslationsAuthLogoutRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get confirmTitle => 'Выйти?';
@@ -175,10 +175,10 @@ class _TranslationsAuthLogoutRu implements TranslationsAuthLogoutEn {
 }
 
 // Path: tiers.listTiers
-class _TranslationsTiersListTiersRu implements TranslationsTiersListTiersEn {
-	_TranslationsTiersListTiersRu._(this._root);
+class _TranslationsTiersListTiersRuRu implements TranslationsTiersListTiersEnUs {
+	_TranslationsTiersListTiersRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Тиры';
@@ -188,10 +188,10 @@ class _TranslationsTiersListTiersRu implements TranslationsTiersListTiersEn {
 }
 
 // Path: tiers.createTier
-class _TranslationsTiersCreateTierRu implements TranslationsTiersCreateTierEn {
-	_TranslationsTiersCreateTierRu._(this._root);
+class _TranslationsTiersCreateTierRuRu implements TranslationsTiersCreateTierEnUs {
+	_TranslationsTiersCreateTierRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Создать тир';
@@ -199,14 +199,14 @@ class _TranslationsTiersCreateTierRu implements TranslationsTiersCreateTierEn {
 	@override String get submit => 'Создать';
 	@override String get fabTooltip => 'Добавить тир';
 	@override String get success => 'Тир создан';
-	@override late final _TranslationsTiersCreateTierErrorsRu errors = _TranslationsTiersCreateTierErrorsRu._(_root);
+	@override late final _TranslationsTiersCreateTierErrorsRuRu errors = _TranslationsTiersCreateTierErrorsRuRu._(_root);
 }
 
 // Path: tiers.tierDetails
-class _TranslationsTiersTierDetailsRu implements TranslationsTiersTierDetailsEn {
-	_TranslationsTiersTierDetailsRu._(this._root);
+class _TranslationsTiersTierDetailsRuRu implements TranslationsTiersTierDetailsEnUs {
+	_TranslationsTiersTierDetailsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Детали уровня';
@@ -218,24 +218,24 @@ class _TranslationsTiersTierDetailsRu implements TranslationsTiersTierDetailsEn 
 }
 
 // Path: tiers.editTier
-class _TranslationsTiersEditTierRu implements TranslationsTiersEditTierEn {
-	_TranslationsTiersEditTierRu._(this._root);
+class _TranslationsTiersEditTierRuRu implements TranslationsTiersEditTierEnUs {
+	_TranslationsTiersEditTierRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Редактировать тир';
 	@override String get name => 'Название';
 	@override String get save => 'Сохранить';
 	@override String get success => 'Тир обновлён';
-	@override late final _TranslationsTiersEditTierErrorsRu errors = _TranslationsTiersEditTierErrorsRu._(_root);
+	@override late final _TranslationsTiersEditTierErrorsRuRu errors = _TranslationsTiersEditTierErrorsRuRu._(_root);
 }
 
 // Path: tiers.deleteTier
-class _TranslationsTiersDeleteTierRu implements TranslationsTiersDeleteTierEn {
-	_TranslationsTiersDeleteTierRu._(this._root);
+class _TranslationsTiersDeleteTierRuRu implements TranslationsTiersDeleteTierEnUs {
+	_TranslationsTiersDeleteTierRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Удалить тир';
@@ -244,14 +244,14 @@ class _TranslationsTiersDeleteTierRu implements TranslationsTiersDeleteTierEn {
 	@override String get confirmButton => 'Удалить';
 	@override String get cancelButton => 'Отмена';
 	@override String get success => 'Тир удалён';
-	@override late final _TranslationsTiersDeleteTierErrorsRu errors = _TranslationsTiersDeleteTierErrorsRu._(_root);
+	@override late final _TranslationsTiersDeleteTierErrorsRuRu errors = _TranslationsTiersDeleteTierErrorsRuRu._(_root);
 }
 
 // Path: posts.postDetails
-class _TranslationsPostsPostDetailsRu implements TranslationsPostsPostDetailsEn {
-	_TranslationsPostsPostDetailsRu._(this._root);
+class _TranslationsPostsPostDetailsRuRu implements TranslationsPostsPostDetailsEnUs {
+	_TranslationsPostsPostDetailsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Пост';
@@ -259,10 +259,10 @@ class _TranslationsPostsPostDetailsRu implements TranslationsPostsPostDetailsEn 
 }
 
 // Path: posts.postStatus
-class _TranslationsPostsPostStatusRu implements TranslationsPostsPostStatusEn {
-	_TranslationsPostsPostStatusRu._(this._root);
+class _TranslationsPostsPostStatusRuRu implements TranslationsPostsPostStatusEnUs {
+	_TranslationsPostsPostStatusRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get pendingReview => 'На проверке';
@@ -271,10 +271,10 @@ class _TranslationsPostsPostStatusRu implements TranslationsPostsPostStatusEn {
 }
 
 // Path: posts.editPost
-class _TranslationsPostsEditPostRu implements TranslationsPostsEditPostEn {
-	_TranslationsPostsEditPostRu._(this._root);
+class _TranslationsPostsEditPostRuRu implements TranslationsPostsEditPostEnUs {
+	_TranslationsPostsEditPostRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Редактировать пост';
@@ -286,18 +286,18 @@ class _TranslationsPostsEditPostRu implements TranslationsPostsEditPostEn {
 	@override String get textHint => 'Напишите пост...';
 	@override String get previewLabel => 'Предпросмотр';
 	@override String get saveButton => 'Сохранить';
-	@override late final _TranslationsPostsEditPostTabsRu tabs = _TranslationsPostsEditPostTabsRu._(_root);
-	@override late final _TranslationsPostsEditPostRevisionMessageRu revisionMessage = _TranslationsPostsEditPostRevisionMessageRu._(_root);
+	@override late final _TranslationsPostsEditPostTabsRuRu tabs = _TranslationsPostsEditPostTabsRuRu._(_root);
+	@override late final _TranslationsPostsEditPostRevisionMessageRuRu revisionMessage = _TranslationsPostsEditPostRevisionMessageRuRu._(_root);
 	@override String get approvedHint => 'Этот пост одобрен и больше не может быть изменён.';
-	@override late final _TranslationsPostsEditPostLogRu log = _TranslationsPostsEditPostLogRu._(_root);
-	@override late final _TranslationsPostsEditPostErrorsRu errors = _TranslationsPostsEditPostErrorsRu._(_root);
+	@override late final _TranslationsPostsEditPostLogRuRu log = _TranslationsPostsEditPostLogRuRu._(_root);
+	@override late final _TranslationsPostsEditPostErrorsRuRu errors = _TranslationsPostsEditPostErrorsRuRu._(_root);
 }
 
 // Path: posts.listPosts
-class _TranslationsPostsListPostsRu implements TranslationsPostsListPostsEn {
-	_TranslationsPostsListPostsRu._(this._root);
+class _TranslationsPostsListPostsRuRu implements TranslationsPostsListPostsEnUs {
+	_TranslationsPostsListPostsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get empty => 'Постов пока нет';
@@ -307,10 +307,10 @@ class _TranslationsPostsListPostsRu implements TranslationsPostsListPostsEn {
 }
 
 // Path: posts.userPosts
-class _TranslationsPostsUserPostsRu implements TranslationsPostsUserPostsEn {
-	_TranslationsPostsUserPostsRu._(this._root);
+class _TranslationsPostsUserPostsRuRu implements TranslationsPostsUserPostsEnUs {
+	_TranslationsPostsUserPostsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String title({required Object username}) => 'Посты ${username}';
@@ -320,10 +320,10 @@ class _TranslationsPostsUserPostsRu implements TranslationsPostsUserPostsEn {
 }
 
 // Path: posts.deletePost
-class _TranslationsPostsDeletePostRu implements TranslationsPostsDeletePostEn {
-	_TranslationsPostsDeletePostRu._(this._root);
+class _TranslationsPostsDeletePostRuRu implements TranslationsPostsDeletePostEnUs {
+	_TranslationsPostsDeletePostRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Удалить пост';
@@ -332,14 +332,14 @@ class _TranslationsPostsDeletePostRu implements TranslationsPostsDeletePostEn {
 	@override String get confirmButton => 'Удалить';
 	@override String get cancelButton => 'Отмена';
 	@override String get success => 'Пост удалён';
-	@override late final _TranslationsPostsDeletePostErrorsRu errors = _TranslationsPostsDeletePostErrorsRu._(_root);
+	@override late final _TranslationsPostsDeletePostErrorsRuRu errors = _TranslationsPostsDeletePostErrorsRuRu._(_root);
 }
 
 // Path: posts.eraseDbPost
-class _TranslationsPostsEraseDbPostRu implements TranslationsPostsEraseDbPostEn {
-	_TranslationsPostsEraseDbPostRu._(this._root);
+class _TranslationsPostsEraseDbPostRuRu implements TranslationsPostsEraseDbPostEnUs {
+	_TranslationsPostsEraseDbPostRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Удалить пост (суперпользователь)';
@@ -348,14 +348,14 @@ class _TranslationsPostsEraseDbPostRu implements TranslationsPostsEraseDbPostEn 
 	@override String get confirmButton => 'Удалить';
 	@override String get cancelButton => 'Отмена';
 	@override String get success => 'Пост удалён';
-	@override late final _TranslationsPostsEraseDbPostErrorsRu errors = _TranslationsPostsEraseDbPostErrorsRu._(_root);
+	@override late final _TranslationsPostsEraseDbPostErrorsRuRu errors = _TranslationsPostsEraseDbPostErrorsRuRu._(_root);
 }
 
 // Path: posts.pendingPosts
-class _TranslationsPostsPendingPostsRu implements TranslationsPostsPendingPostsEn {
-	_TranslationsPostsPendingPostsRu._(this._root);
+class _TranslationsPostsPendingPostsRuRu implements TranslationsPostsPendingPostsEnUs {
+	_TranslationsPostsPendingPostsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Посты на проверке';
@@ -366,24 +366,24 @@ class _TranslationsPostsPendingPostsRu implements TranslationsPostsPendingPostsE
 }
 
 // Path: posts.moderatePost
-class _TranslationsPostsModeratePostRu implements TranslationsPostsModeratePostEn {
-	_TranslationsPostsModeratePostRu._(this._root);
+class _TranslationsPostsModeratePostRuRu implements TranslationsPostsModeratePostEnUs {
+	_TranslationsPostsModeratePostRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Модерация поста';
-	@override late final _TranslationsPostsModeratePostTabsRu tabs = _TranslationsPostsModeratePostTabsRu._(_root);
-	@override late final _TranslationsPostsModeratePostLogRu log = _TranslationsPostsModeratePostLogRu._(_root);
-	@override late final _TranslationsPostsModeratePostActionsRu actions = _TranslationsPostsModeratePostActionsRu._(_root);
-	@override late final _TranslationsPostsModeratePostErrorsRu errors = _TranslationsPostsModeratePostErrorsRu._(_root);
+	@override late final _TranslationsPostsModeratePostTabsRuRu tabs = _TranslationsPostsModeratePostTabsRuRu._(_root);
+	@override late final _TranslationsPostsModeratePostLogRuRu log = _TranslationsPostsModeratePostLogRuRu._(_root);
+	@override late final _TranslationsPostsModeratePostActionsRuRu actions = _TranslationsPostsModeratePostActionsRuRu._(_root);
+	@override late final _TranslationsPostsModeratePostErrorsRuRu errors = _TranslationsPostsModeratePostErrorsRuRu._(_root);
 }
 
 // Path: posts.createPost
-class _TranslationsPostsCreatePostRu implements TranslationsPostsCreatePostEn {
-	_TranslationsPostsCreatePostRu._(this._root);
+class _TranslationsPostsCreatePostRuRu implements TranslationsPostsCreatePostEnUs {
+	_TranslationsPostsCreatePostRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Новый пост';
@@ -396,14 +396,14 @@ class _TranslationsPostsCreatePostRu implements TranslationsPostsCreatePostEn {
 	@override String get previewLabel => 'Предпросмотр';
 	@override String get publishButton => 'Опубликовать';
 	@override String get fabTooltip => 'Новый пост';
-	@override late final _TranslationsPostsCreatePostErrorsRu errors = _TranslationsPostsCreatePostErrorsRu._(_root);
+	@override late final _TranslationsPostsCreatePostErrorsRuRu errors = _TranslationsPostsCreatePostErrorsRuRu._(_root);
 }
 
 // Path: users.list
-class _TranslationsUsersListRu implements TranslationsUsersListEn {
-	_TranslationsUsersListRu._(this._root);
+class _TranslationsUsersListRuRu implements TranslationsUsersListEnUs {
+	_TranslationsUsersListRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get loadMoreError => 'Не удалось загрузить больше пользователей';
@@ -412,10 +412,10 @@ class _TranslationsUsersListRu implements TranslationsUsersListEn {
 }
 
 // Path: users.details
-class _TranslationsUsersDetailsRu implements TranslationsUsersDetailsEn {
-	_TranslationsUsersDetailsRu._(this._root);
+class _TranslationsUsersDetailsRuRu implements TranslationsUsersDetailsEnUs {
+	_TranslationsUsersDetailsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get email => 'Email';
@@ -426,10 +426,10 @@ class _TranslationsUsersDetailsRu implements TranslationsUsersDetailsEn {
 }
 
 // Path: users.create
-class _TranslationsUsersCreateRu implements TranslationsUsersCreateEn {
-	_TranslationsUsersCreateRu._(this._root);
+class _TranslationsUsersCreateRuRu implements TranslationsUsersCreateEnUs {
+	_TranslationsUsersCreateRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Создать пользователя';
@@ -439,14 +439,14 @@ class _TranslationsUsersCreateRu implements TranslationsUsersCreateEn {
 	@override String get password => 'Пароль';
 	@override String get submit => 'Создать';
 	@override String get success => 'Пользователь успешно создан';
-	@override late final _TranslationsUsersCreateErrorsRu errors = _TranslationsUsersCreateErrorsRu._(_root);
+	@override late final _TranslationsUsersCreateErrorsRuRu errors = _TranslationsUsersCreateErrorsRuRu._(_root);
 }
 
 // Path: users.delete
-class _TranslationsUsersDeleteRu implements TranslationsUsersDeleteEn {
-	_TranslationsUsersDeleteRu._(this._root);
+class _TranslationsUsersDeleteRuRu implements TranslationsUsersDeleteEnUs {
+	_TranslationsUsersDeleteRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Удалить аккаунт';
@@ -454,14 +454,14 @@ class _TranslationsUsersDeleteRu implements TranslationsUsersDeleteEn {
 	@override String get confirmMessage => 'Аккаунт будет удалён навсегда. Действие нельзя отменить.';
 	@override String get confirmButton => 'Удалить';
 	@override String get success => 'Аккаунт удалён';
-	@override late final _TranslationsUsersDeleteErrorsRu errors = _TranslationsUsersDeleteErrorsRu._(_root);
+	@override late final _TranslationsUsersDeleteErrorsRuRu errors = _TranslationsUsersDeleteErrorsRuRu._(_root);
 }
 
 // Path: users.eraseDbUser
-class _TranslationsUsersEraseDbUserRu implements TranslationsUsersEraseDbUserEn {
-	_TranslationsUsersEraseDbUserRu._(this._root);
+class _TranslationsUsersEraseDbUserRuRu implements TranslationsUsersEraseDbUserEnUs {
+	_TranslationsUsersEraseDbUserRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Удалить из базы данных';
@@ -469,14 +469,14 @@ class _TranslationsUsersEraseDbUserRu implements TranslationsUsersEraseDbUserEn 
 	@override String get confirmMessage => 'Аккаунт будет физически удалён из базы данных. Это действие необратимо.';
 	@override String get confirmButton => 'Удалить навсегда';
 	@override String get success => 'Аккаунт удалён из базы данных';
-	@override late final _TranslationsUsersEraseDbUserErrorsRu errors = _TranslationsUsersEraseDbUserErrorsRu._(_root);
+	@override late final _TranslationsUsersEraseDbUserErrorsRuRu errors = _TranslationsUsersEraseDbUserErrorsRuRu._(_root);
 }
 
 // Path: users.edit
-class _TranslationsUsersEditRu implements TranslationsUsersEditEn {
-	_TranslationsUsersEditRu._(this._root);
+class _TranslationsUsersEditRuRu implements TranslationsUsersEditEnUs {
+	_TranslationsUsersEditRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'Редактировать пользователя';
@@ -486,14 +486,14 @@ class _TranslationsUsersEditRu implements TranslationsUsersEditEn {
 	@override String get profileImageUrl => 'URL фото профиля';
 	@override String get save => 'Сохранить';
 	@override String get success => 'Пользователь успешно обновлён';
-	@override late final _TranslationsUsersEditErrorsRu errors = _TranslationsUsersEditErrorsRu._(_root);
+	@override late final _TranslationsUsersEditErrorsRuRu errors = _TranslationsUsersEditErrorsRuRu._(_root);
 }
 
 // Path: users.updateTier
-class _TranslationsUsersUpdateTierRu implements TranslationsUsersUpdateTierEn {
-	_TranslationsUsersUpdateTierRu._(this._root);
+class _TranslationsUsersUpdateTierRuRu implements TranslationsUsersUpdateTierEnUs {
+	_TranslationsUsersUpdateTierRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get tooltip => 'Изменить тир';
@@ -501,27 +501,27 @@ class _TranslationsUsersUpdateTierRu implements TranslationsUsersUpdateTierEn {
 	@override String get selectTier => 'Выберите тир';
 	@override String get confirm => 'Подтвердить';
 	@override String get success => 'Тир пользователя обновлён';
-	@override late final _TranslationsUsersUpdateTierErrorsRu errors = _TranslationsUsersUpdateTierErrorsRu._(_root);
+	@override late final _TranslationsUsersUpdateTierErrorsRuRu errors = _TranslationsUsersUpdateTierErrorsRuRu._(_root);
 }
 
 // Path: users.moderator
-class _TranslationsUsersModeratorRu implements TranslationsUsersModeratorEn {
-	_TranslationsUsersModeratorRu._(this._root);
+class _TranslationsUsersModeratorRuRu implements TranslationsUsersModeratorEnUs {
+	_TranslationsUsersModeratorRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get badge => 'Модератор';
 	@override String get assign => 'Назначить модератором';
 	@override String get revoke => 'Снять права модератора';
-	@override late final _TranslationsUsersModeratorErrorsRu errors = _TranslationsUsersModeratorErrorsRu._(_root);
+	@override late final _TranslationsUsersModeratorErrorsRuRu errors = _TranslationsUsersModeratorErrorsRuRu._(_root);
 }
 
 // Path: auth.login.errors
-class _TranslationsAuthLoginErrorsRu implements TranslationsAuthLoginErrorsEn {
-	_TranslationsAuthLoginErrorsRu._(this._root);
+class _TranslationsAuthLoginErrorsRuRu implements TranslationsAuthLoginErrorsEnUs {
+	_TranslationsAuthLoginErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get required => 'Обязательное поле';
@@ -530,10 +530,10 @@ class _TranslationsAuthLoginErrorsRu implements TranslationsAuthLoginErrorsEn {
 }
 
 // Path: tiers.createTier.errors
-class _TranslationsTiersCreateTierErrorsRu implements TranslationsTiersCreateTierErrorsEn {
-	_TranslationsTiersCreateTierErrorsRu._(this._root);
+class _TranslationsTiersCreateTierErrorsRuRu implements TranslationsTiersCreateTierErrorsEnUs {
+	_TranslationsTiersCreateTierErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get required => 'Это поле обязательно';
@@ -541,10 +541,10 @@ class _TranslationsTiersCreateTierErrorsRu implements TranslationsTiersCreateTie
 }
 
 // Path: tiers.editTier.errors
-class _TranslationsTiersEditTierErrorsRu implements TranslationsTiersEditTierErrorsEn {
-	_TranslationsTiersEditTierErrorsRu._(this._root);
+class _TranslationsTiersEditTierErrorsRuRu implements TranslationsTiersEditTierErrorsEnUs {
+	_TranslationsTiersEditTierErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get required => 'Это поле обязательно';
@@ -554,10 +554,10 @@ class _TranslationsTiersEditTierErrorsRu implements TranslationsTiersEditTierErr
 }
 
 // Path: tiers.deleteTier.errors
-class _TranslationsTiersDeleteTierErrorsRu implements TranslationsTiersDeleteTierErrorsEn {
-	_TranslationsTiersDeleteTierErrorsRu._(this._root);
+class _TranslationsTiersDeleteTierErrorsRuRu implements TranslationsTiersDeleteTierErrorsEnUs {
+	_TranslationsTiersDeleteTierErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get notFound => 'Тир не найден';
@@ -567,10 +567,10 @@ class _TranslationsTiersDeleteTierErrorsRu implements TranslationsTiersDeleteTie
 }
 
 // Path: posts.editPost.tabs
-class _TranslationsPostsEditPostTabsRu implements TranslationsPostsEditPostTabsEn {
-	_TranslationsPostsEditPostTabsRu._(this._root);
+class _TranslationsPostsEditPostTabsRuRu implements TranslationsPostsEditPostTabsEnUs {
+	_TranslationsPostsEditPostTabsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get edit => 'Редактировать';
@@ -578,10 +578,10 @@ class _TranslationsPostsEditPostTabsRu implements TranslationsPostsEditPostTabsE
 }
 
 // Path: posts.editPost.revisionMessage
-class _TranslationsPostsEditPostRevisionMessageRu implements TranslationsPostsEditPostRevisionMessageEn {
-	_TranslationsPostsEditPostRevisionMessageRu._(this._root);
+class _TranslationsPostsEditPostRevisionMessageRuRu implements TranslationsPostsEditPostRevisionMessageEnUs {
+	_TranslationsPostsEditPostRevisionMessageRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get label => 'Сообщение о правках';
@@ -589,10 +589,10 @@ class _TranslationsPostsEditPostRevisionMessageRu implements TranslationsPostsEd
 }
 
 // Path: posts.editPost.log
-class _TranslationsPostsEditPostLogRu implements TranslationsPostsEditPostLogEn {
-	_TranslationsPostsEditPostLogRu._(this._root);
+class _TranslationsPostsEditPostLogRuRu implements TranslationsPostsEditPostLogEnUs {
+	_TranslationsPostsEditPostLogRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get empty => 'История модерации пуста';
@@ -600,10 +600,10 @@ class _TranslationsPostsEditPostLogRu implements TranslationsPostsEditPostLogEn 
 }
 
 // Path: posts.editPost.errors
-class _TranslationsPostsEditPostErrorsRu implements TranslationsPostsEditPostErrorsEn {
-	_TranslationsPostsEditPostErrorsRu._(this._root);
+class _TranslationsPostsEditPostErrorsRuRu implements TranslationsPostsEditPostErrorsEnUs {
+	_TranslationsPostsEditPostErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get titleTooShort => 'Заголовок должен содержать не менее 2 символов';
@@ -619,10 +619,10 @@ class _TranslationsPostsEditPostErrorsRu implements TranslationsPostsEditPostErr
 }
 
 // Path: posts.deletePost.errors
-class _TranslationsPostsDeletePostErrorsRu implements TranslationsPostsDeletePostErrorsEn {
-	_TranslationsPostsDeletePostErrorsRu._(this._root);
+class _TranslationsPostsDeletePostErrorsRuRu implements TranslationsPostsDeletePostErrorsEnUs {
+	_TranslationsPostsDeletePostErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get forbidden => 'Вы можете удалять только свои посты';
@@ -630,10 +630,10 @@ class _TranslationsPostsDeletePostErrorsRu implements TranslationsPostsDeletePos
 }
 
 // Path: posts.eraseDbPost.errors
-class _TranslationsPostsEraseDbPostErrorsRu implements TranslationsPostsEraseDbPostErrorsEn {
-	_TranslationsPostsEraseDbPostErrorsRu._(this._root);
+class _TranslationsPostsEraseDbPostErrorsRuRu implements TranslationsPostsEraseDbPostErrorsEnUs {
+	_TranslationsPostsEraseDbPostErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get forbidden => 'Недостаточно прав для удаления поста';
@@ -641,10 +641,10 @@ class _TranslationsPostsEraseDbPostErrorsRu implements TranslationsPostsEraseDbP
 }
 
 // Path: posts.moderatePost.tabs
-class _TranslationsPostsModeratePostTabsRu implements TranslationsPostsModeratePostTabsEn {
-	_TranslationsPostsModeratePostTabsRu._(this._root);
+class _TranslationsPostsModeratePostTabsRuRu implements TranslationsPostsModeratePostTabsEnUs {
+	_TranslationsPostsModeratePostTabsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get post => 'Пост';
@@ -652,23 +652,23 @@ class _TranslationsPostsModeratePostTabsRu implements TranslationsPostsModerateP
 }
 
 // Path: posts.moderatePost.log
-class _TranslationsPostsModeratePostLogRu implements TranslationsPostsModeratePostLogEn {
-	_TranslationsPostsModeratePostLogRu._(this._root);
+class _TranslationsPostsModeratePostLogRuRu implements TranslationsPostsModeratePostLogEnUs {
+	_TranslationsPostsModeratePostLogRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get empty => 'История модерации пуста';
 	@override String get loadError => 'Не удалось загрузить историю модерации';
-	@override late final _TranslationsPostsModeratePostLogEventTypesRu eventTypes = _TranslationsPostsModeratePostLogEventTypesRu._(_root);
-	@override late final _TranslationsPostsModeratePostLogActionsRu actions = _TranslationsPostsModeratePostLogActionsRu._(_root);
+	@override late final _TranslationsPostsModeratePostLogEventTypesRuRu eventTypes = _TranslationsPostsModeratePostLogEventTypesRuRu._(_root);
+	@override late final _TranslationsPostsModeratePostLogActionsRuRu actions = _TranslationsPostsModeratePostLogActionsRuRu._(_root);
 }
 
 // Path: posts.moderatePost.actions
-class _TranslationsPostsModeratePostActionsRu implements TranslationsPostsModeratePostActionsEn {
-	_TranslationsPostsModeratePostActionsRu._(this._root);
+class _TranslationsPostsModeratePostActionsRuRu implements TranslationsPostsModeratePostActionsEnUs {
+	_TranslationsPostsModeratePostActionsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get approve => 'Одобрить';
@@ -678,10 +678,10 @@ class _TranslationsPostsModeratePostActionsRu implements TranslationsPostsModera
 }
 
 // Path: posts.moderatePost.errors
-class _TranslationsPostsModeratePostErrorsRu implements TranslationsPostsModeratePostErrorsEn {
-	_TranslationsPostsModeratePostErrorsRu._(this._root);
+class _TranslationsPostsModeratePostErrorsRuRu implements TranslationsPostsModeratePostErrorsEnUs {
+	_TranslationsPostsModeratePostErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get forbidden => 'У вас нет прав на модерацию этого поста';
@@ -691,10 +691,10 @@ class _TranslationsPostsModeratePostErrorsRu implements TranslationsPostsModerat
 }
 
 // Path: posts.createPost.errors
-class _TranslationsPostsCreatePostErrorsRu implements TranslationsPostsCreatePostErrorsEn {
-	_TranslationsPostsCreatePostErrorsRu._(this._root);
+class _TranslationsPostsCreatePostErrorsRuRu implements TranslationsPostsCreatePostErrorsEnUs {
+	_TranslationsPostsCreatePostErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get titleTooShort => 'Заголовок должен содержать не менее 2 символов';
@@ -707,10 +707,10 @@ class _TranslationsPostsCreatePostErrorsRu implements TranslationsPostsCreatePos
 }
 
 // Path: users.create.errors
-class _TranslationsUsersCreateErrorsRu implements TranslationsUsersCreateErrorsEn {
-	_TranslationsUsersCreateErrorsRu._(this._root);
+class _TranslationsUsersCreateErrorsRuRu implements TranslationsUsersCreateErrorsEnUs {
+	_TranslationsUsersCreateErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get required => 'Это поле обязательно';
@@ -722,10 +722,10 @@ class _TranslationsUsersCreateErrorsRu implements TranslationsUsersCreateErrorsE
 }
 
 // Path: users.delete.errors
-class _TranslationsUsersDeleteErrorsRu implements TranslationsUsersDeleteErrorsEn {
-	_TranslationsUsersDeleteErrorsRu._(this._root);
+class _TranslationsUsersDeleteErrorsRuRu implements TranslationsUsersDeleteErrorsEnUs {
+	_TranslationsUsersDeleteErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get forbidden => 'Можно удалить только свой аккаунт.';
@@ -735,10 +735,10 @@ class _TranslationsUsersDeleteErrorsRu implements TranslationsUsersDeleteErrorsE
 }
 
 // Path: users.eraseDbUser.errors
-class _TranslationsUsersEraseDbUserErrorsRu implements TranslationsUsersEraseDbUserErrorsEn {
-	_TranslationsUsersEraseDbUserErrorsRu._(this._root);
+class _TranslationsUsersEraseDbUserErrorsRuRu implements TranslationsUsersEraseDbUserErrorsEnUs {
+	_TranslationsUsersEraseDbUserErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get forbidden => 'Можно удалить только свой аккаунт';
@@ -748,10 +748,10 @@ class _TranslationsUsersEraseDbUserErrorsRu implements TranslationsUsersEraseDbU
 }
 
 // Path: users.edit.errors
-class _TranslationsUsersEditErrorsRu implements TranslationsUsersEditErrorsEn {
-	_TranslationsUsersEditErrorsRu._(this._root);
+class _TranslationsUsersEditErrorsRuRu implements TranslationsUsersEditErrorsEnUs {
+	_TranslationsUsersEditErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get required => 'Это поле обязательно';
@@ -765,10 +765,10 @@ class _TranslationsUsersEditErrorsRu implements TranslationsUsersEditErrorsEn {
 }
 
 // Path: users.updateTier.errors
-class _TranslationsUsersUpdateTierErrorsRu implements TranslationsUsersUpdateTierErrorsEn {
-	_TranslationsUsersUpdateTierErrorsRu._(this._root);
+class _TranslationsUsersUpdateTierErrorsRuRu implements TranslationsUsersUpdateTierErrorsEnUs {
+	_TranslationsUsersUpdateTierErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get permissionDenied => 'У вас нет прав для изменения тира.';
@@ -779,10 +779,10 @@ class _TranslationsUsersUpdateTierErrorsRu implements TranslationsUsersUpdateTie
 }
 
 // Path: users.moderator.errors
-class _TranslationsUsersModeratorErrorsRu implements TranslationsUsersModeratorErrorsEn {
-	_TranslationsUsersModeratorErrorsRu._(this._root);
+class _TranslationsUsersModeratorErrorsRuRu implements TranslationsUsersModeratorErrorsEnUs {
+	_TranslationsUsersModeratorErrorsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get conflict => 'Действие неприменимо — статус модератора уже актуален.';
@@ -791,10 +791,10 @@ class _TranslationsUsersModeratorErrorsRu implements TranslationsUsersModeratorE
 }
 
 // Path: posts.moderatePost.log.eventTypes
-class _TranslationsPostsModeratePostLogEventTypesRu implements TranslationsPostsModeratePostLogEventTypesEn {
-	_TranslationsPostsModeratePostLogEventTypesRu._(this._root);
+class _TranslationsPostsModeratePostLogEventTypesRuRu implements TranslationsPostsModeratePostLogEventTypesEnUs {
+	_TranslationsPostsModeratePostLogEventTypesRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get moderatorReview => 'Проверка модератора';
@@ -802,22 +802,22 @@ class _TranslationsPostsModeratePostLogEventTypesRu implements TranslationsPosts
 }
 
 // Path: posts.moderatePost.log.actions
-class _TranslationsPostsModeratePostLogActionsRu implements TranslationsPostsModeratePostLogActionsEn {
-	_TranslationsPostsModeratePostLogActionsRu._(this._root);
+class _TranslationsPostsModeratePostLogActionsRuRu implements TranslationsPostsModeratePostLogActionsEnUs {
+	_TranslationsPostsModeratePostLogActionsRuRu._(this._root);
 
-	final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRuRu _root; // ignore: unused_field
 
 	// Translations
 	@override String get approved => 'Одобрено';
 	@override String get changesRequested => 'Запрошены правки';
 }
 
-/// The flat map containing all translations for locale <ru>.
+/// The flat map containing all translations for locale <ru-RU>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
 /// The Dart AOT compiler has issues with very large switch statements,
 /// so the map is split into smaller functions (512 entries each).
-extension on TranslationsRu {
+extension on TranslationsRuRu {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
 			'auth.login.title' => 'Вход',

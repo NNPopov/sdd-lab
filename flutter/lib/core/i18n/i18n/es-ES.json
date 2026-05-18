@@ -1,0 +1,335 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "username": "Nombre de usuario",
+      "password": "Contraseña",
+      "submit": "Iniciar sesión",
+      "signInButton": "Iniciar sesión",
+      "errors": {
+        "required": "Obligatorio",
+        "invalidCredentials": "Nombre de usuario o contraseña incorrectos",
+        "generic": "Error al iniciar sesión. Inténtelo de nuevo."
+      }
+    },
+    "logout": {
+      "confirmTitle": "¿Cerrar sesión?",
+      "confirmMessage": "Tendrá que iniciar sesión de nuevo.",
+      "confirm": "Cerrar sesión",
+      "cancel": "Cancelar"
+    },
+    "sessionExpired": "Sesión expirada. Inicie sesión de nuevo."
+  },
+  "app": {
+    "title": "Flutter App"
+  },
+  "nav": {
+    "users": "Usuarios",
+    "posts": "Publicaciones",
+    "tiers": "Niveles",
+    "pending": "Pendiente"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Reintentar",
+    "back": "Atrás",
+    "cancel": "Cancelar"
+  },
+  "tiers": {
+    "listTiers": {
+      "title": "Niveles",
+      "loadError": "Error al cargar los niveles",
+      "loadMoreError": "Error al cargar más niveles",
+      "empty": "No se encontraron niveles"
+    },
+    "createTier": {
+      "title": "Crear nivel",
+      "name": "Nombre",
+      "submit": "Crear",
+      "fabTooltip": "Añadir nivel",
+      "success": "Nivel creado",
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "generic": "Error al crear el nivel"
+      }
+    },
+    "tierDetails": {
+      "title": "Detalles del nivel",
+      "id": "ID",
+      "createdAt": "Creado",
+      "notFound": "Nivel no encontrado",
+      "loadError": "Error al cargar el nivel",
+      "permissionDenied": "Acceso denegado"
+    },
+    "editTier": {
+      "title": "Editar nivel",
+      "name": "Nombre",
+      "save": "Guardar",
+      "success": "Nivel actualizado",
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "notFound": "Nivel no encontrado",
+        "permissionDenied": "Acceso denegado",
+        "generic": "Error al actualizar el nivel"
+      }
+    },
+    "deleteTier": {
+      "tooltip": "Eliminar nivel",
+      "confirmTitle": "Eliminar nivel",
+      "confirmMessage": "¿Está seguro de que desea eliminar el nivel \"{name}\"? Esta acción no se puede deshacer.",
+      "confirmButton": "Eliminar",
+      "cancelButton": "Cancelar",
+      "success": "Nivel eliminado",
+      "errors": {
+        "notFound": "Nivel no encontrado",
+        "forbidden": "Acceso denegado",
+        "unauthorized": "Sesión expirada",
+        "generic": "Error al eliminar el nivel"
+      }
+    }
+  },
+  "posts": {
+    "postDetails": {
+      "title": "Publicación",
+      "loadError": "Error al cargar la publicación"
+    },
+    "postStatus": {
+      "pendingReview": "Pendiente de revisión",
+      "approved": "Aprobado",
+      "changesRequested": "Se requieren cambios"
+    },
+    "editPost": {
+      "title": "Editar publicación",
+      "titleLabel": "Título",
+      "titleHint": "Título de la publicación",
+      "mediaUrlLabel": "URL de medios (opcional)",
+      "mediaUrlHint": "https://...",
+      "textLabel": "Texto (Markdown)",
+      "textHint": "Escriba su publicación...",
+      "previewLabel": "Vista previa",
+      "saveButton": "Guardar",
+      "tabs": {
+        "edit": "Editar",
+        "log": "Historial de moderación"
+      },
+      "revisionMessage": {
+        "label": "Mensaje de revisión",
+        "hint": "Describa los cambios realizados para atender los comentarios del moderador"
+      },
+      "approvedHint": "Esta publicación está aprobada y ya no puede editarse.",
+      "log": {
+        "empty": "Sin historial de moderación aún",
+        "loadError": "Error al cargar el historial de moderación"
+      },
+      "errors": {
+        "titleTooShort": "El título debe tener al menos 2 caracteres",
+        "titleTooLong": "El título no puede superar los 30 caracteres",
+        "mediaUrlEmpty": "La URL de medios no puede estar vacía si se proporciona",
+        "textTooShort": "El texto debe tener al menos 100 caracteres",
+        "textTooLong": "El texto no puede superar los 63206 caracteres",
+        "forbidden": "Solo puede editar sus propias publicaciones",
+        "generic": "Error al guardar la publicación. Inténtelo de nuevo.",
+        "revisionMessageRequired": "Se requiere un mensaje de revisión.",
+        "conflict": "El estado de la publicación cambió mientras la editaba. Compruebe el estado actual.",
+        "notFound": "Publicación no encontrada."
+      }
+    },
+    "listPosts": {
+      "empty": "Aún no hay publicaciones",
+      "loadError": "Error al cargar las publicaciones",
+      "fabTooltip": "Nueva publicación",
+      "openPost": "Abrir"
+    },
+    "userPosts": {
+      "title": "Publicaciones de $username",
+      "empty": "Aún no hay publicaciones",
+      "loadError": "Error al cargar las publicaciones",
+      "openPost": "Abrir"
+    },
+    "deletePost": {
+      "tooltip": "Eliminar publicación",
+      "confirmTitle": "¿Eliminar publicación?",
+      "confirmMessage": "Esta acción es irreversible. La publicación se eliminará permanentemente.",
+      "confirmButton": "Eliminar",
+      "cancelButton": "Cancelar",
+      "success": "Publicación eliminada",
+      "errors": {
+        "forbidden": "Solo puede eliminar sus propias publicaciones",
+        "generic": "Error al eliminar la publicación. Inténtelo de nuevo."
+      }
+    },
+    "eraseDbPost": {
+      "tooltip": "Borrar publicación (superusuario)",
+      "confirmTitle": "¿Borrar publicación?",
+      "confirmMessage": "Esta publicación se borrará permanentemente. Esta acción no se puede deshacer.",
+      "confirmButton": "Borrar",
+      "cancelButton": "Cancelar",
+      "success": "Publicación borrada",
+      "errors": {
+        "forbidden": "No tiene permiso para borrar publicaciones",
+        "generic": "Error al borrar la publicación. Inténtelo de nuevo."
+      }
+    },
+    "pendingPosts": {
+      "title": "Publicaciones pendientes",
+      "empty": "No hay publicaciones pendientes",
+      "loadError": "Error al cargar las publicaciones pendientes",
+      "loadMoreError": "Error al cargar más",
+      "eventCount": "Eventos"
+    },
+    "moderatePost": {
+      "title": "Moderar publicación",
+      "tabs": {
+        "post": "Publicación",
+        "moderation": "Moderación"
+      },
+      "log": {
+        "empty": "Sin historial de moderación aún",
+        "loadError": "Error al cargar el historial de moderación",
+        "eventTypes": {
+          "moderatorReview": "Revisión del moderador",
+          "authorRevision": "Revisión del autor"
+        },
+        "actions": {
+          "approved": "Aprobado",
+          "changesRequested": "Cambios solicitados"
+        }
+      },
+      "actions": {
+        "approve": "Aprobar",
+        "requestChanges": "Solicitar cambios",
+        "messageHint": "Añadir un comentario (obligatorio para rechazar)",
+        "messageRequiredError": "Se requiere un mensaje al solicitar cambios"
+      },
+      "errors": {
+        "forbidden": "No tiene permiso para moderar esta publicación",
+        "notFound": "Publicación no encontrada",
+        "conflict": "Esta publicación ya ha sido moderada. Vuelva a la cola.",
+        "generic": "Error al enviar. Inténtelo de nuevo."
+      }
+    },
+    "createPost": {
+      "title": "Nueva publicación",
+      "titleLabel": "Título",
+      "titleHint": "Título de la publicación",
+      "mediaUrlLabel": "URL de medios (opcional)",
+      "mediaUrlHint": "https://...",
+      "textLabel": "Texto (Markdown)",
+      "textHint": "Escriba su publicación...",
+      "previewLabel": "Vista previa",
+      "publishButton": "Publicar",
+      "fabTooltip": "Nueva publicación",
+      "errors": {
+        "titleTooShort": "El título debe tener al menos 2 caracteres",
+        "titleTooLong": "El título no puede superar los 30 caracteres",
+        "mediaUrlEmpty": "La URL de medios no puede estar vacía si se proporciona",
+        "textTooShort": "El texto debe tener al menos 100 caracteres",
+        "textTooLong": "El texto no puede superar los 63206 caracteres",
+        "forbidden": "Solo puede publicar como usted mismo",
+        "generic": "Error al publicar. Inténtelo de nuevo."
+      }
+    }
+  },
+  "users": {
+    "title": "Usuarios",
+    "list": {
+      "loadMoreError": "Error al cargar más usuarios",
+      "userDetails": "Detalles",
+      "userPosts": "Publicaciones"
+    },
+    "details": {
+      "email": "Correo electrónico",
+      "tier": "Nivel",
+      "tierSince": "Nivel desde",
+      "notFound": "Usuario no encontrado",
+      "loadError": "Error al cargar el usuario"
+    },
+    "create": {
+      "title": "Crear usuario",
+      "name": "Nombre",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Crear",
+      "success": "Usuario creado correctamente",
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "emailInvalid": "Introduzca una dirección de correo válida",
+        "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+        "usernameTaken": "Nombre de usuario ya en uso",
+        "emailTaken": "Correo electrónico ya en uso",
+        "generic": "Algo salió mal. Inténtelo de nuevo."
+      }
+    },
+    "delete": {
+      "tooltip": "Eliminar cuenta",
+      "confirmTitle": "¿Eliminar cuenta?",
+      "confirmMessage": "Esto eliminará permanentemente su cuenta. Esta acción no se puede deshacer.",
+      "confirmButton": "Eliminar",
+      "success": "Cuenta eliminada",
+      "errors": {
+        "forbidden": "Solo puede eliminar su propia cuenta.",
+        "unauthorized": "Sesión expirada.",
+        "notFound": "Usuario no encontrado.",
+        "generic": "Error al eliminar la cuenta."
+      }
+    },
+    "eraseDbUser": {
+      "tooltip": "Borrar de la base de datos",
+      "confirmTitle": "¿Borrar cuenta permanentemente?",
+      "confirmMessage": "Esto eliminará permanentemente su cuenta de la base de datos. Esta acción no se puede deshacer.",
+      "confirmButton": "Borrar permanentemente",
+      "success": "Cuenta borrada de la base de datos",
+      "errors": {
+        "forbidden": "Solo puede borrar su propia cuenta",
+        "unauthorized": "Sesión expirada. Inicie sesión de nuevo",
+        "notFound": "Usuario no encontrado",
+        "generic": "Error al borrar la cuenta. Inténtelo de nuevo"
+      }
+    },
+    "edit": {
+      "title": "Editar usuario",
+      "name": "Nombre",
+      "username": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "profileImageUrl": "URL de imagen de perfil",
+      "save": "Guardar",
+      "success": "Usuario actualizado correctamente",
+      "errors": {
+        "required": "Este campo es obligatorio",
+        "emailInvalid": "Introduzca una dirección de correo válida",
+        "usernameTaken": "Nombre de usuario ya en uso",
+        "notFound": "Usuario no encontrado",
+        "nothingToUpdate": "No hay cambios que guardar",
+        "forbidden": "Solo puede editar su propio perfil.",
+        "unauthorized": "Sesión expirada.",
+        "generic": "Algo salió mal. Inténtelo de nuevo."
+      }
+    },
+    "updateTier": {
+      "tooltip": "Cambiar nivel",
+      "sheetTitle": "Cambiar nivel de usuario",
+      "selectTier": "Seleccionar nivel",
+      "confirm": "Confirmar",
+      "success": "Nivel de usuario actualizado",
+      "errors": {
+        "permissionDenied": "No tiene permiso para cambiar niveles.",
+        "notFound": "Usuario o nivel no encontrado.",
+        "forbidden": "Permiso denegado.",
+        "unauthorized": "Sesión expirada.",
+        "generic": "Error al actualizar el nivel. Inténtelo de nuevo."
+      }
+    },
+    "moderator": {
+      "badge": "Moderador",
+      "assign": "Asignar moderador",
+      "revoke": "Revocar moderador",
+      "errors": {
+        "conflict": "Acción no aplicable: el estado de moderador ya está sincronizado.",
+        "forbidden": "No tiene permiso para gestionar moderadores.",
+        "generic": "Error al actualizar el estado de moderador. Inténtelo de nuevo."
+      }
+    }
+  }
+}

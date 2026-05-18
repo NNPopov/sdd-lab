@@ -41,3 +41,4 @@
 | 0037 | posts | post_status_display | ✅ | [specs/features/posts/0037_post_status_display/](features/posts/0037_post_status_display/) |
 | 0038 | users | owner_only_user_edit | ✅ | [specs/features/users/0038_owner_only_user_edit/](features/users/0038_owner_only_user_edit/) |
 | 0039 | posts | adapt_moderation_log_contract | 📋 | [specs/features/posts/0039_adapt_moderation_log_contract/](features/posts/0039_adapt_moderation_log_contract/) |
+| 0040 | core/i18n | extend_locales | 📋 | [specs/features/core/0040_extend_locales/](features/core/0040_extend_locales/) |

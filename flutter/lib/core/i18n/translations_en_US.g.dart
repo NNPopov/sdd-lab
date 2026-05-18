@@ -8,7 +8,7 @@
 part of 'translations.g.dart';
 
 // Path: <root>
-typedef TranslationsEn = Translations; // ignore: unused_element
+typedef TranslationsEnUs = Translations; // ignore: unused_element
 class Translations with BaseTranslations<AppLocale, Translations> {
 	/// Returns the current translations of the given [context].
 	///
@@ -21,7 +21,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
 		: assert(overrides == null, 'Set "translation_overrides: true" in order to enable this feature.'),
 		  $meta = meta ?? TranslationMetadata(
-		    locale: AppLocale.en,
+		    locale: AppLocale.enUs,
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
@@ -29,7 +29,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		$meta.setFlatMapFunction(_flatMapFunction);
 	}
 
-	/// Metadata for the translations of <en>.
+	/// Metadata for the translations of <en-US>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
 
 	/// Access flat map
@@ -40,1246 +40,1246 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
-	late final TranslationsAuthEn auth = TranslationsAuthEn._(_root);
-	late final TranslationsAppEn app = TranslationsAppEn._(_root);
-	late final TranslationsNavEn nav = TranslationsNavEn._(_root);
-	late final TranslationsCommonEn common = TranslationsCommonEn._(_root);
-	late final TranslationsTiersEn tiers = TranslationsTiersEn._(_root);
-	late final TranslationsPostsEn posts = TranslationsPostsEn._(_root);
-	late final TranslationsUsersEn users = TranslationsUsersEn._(_root);
+	late final TranslationsAuthEnUs auth = TranslationsAuthEnUs._(_root);
+	late final TranslationsAppEnUs app = TranslationsAppEnUs._(_root);
+	late final TranslationsNavEnUs nav = TranslationsNavEnUs._(_root);
+	late final TranslationsCommonEnUs common = TranslationsCommonEnUs._(_root);
+	late final TranslationsTiersEnUs tiers = TranslationsTiersEnUs._(_root);
+	late final TranslationsPostsEnUs posts = TranslationsPostsEnUs._(_root);
+	late final TranslationsUsersEnUs users = TranslationsUsersEnUs._(_root);
 }
 
 // Path: auth
-class TranslationsAuthEn {
-	TranslationsAuthEn._(this._root);
+class TranslationsAuthEnUs {
+	TranslationsAuthEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	late final TranslationsAuthLoginEn login = TranslationsAuthLoginEn._(_root);
-	late final TranslationsAuthLogoutEn logout = TranslationsAuthLogoutEn._(_root);
+	late final TranslationsAuthLoginEnUs login = TranslationsAuthLoginEnUs._(_root);
+	late final TranslationsAuthLogoutEnUs logout = TranslationsAuthLogoutEnUs._(_root);
 
-	/// en: 'Session expired. Please sign in again.'
+	/// en-US: 'Session expired. Please sign in again.'
 	String get sessionExpired => 'Session expired. Please sign in again.';
 }
 
 // Path: app
-class TranslationsAppEn {
-	TranslationsAppEn._(this._root);
+class TranslationsAppEnUs {
+	TranslationsAppEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Flutter App'
+	/// en-US: 'Flutter App'
 	String get title => 'Flutter App';
 }
 
 // Path: nav
-class TranslationsNavEn {
-	TranslationsNavEn._(this._root);
+class TranslationsNavEnUs {
+	TranslationsNavEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Users'
+	/// en-US: 'Users'
 	String get users => 'Users';
 
-	/// en: 'Posts'
+	/// en-US: 'Posts'
 	String get posts => 'Posts';
 
-	/// en: 'Tiers'
+	/// en-US: 'Tiers'
 	String get tiers => 'Tiers';
 
-	/// en: 'Pending'
+	/// en-US: 'Pending'
 	String get pending => 'Pending';
 }
 
 // Path: common
-class TranslationsCommonEn {
-	TranslationsCommonEn._(this._root);
+class TranslationsCommonEnUs {
+	TranslationsCommonEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Loading...'
+	/// en-US: 'Loading...'
 	String get loading => 'Loading...';
 
-	/// en: 'Something went wrong'
+	/// en-US: 'Something went wrong'
 	String get error => 'Something went wrong';
 
-	/// en: 'Retry'
+	/// en-US: 'Retry'
 	String get retry => 'Retry';
 
-	/// en: 'Back'
+	/// en-US: 'Back'
 	String get back => 'Back';
 
-	/// en: 'Cancel'
+	/// en-US: 'Cancel'
 	String get cancel => 'Cancel';
 }
 
 // Path: tiers
-class TranslationsTiersEn {
-	TranslationsTiersEn._(this._root);
+class TranslationsTiersEnUs {
+	TranslationsTiersEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	late final TranslationsTiersListTiersEn listTiers = TranslationsTiersListTiersEn._(_root);
-	late final TranslationsTiersCreateTierEn createTier = TranslationsTiersCreateTierEn._(_root);
-	late final TranslationsTiersTierDetailsEn tierDetails = TranslationsTiersTierDetailsEn._(_root);
-	late final TranslationsTiersEditTierEn editTier = TranslationsTiersEditTierEn._(_root);
-	late final TranslationsTiersDeleteTierEn deleteTier = TranslationsTiersDeleteTierEn._(_root);
+	late final TranslationsTiersListTiersEnUs listTiers = TranslationsTiersListTiersEnUs._(_root);
+	late final TranslationsTiersCreateTierEnUs createTier = TranslationsTiersCreateTierEnUs._(_root);
+	late final TranslationsTiersTierDetailsEnUs tierDetails = TranslationsTiersTierDetailsEnUs._(_root);
+	late final TranslationsTiersEditTierEnUs editTier = TranslationsTiersEditTierEnUs._(_root);
+	late final TranslationsTiersDeleteTierEnUs deleteTier = TranslationsTiersDeleteTierEnUs._(_root);
 }
 
 // Path: posts
-class TranslationsPostsEn {
-	TranslationsPostsEn._(this._root);
+class TranslationsPostsEnUs {
+	TranslationsPostsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-	late final TranslationsPostsPostDetailsEn postDetails = TranslationsPostsPostDetailsEn._(_root);
-	late final TranslationsPostsPostStatusEn postStatus = TranslationsPostsPostStatusEn._(_root);
-	late final TranslationsPostsEditPostEn editPost = TranslationsPostsEditPostEn._(_root);
-	late final TranslationsPostsListPostsEn listPosts = TranslationsPostsListPostsEn._(_root);
-	late final TranslationsPostsUserPostsEn userPosts = TranslationsPostsUserPostsEn._(_root);
-	late final TranslationsPostsDeletePostEn deletePost = TranslationsPostsDeletePostEn._(_root);
-	late final TranslationsPostsEraseDbPostEn eraseDbPost = TranslationsPostsEraseDbPostEn._(_root);
-	late final TranslationsPostsPendingPostsEn pendingPosts = TranslationsPostsPendingPostsEn._(_root);
-	late final TranslationsPostsModeratePostEn moderatePost = TranslationsPostsModeratePostEn._(_root);
-	late final TranslationsPostsCreatePostEn createPost = TranslationsPostsCreatePostEn._(_root);
+	late final TranslationsPostsPostDetailsEnUs postDetails = TranslationsPostsPostDetailsEnUs._(_root);
+	late final TranslationsPostsPostStatusEnUs postStatus = TranslationsPostsPostStatusEnUs._(_root);
+	late final TranslationsPostsEditPostEnUs editPost = TranslationsPostsEditPostEnUs._(_root);
+	late final TranslationsPostsListPostsEnUs listPosts = TranslationsPostsListPostsEnUs._(_root);
+	late final TranslationsPostsUserPostsEnUs userPosts = TranslationsPostsUserPostsEnUs._(_root);
+	late final TranslationsPostsDeletePostEnUs deletePost = TranslationsPostsDeletePostEnUs._(_root);
+	late final TranslationsPostsEraseDbPostEnUs eraseDbPost = TranslationsPostsEraseDbPostEnUs._(_root);
+	late final TranslationsPostsPendingPostsEnUs pendingPosts = TranslationsPostsPendingPostsEnUs._(_root);
+	late final TranslationsPostsModeratePostEnUs moderatePost = TranslationsPostsModeratePostEnUs._(_root);
+	late final TranslationsPostsCreatePostEnUs createPost = TranslationsPostsCreatePostEnUs._(_root);
 }
 
 // Path: users
-class TranslationsUsersEn {
-	TranslationsUsersEn._(this._root);
+class TranslationsUsersEnUs {
+	TranslationsUsersEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Users'
+	/// en-US: 'Users'
 	String get title => 'Users';
 
-	late final TranslationsUsersListEn list = TranslationsUsersListEn._(_root);
-	late final TranslationsUsersDetailsEn details = TranslationsUsersDetailsEn._(_root);
-	late final TranslationsUsersCreateEn create = TranslationsUsersCreateEn._(_root);
-	late final TranslationsUsersDeleteEn delete = TranslationsUsersDeleteEn._(_root);
-	late final TranslationsUsersEraseDbUserEn eraseDbUser = TranslationsUsersEraseDbUserEn._(_root);
-	late final TranslationsUsersEditEn edit = TranslationsUsersEditEn._(_root);
-	late final TranslationsUsersUpdateTierEn updateTier = TranslationsUsersUpdateTierEn._(_root);
-	late final TranslationsUsersModeratorEn moderator = TranslationsUsersModeratorEn._(_root);
+	late final TranslationsUsersListEnUs list = TranslationsUsersListEnUs._(_root);
+	late final TranslationsUsersDetailsEnUs details = TranslationsUsersDetailsEnUs._(_root);
+	late final TranslationsUsersCreateEnUs create = TranslationsUsersCreateEnUs._(_root);
+	late final TranslationsUsersDeleteEnUs delete = TranslationsUsersDeleteEnUs._(_root);
+	late final TranslationsUsersEraseDbUserEnUs eraseDbUser = TranslationsUsersEraseDbUserEnUs._(_root);
+	late final TranslationsUsersEditEnUs edit = TranslationsUsersEditEnUs._(_root);
+	late final TranslationsUsersUpdateTierEnUs updateTier = TranslationsUsersUpdateTierEnUs._(_root);
+	late final TranslationsUsersModeratorEnUs moderator = TranslationsUsersModeratorEnUs._(_root);
 }
 
 // Path: auth.login
-class TranslationsAuthLoginEn {
-	TranslationsAuthLoginEn._(this._root);
+class TranslationsAuthLoginEnUs {
+	TranslationsAuthLoginEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Sign in'
+	/// en-US: 'Sign in'
 	String get title => 'Sign in';
 
-	/// en: 'Username'
+	/// en-US: 'Username'
 	String get username => 'Username';
 
-	/// en: 'Password'
+	/// en-US: 'Password'
 	String get password => 'Password';
 
-	/// en: 'Sign in'
+	/// en-US: 'Sign in'
 	String get submit => 'Sign in';
 
-	/// en: 'Sign in'
+	/// en-US: 'Sign in'
 	String get signInButton => 'Sign in';
 
-	late final TranslationsAuthLoginErrorsEn errors = TranslationsAuthLoginErrorsEn._(_root);
+	late final TranslationsAuthLoginErrorsEnUs errors = TranslationsAuthLoginErrorsEnUs._(_root);
 }
 
 // Path: auth.logout
-class TranslationsAuthLogoutEn {
-	TranslationsAuthLogoutEn._(this._root);
+class TranslationsAuthLogoutEnUs {
+	TranslationsAuthLogoutEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Sign out?'
+	/// en-US: 'Sign out?'
 	String get confirmTitle => 'Sign out?';
 
-	/// en: 'You will need to sign in again.'
+	/// en-US: 'You will need to sign in again.'
 	String get confirmMessage => 'You will need to sign in again.';
 
-	/// en: 'Sign out'
+	/// en-US: 'Sign out'
 	String get confirm => 'Sign out';
 
-	/// en: 'Cancel'
+	/// en-US: 'Cancel'
 	String get cancel => 'Cancel';
 }
 
 // Path: tiers.listTiers
-class TranslationsTiersListTiersEn {
-	TranslationsTiersListTiersEn._(this._root);
+class TranslationsTiersListTiersEnUs {
+	TranslationsTiersListTiersEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Tiers'
+	/// en-US: 'Tiers'
 	String get title => 'Tiers';
 
-	/// en: 'Failed to load tiers'
+	/// en-US: 'Failed to load tiers'
 	String get loadError => 'Failed to load tiers';
 
-	/// en: 'Failed to load more tiers'
+	/// en-US: 'Failed to load more tiers'
 	String get loadMoreError => 'Failed to load more tiers';
 
-	/// en: 'No tiers found'
+	/// en-US: 'No tiers found'
 	String get empty => 'No tiers found';
 }
 
 // Path: tiers.createTier
-class TranslationsTiersCreateTierEn {
-	TranslationsTiersCreateTierEn._(this._root);
+class TranslationsTiersCreateTierEnUs {
+	TranslationsTiersCreateTierEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Create Tier'
+	/// en-US: 'Create Tier'
 	String get title => 'Create Tier';
 
-	/// en: 'Name'
+	/// en-US: 'Name'
 	String get name => 'Name';
 
-	/// en: 'Create'
+	/// en-US: 'Create'
 	String get submit => 'Create';
 
-	/// en: 'Add tier'
+	/// en-US: 'Add tier'
 	String get fabTooltip => 'Add tier';
 
-	/// en: 'Tier created'
+	/// en-US: 'Tier created'
 	String get success => 'Tier created';
 
-	late final TranslationsTiersCreateTierErrorsEn errors = TranslationsTiersCreateTierErrorsEn._(_root);
+	late final TranslationsTiersCreateTierErrorsEnUs errors = TranslationsTiersCreateTierErrorsEnUs._(_root);
 }
 
 // Path: tiers.tierDetails
-class TranslationsTiersTierDetailsEn {
-	TranslationsTiersTierDetailsEn._(this._root);
+class TranslationsTiersTierDetailsEnUs {
+	TranslationsTiersTierDetailsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Tier details'
+	/// en-US: 'Tier details'
 	String get title => 'Tier details';
 
-	/// en: 'ID'
+	/// en-US: 'ID'
 	String get id => 'ID';
 
-	/// en: 'Created'
+	/// en-US: 'Created'
 	String get createdAt => 'Created';
 
-	/// en: 'Tier not found'
+	/// en-US: 'Tier not found'
 	String get notFound => 'Tier not found';
 
-	/// en: 'Failed to load tier'
+	/// en-US: 'Failed to load tier'
 	String get loadError => 'Failed to load tier';
 
-	/// en: 'Access denied'
+	/// en-US: 'Access denied'
 	String get permissionDenied => 'Access denied';
 }
 
 // Path: tiers.editTier
-class TranslationsTiersEditTierEn {
-	TranslationsTiersEditTierEn._(this._root);
+class TranslationsTiersEditTierEnUs {
+	TranslationsTiersEditTierEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Edit Tier'
+	/// en-US: 'Edit Tier'
 	String get title => 'Edit Tier';
 
-	/// en: 'Name'
+	/// en-US: 'Name'
 	String get name => 'Name';
 
-	/// en: 'Save'
+	/// en-US: 'Save'
 	String get save => 'Save';
 
-	/// en: 'Tier updated'
+	/// en-US: 'Tier updated'
 	String get success => 'Tier updated';
 
-	late final TranslationsTiersEditTierErrorsEn errors = TranslationsTiersEditTierErrorsEn._(_root);
+	late final TranslationsTiersEditTierErrorsEnUs errors = TranslationsTiersEditTierErrorsEnUs._(_root);
 }
 
 // Path: tiers.deleteTier
-class TranslationsTiersDeleteTierEn {
-	TranslationsTiersDeleteTierEn._(this._root);
+class TranslationsTiersDeleteTierEnUs {
+	TranslationsTiersDeleteTierEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Delete tier'
+	/// en-US: 'Delete tier'
 	String get tooltip => 'Delete tier';
 
-	/// en: 'Delete tier'
+	/// en-US: 'Delete tier'
 	String get confirmTitle => 'Delete tier';
 
-	/// en: 'Are you sure you want to delete tier "{name}"? This action cannot be undone.'
+	/// en-US: 'Are you sure you want to delete tier "{name}"? This action cannot be undone.'
 	String get confirmMessage => 'Are you sure you want to delete tier "{name}"? This action cannot be undone.';
 
-	/// en: 'Delete'
+	/// en-US: 'Delete'
 	String get confirmButton => 'Delete';
 
-	/// en: 'Cancel'
+	/// en-US: 'Cancel'
 	String get cancelButton => 'Cancel';
 
-	/// en: 'Tier deleted'
+	/// en-US: 'Tier deleted'
 	String get success => 'Tier deleted';
 
-	late final TranslationsTiersDeleteTierErrorsEn errors = TranslationsTiersDeleteTierErrorsEn._(_root);
+	late final TranslationsTiersDeleteTierErrorsEnUs errors = TranslationsTiersDeleteTierErrorsEnUs._(_root);
 }
 
 // Path: posts.postDetails
-class TranslationsPostsPostDetailsEn {
-	TranslationsPostsPostDetailsEn._(this._root);
+class TranslationsPostsPostDetailsEnUs {
+	TranslationsPostsPostDetailsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Post'
+	/// en-US: 'Post'
 	String get title => 'Post';
 
-	/// en: 'Failed to load post'
+	/// en-US: 'Failed to load post'
 	String get loadError => 'Failed to load post';
 }
 
 // Path: posts.postStatus
-class TranslationsPostsPostStatusEn {
-	TranslationsPostsPostStatusEn._(this._root);
+class TranslationsPostsPostStatusEnUs {
+	TranslationsPostsPostStatusEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Pending Review'
+	/// en-US: 'Pending Review'
 	String get pendingReview => 'Pending Review';
 
-	/// en: 'Approved'
+	/// en-US: 'Approved'
 	String get approved => 'Approved';
 
-	/// en: 'Changes Requested'
+	/// en-US: 'Changes Requested'
 	String get changesRequested => 'Changes Requested';
 }
 
 // Path: posts.editPost
-class TranslationsPostsEditPostEn {
-	TranslationsPostsEditPostEn._(this._root);
+class TranslationsPostsEditPostEnUs {
+	TranslationsPostsEditPostEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Edit Post'
+	/// en-US: 'Edit Post'
 	String get title => 'Edit Post';
 
-	/// en: 'Title'
+	/// en-US: 'Title'
 	String get titleLabel => 'Title';
 
-	/// en: 'Post title'
+	/// en-US: 'Post title'
 	String get titleHint => 'Post title';
 
-	/// en: 'Media URL (optional)'
+	/// en-US: 'Media URL (optional)'
 	String get mediaUrlLabel => 'Media URL (optional)';
 
-	/// en: 'https://...'
+	/// en-US: 'https://...'
 	String get mediaUrlHint => 'https://...';
 
-	/// en: 'Text (Markdown)'
+	/// en-US: 'Text (Markdown)'
 	String get textLabel => 'Text (Markdown)';
 
-	/// en: 'Write your post...'
+	/// en-US: 'Write your post...'
 	String get textHint => 'Write your post...';
 
-	/// en: 'Preview'
+	/// en-US: 'Preview'
 	String get previewLabel => 'Preview';
 
-	/// en: 'Save'
+	/// en-US: 'Save'
 	String get saveButton => 'Save';
 
-	late final TranslationsPostsEditPostTabsEn tabs = TranslationsPostsEditPostTabsEn._(_root);
-	late final TranslationsPostsEditPostRevisionMessageEn revisionMessage = TranslationsPostsEditPostRevisionMessageEn._(_root);
+	late final TranslationsPostsEditPostTabsEnUs tabs = TranslationsPostsEditPostTabsEnUs._(_root);
+	late final TranslationsPostsEditPostRevisionMessageEnUs revisionMessage = TranslationsPostsEditPostRevisionMessageEnUs._(_root);
 
-	/// en: 'This post is approved and can no longer be edited.'
+	/// en-US: 'This post is approved and can no longer be edited.'
 	String get approvedHint => 'This post is approved and can no longer be edited.';
 
-	late final TranslationsPostsEditPostLogEn log = TranslationsPostsEditPostLogEn._(_root);
-	late final TranslationsPostsEditPostErrorsEn errors = TranslationsPostsEditPostErrorsEn._(_root);
+	late final TranslationsPostsEditPostLogEnUs log = TranslationsPostsEditPostLogEnUs._(_root);
+	late final TranslationsPostsEditPostErrorsEnUs errors = TranslationsPostsEditPostErrorsEnUs._(_root);
 }
 
 // Path: posts.listPosts
-class TranslationsPostsListPostsEn {
-	TranslationsPostsListPostsEn._(this._root);
+class TranslationsPostsListPostsEnUs {
+	TranslationsPostsListPostsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'No posts yet'
+	/// en-US: 'No posts yet'
 	String get empty => 'No posts yet';
 
-	/// en: 'Failed to load posts'
+	/// en-US: 'Failed to load posts'
 	String get loadError => 'Failed to load posts';
 
-	/// en: 'New post'
+	/// en-US: 'New post'
 	String get fabTooltip => 'New post';
 
-	/// en: 'Open'
+	/// en-US: 'Open'
 	String get openPost => 'Open';
 }
 
 // Path: posts.userPosts
-class TranslationsPostsUserPostsEn {
-	TranslationsPostsUserPostsEn._(this._root);
+class TranslationsPostsUserPostsEnUs {
+	TranslationsPostsUserPostsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: '$username's posts'
+	/// en-US: '$username's posts'
 	String title({required Object username}) => '${username}\'s posts';
 
-	/// en: 'No posts yet'
+	/// en-US: 'No posts yet'
 	String get empty => 'No posts yet';
 
-	/// en: 'Failed to load posts'
+	/// en-US: 'Failed to load posts'
 	String get loadError => 'Failed to load posts';
 
-	/// en: 'Open'
+	/// en-US: 'Open'
 	String get openPost => 'Open';
 }
 
 // Path: posts.deletePost
-class TranslationsPostsDeletePostEn {
-	TranslationsPostsDeletePostEn._(this._root);
+class TranslationsPostsDeletePostEnUs {
+	TranslationsPostsDeletePostEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Delete post'
+	/// en-US: 'Delete post'
 	String get tooltip => 'Delete post';
 
-	/// en: 'Delete post?'
+	/// en-US: 'Delete post?'
 	String get confirmTitle => 'Delete post?';
 
-	/// en: 'This action is irreversible. The post will be permanently removed.'
+	/// en-US: 'This action is irreversible. The post will be permanently removed.'
 	String get confirmMessage => 'This action is irreversible. The post will be permanently removed.';
 
-	/// en: 'Delete'
+	/// en-US: 'Delete'
 	String get confirmButton => 'Delete';
 
-	/// en: 'Cancel'
+	/// en-US: 'Cancel'
 	String get cancelButton => 'Cancel';
 
-	/// en: 'Post deleted'
+	/// en-US: 'Post deleted'
 	String get success => 'Post deleted';
 
-	late final TranslationsPostsDeletePostErrorsEn errors = TranslationsPostsDeletePostErrorsEn._(_root);
+	late final TranslationsPostsDeletePostErrorsEnUs errors = TranslationsPostsDeletePostErrorsEnUs._(_root);
 }
 
 // Path: posts.eraseDbPost
-class TranslationsPostsEraseDbPostEn {
-	TranslationsPostsEraseDbPostEn._(this._root);
+class TranslationsPostsEraseDbPostEnUs {
+	TranslationsPostsEraseDbPostEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Erase post (superuser)'
+	/// en-US: 'Erase post (superuser)'
 	String get tooltip => 'Erase post (superuser)';
 
-	/// en: 'Erase post?'
+	/// en-US: 'Erase post?'
 	String get confirmTitle => 'Erase post?';
 
-	/// en: 'This post will be permanently erased. This action cannot be undone.'
+	/// en-US: 'This post will be permanently erased. This action cannot be undone.'
 	String get confirmMessage => 'This post will be permanently erased. This action cannot be undone.';
 
-	/// en: 'Erase'
+	/// en-US: 'Erase'
 	String get confirmButton => 'Erase';
 
-	/// en: 'Cancel'
+	/// en-US: 'Cancel'
 	String get cancelButton => 'Cancel';
 
-	/// en: 'Post erased'
+	/// en-US: 'Post erased'
 	String get success => 'Post erased';
 
-	late final TranslationsPostsEraseDbPostErrorsEn errors = TranslationsPostsEraseDbPostErrorsEn._(_root);
+	late final TranslationsPostsEraseDbPostErrorsEnUs errors = TranslationsPostsEraseDbPostErrorsEnUs._(_root);
 }
 
 // Path: posts.pendingPosts
-class TranslationsPostsPendingPostsEn {
-	TranslationsPostsPendingPostsEn._(this._root);
+class TranslationsPostsPendingPostsEnUs {
+	TranslationsPostsPendingPostsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Pending Posts'
+	/// en-US: 'Pending Posts'
 	String get title => 'Pending Posts';
 
-	/// en: 'No pending posts'
+	/// en-US: 'No pending posts'
 	String get empty => 'No pending posts';
 
-	/// en: 'Failed to load pending posts'
+	/// en-US: 'Failed to load pending posts'
 	String get loadError => 'Failed to load pending posts';
 
-	/// en: 'Failed to load more'
+	/// en-US: 'Failed to load more'
 	String get loadMoreError => 'Failed to load more';
 
-	/// en: 'Events'
+	/// en-US: 'Events'
 	String get eventCount => 'Events';
 }
 
 // Path: posts.moderatePost
-class TranslationsPostsModeratePostEn {
-	TranslationsPostsModeratePostEn._(this._root);
+class TranslationsPostsModeratePostEnUs {
+	TranslationsPostsModeratePostEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Moderate Post'
+	/// en-US: 'Moderate Post'
 	String get title => 'Moderate Post';
 
-	late final TranslationsPostsModeratePostTabsEn tabs = TranslationsPostsModeratePostTabsEn._(_root);
-	late final TranslationsPostsModeratePostLogEn log = TranslationsPostsModeratePostLogEn._(_root);
-	late final TranslationsPostsModeratePostActionsEn actions = TranslationsPostsModeratePostActionsEn._(_root);
-	late final TranslationsPostsModeratePostErrorsEn errors = TranslationsPostsModeratePostErrorsEn._(_root);
+	late final TranslationsPostsModeratePostTabsEnUs tabs = TranslationsPostsModeratePostTabsEnUs._(_root);
+	late final TranslationsPostsModeratePostLogEnUs log = TranslationsPostsModeratePostLogEnUs._(_root);
+	late final TranslationsPostsModeratePostActionsEnUs actions = TranslationsPostsModeratePostActionsEnUs._(_root);
+	late final TranslationsPostsModeratePostErrorsEnUs errors = TranslationsPostsModeratePostErrorsEnUs._(_root);
 }
 
 // Path: posts.createPost
-class TranslationsPostsCreatePostEn {
-	TranslationsPostsCreatePostEn._(this._root);
+class TranslationsPostsCreatePostEnUs {
+	TranslationsPostsCreatePostEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'New Post'
+	/// en-US: 'New Post'
 	String get title => 'New Post';
 
-	/// en: 'Title'
+	/// en-US: 'Title'
 	String get titleLabel => 'Title';
 
-	/// en: 'Post title'
+	/// en-US: 'Post title'
 	String get titleHint => 'Post title';
 
-	/// en: 'Media URL (optional)'
+	/// en-US: 'Media URL (optional)'
 	String get mediaUrlLabel => 'Media URL (optional)';
 
-	/// en: 'https://...'
+	/// en-US: 'https://...'
 	String get mediaUrlHint => 'https://...';
 
-	/// en: 'Text (Markdown)'
+	/// en-US: 'Text (Markdown)'
 	String get textLabel => 'Text (Markdown)';
 
-	/// en: 'Write your post...'
+	/// en-US: 'Write your post...'
 	String get textHint => 'Write your post...';
 
-	/// en: 'Preview'
+	/// en-US: 'Preview'
 	String get previewLabel => 'Preview';
 
-	/// en: 'Publish'
+	/// en-US: 'Publish'
 	String get publishButton => 'Publish';
 
-	/// en: 'New post'
+	/// en-US: 'New post'
 	String get fabTooltip => 'New post';
 
-	late final TranslationsPostsCreatePostErrorsEn errors = TranslationsPostsCreatePostErrorsEn._(_root);
+	late final TranslationsPostsCreatePostErrorsEnUs errors = TranslationsPostsCreatePostErrorsEnUs._(_root);
 }
 
 // Path: users.list
-class TranslationsUsersListEn {
-	TranslationsUsersListEn._(this._root);
+class TranslationsUsersListEnUs {
+	TranslationsUsersListEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Failed to load more users'
+	/// en-US: 'Failed to load more users'
 	String get loadMoreError => 'Failed to load more users';
 
-	/// en: 'Details'
+	/// en-US: 'Details'
 	String get userDetails => 'Details';
 
-	/// en: 'Posts'
+	/// en-US: 'Posts'
 	String get userPosts => 'Posts';
 }
 
 // Path: users.details
-class TranslationsUsersDetailsEn {
-	TranslationsUsersDetailsEn._(this._root);
+class TranslationsUsersDetailsEnUs {
+	TranslationsUsersDetailsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Email'
+	/// en-US: 'Email'
 	String get email => 'Email';
 
-	/// en: 'Tier'
+	/// en-US: 'Tier'
 	String get tier => 'Tier';
 
-	/// en: 'Tier since'
+	/// en-US: 'Tier since'
 	String get tierSince => 'Tier since';
 
-	/// en: 'User not found'
+	/// en-US: 'User not found'
 	String get notFound => 'User not found';
 
-	/// en: 'Failed to load user'
+	/// en-US: 'Failed to load user'
 	String get loadError => 'Failed to load user';
 }
 
 // Path: users.create
-class TranslationsUsersCreateEn {
-	TranslationsUsersCreateEn._(this._root);
+class TranslationsUsersCreateEnUs {
+	TranslationsUsersCreateEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Create User'
+	/// en-US: 'Create User'
 	String get title => 'Create User';
 
-	/// en: 'Name'
+	/// en-US: 'Name'
 	String get name => 'Name';
 
-	/// en: 'Username'
+	/// en-US: 'Username'
 	String get username => 'Username';
 
-	/// en: 'Email'
+	/// en-US: 'Email'
 	String get email => 'Email';
 
-	/// en: 'Password'
+	/// en-US: 'Password'
 	String get password => 'Password';
 
-	/// en: 'Create'
+	/// en-US: 'Create'
 	String get submit => 'Create';
 
-	/// en: 'User created successfully'
+	/// en-US: 'User created successfully'
 	String get success => 'User created successfully';
 
-	late final TranslationsUsersCreateErrorsEn errors = TranslationsUsersCreateErrorsEn._(_root);
+	late final TranslationsUsersCreateErrorsEnUs errors = TranslationsUsersCreateErrorsEnUs._(_root);
 }
 
 // Path: users.delete
-class TranslationsUsersDeleteEn {
-	TranslationsUsersDeleteEn._(this._root);
+class TranslationsUsersDeleteEnUs {
+	TranslationsUsersDeleteEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Delete account'
+	/// en-US: 'Delete account'
 	String get tooltip => 'Delete account';
 
-	/// en: 'Delete account?'
+	/// en-US: 'Delete account?'
 	String get confirmTitle => 'Delete account?';
 
-	/// en: 'This will permanently delete your account. This action cannot be undone.'
+	/// en-US: 'This will permanently delete your account. This action cannot be undone.'
 	String get confirmMessage => 'This will permanently delete your account. This action cannot be undone.';
 
-	/// en: 'Delete'
+	/// en-US: 'Delete'
 	String get confirmButton => 'Delete';
 
-	/// en: 'Account deleted'
+	/// en-US: 'Account deleted'
 	String get success => 'Account deleted';
 
-	late final TranslationsUsersDeleteErrorsEn errors = TranslationsUsersDeleteErrorsEn._(_root);
+	late final TranslationsUsersDeleteErrorsEnUs errors = TranslationsUsersDeleteErrorsEnUs._(_root);
 }
 
 // Path: users.eraseDbUser
-class TranslationsUsersEraseDbUserEn {
-	TranslationsUsersEraseDbUserEn._(this._root);
+class TranslationsUsersEraseDbUserEnUs {
+	TranslationsUsersEraseDbUserEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Erase from database'
+	/// en-US: 'Erase from database'
 	String get tooltip => 'Erase from database';
 
-	/// en: 'Erase account permanently?'
+	/// en-US: 'Erase account permanently?'
 	String get confirmTitle => 'Erase account permanently?';
 
-	/// en: 'This will permanently delete your account from the database. This action cannot be undone.'
+	/// en-US: 'This will permanently delete your account from the database. This action cannot be undone.'
 	String get confirmMessage => 'This will permanently delete your account from the database. This action cannot be undone.';
 
-	/// en: 'Erase permanently'
+	/// en-US: 'Erase permanently'
 	String get confirmButton => 'Erase permanently';
 
-	/// en: 'Account erased from the database'
+	/// en-US: 'Account erased from the database'
 	String get success => 'Account erased from the database';
 
-	late final TranslationsUsersEraseDbUserErrorsEn errors = TranslationsUsersEraseDbUserErrorsEn._(_root);
+	late final TranslationsUsersEraseDbUserErrorsEnUs errors = TranslationsUsersEraseDbUserErrorsEnUs._(_root);
 }
 
 // Path: users.edit
-class TranslationsUsersEditEn {
-	TranslationsUsersEditEn._(this._root);
+class TranslationsUsersEditEnUs {
+	TranslationsUsersEditEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Edit User'
+	/// en-US: 'Edit User'
 	String get title => 'Edit User';
 
-	/// en: 'Name'
+	/// en-US: 'Name'
 	String get name => 'Name';
 
-	/// en: 'Username'
+	/// en-US: 'Username'
 	String get username => 'Username';
 
-	/// en: 'Email'
+	/// en-US: 'Email'
 	String get email => 'Email';
 
-	/// en: 'Profile Image URL'
+	/// en-US: 'Profile Image URL'
 	String get profileImageUrl => 'Profile Image URL';
 
-	/// en: 'Save'
+	/// en-US: 'Save'
 	String get save => 'Save';
 
-	/// en: 'User updated successfully'
+	/// en-US: 'User updated successfully'
 	String get success => 'User updated successfully';
 
-	late final TranslationsUsersEditErrorsEn errors = TranslationsUsersEditErrorsEn._(_root);
+	late final TranslationsUsersEditErrorsEnUs errors = TranslationsUsersEditErrorsEnUs._(_root);
 }
 
 // Path: users.updateTier
-class TranslationsUsersUpdateTierEn {
-	TranslationsUsersUpdateTierEn._(this._root);
+class TranslationsUsersUpdateTierEnUs {
+	TranslationsUsersUpdateTierEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Change tier'
+	/// en-US: 'Change tier'
 	String get tooltip => 'Change tier';
 
-	/// en: 'Change User Tier'
+	/// en-US: 'Change User Tier'
 	String get sheetTitle => 'Change User Tier';
 
-	/// en: 'Select tier'
+	/// en-US: 'Select tier'
 	String get selectTier => 'Select tier';
 
-	/// en: 'Confirm'
+	/// en-US: 'Confirm'
 	String get confirm => 'Confirm';
 
-	/// en: 'User tier updated'
+	/// en-US: 'User tier updated'
 	String get success => 'User tier updated';
 
-	late final TranslationsUsersUpdateTierErrorsEn errors = TranslationsUsersUpdateTierErrorsEn._(_root);
+	late final TranslationsUsersUpdateTierErrorsEnUs errors = TranslationsUsersUpdateTierErrorsEnUs._(_root);
 }
 
 // Path: users.moderator
-class TranslationsUsersModeratorEn {
-	TranslationsUsersModeratorEn._(this._root);
+class TranslationsUsersModeratorEnUs {
+	TranslationsUsersModeratorEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Moderator'
+	/// en-US: 'Moderator'
 	String get badge => 'Moderator';
 
-	/// en: 'Assign Moderator'
+	/// en-US: 'Assign Moderator'
 	String get assign => 'Assign Moderator';
 
-	/// en: 'Revoke Moderator'
+	/// en-US: 'Revoke Moderator'
 	String get revoke => 'Revoke Moderator';
 
-	late final TranslationsUsersModeratorErrorsEn errors = TranslationsUsersModeratorErrorsEn._(_root);
+	late final TranslationsUsersModeratorErrorsEnUs errors = TranslationsUsersModeratorErrorsEnUs._(_root);
 }
 
 // Path: auth.login.errors
-class TranslationsAuthLoginErrorsEn {
-	TranslationsAuthLoginErrorsEn._(this._root);
+class TranslationsAuthLoginErrorsEnUs {
+	TranslationsAuthLoginErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Required'
+	/// en-US: 'Required'
 	String get required => 'Required';
 
-	/// en: 'Invalid username or password'
+	/// en-US: 'Invalid username or password'
 	String get invalidCredentials => 'Invalid username or password';
 
-	/// en: 'Sign in failed. Try again.'
+	/// en-US: 'Sign in failed. Try again.'
 	String get generic => 'Sign in failed. Try again.';
 }
 
 // Path: tiers.createTier.errors
-class TranslationsTiersCreateTierErrorsEn {
-	TranslationsTiersCreateTierErrorsEn._(this._root);
+class TranslationsTiersCreateTierErrorsEnUs {
+	TranslationsTiersCreateTierErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'This field is required'
+	/// en-US: 'This field is required'
 	String get required => 'This field is required';
 
-	/// en: 'Failed to create tier'
+	/// en-US: 'Failed to create tier'
 	String get generic => 'Failed to create tier';
 }
 
 // Path: tiers.editTier.errors
-class TranslationsTiersEditTierErrorsEn {
-	TranslationsTiersEditTierErrorsEn._(this._root);
+class TranslationsTiersEditTierErrorsEnUs {
+	TranslationsTiersEditTierErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'This field is required'
+	/// en-US: 'This field is required'
 	String get required => 'This field is required';
 
-	/// en: 'Tier not found'
+	/// en-US: 'Tier not found'
 	String get notFound => 'Tier not found';
 
-	/// en: 'Access denied'
+	/// en-US: 'Access denied'
 	String get permissionDenied => 'Access denied';
 
-	/// en: 'Failed to update tier'
+	/// en-US: 'Failed to update tier'
 	String get generic => 'Failed to update tier';
 }
 
 // Path: tiers.deleteTier.errors
-class TranslationsTiersDeleteTierErrorsEn {
-	TranslationsTiersDeleteTierErrorsEn._(this._root);
+class TranslationsTiersDeleteTierErrorsEnUs {
+	TranslationsTiersDeleteTierErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Tier not found'
+	/// en-US: 'Tier not found'
 	String get notFound => 'Tier not found';
 
-	/// en: 'Access denied'
+	/// en-US: 'Access denied'
 	String get forbidden => 'Access denied';
 
-	/// en: 'Session expired'
+	/// en-US: 'Session expired'
 	String get unauthorized => 'Session expired';
 
-	/// en: 'Failed to delete tier'
+	/// en-US: 'Failed to delete tier'
 	String get generic => 'Failed to delete tier';
 }
 
 // Path: posts.editPost.tabs
-class TranslationsPostsEditPostTabsEn {
-	TranslationsPostsEditPostTabsEn._(this._root);
+class TranslationsPostsEditPostTabsEnUs {
+	TranslationsPostsEditPostTabsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Edit'
+	/// en-US: 'Edit'
 	String get edit => 'Edit';
 
-	/// en: 'Moderation Log'
+	/// en-US: 'Moderation Log'
 	String get log => 'Moderation Log';
 }
 
 // Path: posts.editPost.revisionMessage
-class TranslationsPostsEditPostRevisionMessageEn {
-	TranslationsPostsEditPostRevisionMessageEn._(this._root);
+class TranslationsPostsEditPostRevisionMessageEnUs {
+	TranslationsPostsEditPostRevisionMessageEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Revision message'
+	/// en-US: 'Revision message'
 	String get label => 'Revision message';
 
-	/// en: 'Describe what you changed to address the moderator's feedback'
+	/// en-US: 'Describe what you changed to address the moderator's feedback'
 	String get hint => 'Describe what you changed to address the moderator\'s feedback';
 }
 
 // Path: posts.editPost.log
-class TranslationsPostsEditPostLogEn {
-	TranslationsPostsEditPostLogEn._(this._root);
+class TranslationsPostsEditPostLogEnUs {
+	TranslationsPostsEditPostLogEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'No moderation history yet'
+	/// en-US: 'No moderation history yet'
 	String get empty => 'No moderation history yet';
 
-	/// en: 'Failed to load moderation history'
+	/// en-US: 'Failed to load moderation history'
 	String get loadError => 'Failed to load moderation history';
 }
 
 // Path: posts.editPost.errors
-class TranslationsPostsEditPostErrorsEn {
-	TranslationsPostsEditPostErrorsEn._(this._root);
+class TranslationsPostsEditPostErrorsEnUs {
+	TranslationsPostsEditPostErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Title must be at least 2 characters'
+	/// en-US: 'Title must be at least 2 characters'
 	String get titleTooShort => 'Title must be at least 2 characters';
 
-	/// en: 'Title must be at most 30 characters'
+	/// en-US: 'Title must be at most 30 characters'
 	String get titleTooLong => 'Title must be at most 30 characters';
 
-	/// en: 'Media URL cannot be empty if provided'
+	/// en-US: 'Media URL cannot be empty if provided'
 	String get mediaUrlEmpty => 'Media URL cannot be empty if provided';
 
-	/// en: 'Text must be at least 100 characters'
+	/// en-US: 'Text must be at least 100 characters'
 	String get textTooShort => 'Text must be at least 100 characters';
 
-	/// en: 'Text must be at most 63206 characters'
+	/// en-US: 'Text must be at most 63206 characters'
 	String get textTooLong => 'Text must be at most 63206 characters';
 
-	/// en: 'You can only edit your own posts'
+	/// en-US: 'You can only edit your own posts'
 	String get forbidden => 'You can only edit your own posts';
 
-	/// en: 'Failed to save post. Please try again.'
+	/// en-US: 'Failed to save post. Please try again.'
 	String get generic => 'Failed to save post. Please try again.';
 
-	/// en: 'A revision message is required.'
+	/// en-US: 'A revision message is required.'
 	String get revisionMessageRequired => 'A revision message is required.';
 
-	/// en: 'The post status changed while you were editing. Check the current status.'
+	/// en-US: 'The post status changed while you were editing. Check the current status.'
 	String get conflict => 'The post status changed while you were editing. Check the current status.';
 
-	/// en: 'Post not found.'
+	/// en-US: 'Post not found.'
 	String get notFound => 'Post not found.';
 }
 
 // Path: posts.deletePost.errors
-class TranslationsPostsDeletePostErrorsEn {
-	TranslationsPostsDeletePostErrorsEn._(this._root);
+class TranslationsPostsDeletePostErrorsEnUs {
+	TranslationsPostsDeletePostErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You can only delete your own posts'
+	/// en-US: 'You can only delete your own posts'
 	String get forbidden => 'You can only delete your own posts';
 
-	/// en: 'Failed to delete post. Please try again.'
+	/// en-US: 'Failed to delete post. Please try again.'
 	String get generic => 'Failed to delete post. Please try again.';
 }
 
 // Path: posts.eraseDbPost.errors
-class TranslationsPostsEraseDbPostErrorsEn {
-	TranslationsPostsEraseDbPostErrorsEn._(this._root);
+class TranslationsPostsEraseDbPostErrorsEnUs {
+	TranslationsPostsEraseDbPostErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You do not have permission to erase posts'
+	/// en-US: 'You do not have permission to erase posts'
 	String get forbidden => 'You do not have permission to erase posts';
 
-	/// en: 'Failed to erase post. Please try again.'
+	/// en-US: 'Failed to erase post. Please try again.'
 	String get generic => 'Failed to erase post. Please try again.';
 }
 
 // Path: posts.moderatePost.tabs
-class TranslationsPostsModeratePostTabsEn {
-	TranslationsPostsModeratePostTabsEn._(this._root);
+class TranslationsPostsModeratePostTabsEnUs {
+	TranslationsPostsModeratePostTabsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Post'
+	/// en-US: 'Post'
 	String get post => 'Post';
 
-	/// en: 'Moderation'
+	/// en-US: 'Moderation'
 	String get moderation => 'Moderation';
 }
 
 // Path: posts.moderatePost.log
-class TranslationsPostsModeratePostLogEn {
-	TranslationsPostsModeratePostLogEn._(this._root);
+class TranslationsPostsModeratePostLogEnUs {
+	TranslationsPostsModeratePostLogEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'No moderation history yet'
+	/// en-US: 'No moderation history yet'
 	String get empty => 'No moderation history yet';
 
-	/// en: 'Failed to load moderation history'
+	/// en-US: 'Failed to load moderation history'
 	String get loadError => 'Failed to load moderation history';
 
-	late final TranslationsPostsModeratePostLogEventTypesEn eventTypes = TranslationsPostsModeratePostLogEventTypesEn._(_root);
-	late final TranslationsPostsModeratePostLogActionsEn actions = TranslationsPostsModeratePostLogActionsEn._(_root);
+	late final TranslationsPostsModeratePostLogEventTypesEnUs eventTypes = TranslationsPostsModeratePostLogEventTypesEnUs._(_root);
+	late final TranslationsPostsModeratePostLogActionsEnUs actions = TranslationsPostsModeratePostLogActionsEnUs._(_root);
 }
 
 // Path: posts.moderatePost.actions
-class TranslationsPostsModeratePostActionsEn {
-	TranslationsPostsModeratePostActionsEn._(this._root);
+class TranslationsPostsModeratePostActionsEnUs {
+	TranslationsPostsModeratePostActionsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Approve'
+	/// en-US: 'Approve'
 	String get approve => 'Approve';
 
-	/// en: 'Request Changes'
+	/// en-US: 'Request Changes'
 	String get requestChanges => 'Request Changes';
 
-	/// en: 'Add a comment (required for rejection)'
+	/// en-US: 'Add a comment (required for rejection)'
 	String get messageHint => 'Add a comment (required for rejection)';
 
-	/// en: 'A message is required when requesting changes'
+	/// en-US: 'A message is required when requesting changes'
 	String get messageRequiredError => 'A message is required when requesting changes';
 }
 
 // Path: posts.moderatePost.errors
-class TranslationsPostsModeratePostErrorsEn {
-	TranslationsPostsModeratePostErrorsEn._(this._root);
+class TranslationsPostsModeratePostErrorsEnUs {
+	TranslationsPostsModeratePostErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You do not have permission to moderate this post'
+	/// en-US: 'You do not have permission to moderate this post'
 	String get forbidden => 'You do not have permission to moderate this post';
 
-	/// en: 'Post not found'
+	/// en-US: 'Post not found'
 	String get notFound => 'Post not found';
 
-	/// en: 'This post has already been moderated. Return to the queue.'
+	/// en-US: 'This post has already been moderated. Return to the queue.'
 	String get conflict => 'This post has already been moderated. Return to the queue.';
 
-	/// en: 'Failed to submit. Please try again.'
+	/// en-US: 'Failed to submit. Please try again.'
 	String get generic => 'Failed to submit. Please try again.';
 }
 
 // Path: posts.createPost.errors
-class TranslationsPostsCreatePostErrorsEn {
-	TranslationsPostsCreatePostErrorsEn._(this._root);
+class TranslationsPostsCreatePostErrorsEnUs {
+	TranslationsPostsCreatePostErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Title must be at least 2 characters'
+	/// en-US: 'Title must be at least 2 characters'
 	String get titleTooShort => 'Title must be at least 2 characters';
 
-	/// en: 'Title must be at most 30 characters'
+	/// en-US: 'Title must be at most 30 characters'
 	String get titleTooLong => 'Title must be at most 30 characters';
 
-	/// en: 'Media URL cannot be empty if provided'
+	/// en-US: 'Media URL cannot be empty if provided'
 	String get mediaUrlEmpty => 'Media URL cannot be empty if provided';
 
-	/// en: 'Text must be at least 100 characters'
+	/// en-US: 'Text must be at least 100 characters'
 	String get textTooShort => 'Text must be at least 100 characters';
 
-	/// en: 'Text must be at most 63206 characters'
+	/// en-US: 'Text must be at most 63206 characters'
 	String get textTooLong => 'Text must be at most 63206 characters';
 
-	/// en: 'You can only publish posts as yourself'
+	/// en-US: 'You can only publish posts as yourself'
 	String get forbidden => 'You can only publish posts as yourself';
 
-	/// en: 'Failed to publish post. Please try again.'
+	/// en-US: 'Failed to publish post. Please try again.'
 	String get generic => 'Failed to publish post. Please try again.';
 }
 
 // Path: users.create.errors
-class TranslationsUsersCreateErrorsEn {
-	TranslationsUsersCreateErrorsEn._(this._root);
+class TranslationsUsersCreateErrorsEnUs {
+	TranslationsUsersCreateErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'This field is required'
+	/// en-US: 'This field is required'
 	String get required => 'This field is required';
 
-	/// en: 'Please enter a valid email address'
+	/// en-US: 'Please enter a valid email address'
 	String get emailInvalid => 'Please enter a valid email address';
 
-	/// en: 'Password must be at least 8 characters'
+	/// en-US: 'Password must be at least 8 characters'
 	String get passwordTooShort => 'Password must be at least 8 characters';
 
-	/// en: 'Username already taken'
+	/// en-US: 'Username already taken'
 	String get usernameTaken => 'Username already taken';
 
-	/// en: 'Email already taken'
+	/// en-US: 'Email already taken'
 	String get emailTaken => 'Email already taken';
 
-	/// en: 'Something went wrong. Please try again.'
+	/// en-US: 'Something went wrong. Please try again.'
 	String get generic => 'Something went wrong. Please try again.';
 }
 
 // Path: users.delete.errors
-class TranslationsUsersDeleteErrorsEn {
-	TranslationsUsersDeleteErrorsEn._(this._root);
+class TranslationsUsersDeleteErrorsEnUs {
+	TranslationsUsersDeleteErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You can only delete your own account.'
+	/// en-US: 'You can only delete your own account.'
 	String get forbidden => 'You can only delete your own account.';
 
-	/// en: 'Session expired.'
+	/// en-US: 'Session expired.'
 	String get unauthorized => 'Session expired.';
 
-	/// en: 'User not found.'
+	/// en-US: 'User not found.'
 	String get notFound => 'User not found.';
 
-	/// en: 'Failed to delete account.'
+	/// en-US: 'Failed to delete account.'
 	String get generic => 'Failed to delete account.';
 }
 
 // Path: users.eraseDbUser.errors
-class TranslationsUsersEraseDbUserErrorsEn {
-	TranslationsUsersEraseDbUserErrorsEn._(this._root);
+class TranslationsUsersEraseDbUserErrorsEnUs {
+	TranslationsUsersEraseDbUserErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You can only erase your own account'
+	/// en-US: 'You can only erase your own account'
 	String get forbidden => 'You can only erase your own account';
 
-	/// en: 'Session expired. Please log in again'
+	/// en-US: 'Session expired. Please log in again'
 	String get unauthorized => 'Session expired. Please log in again';
 
-	/// en: 'User not found'
+	/// en-US: 'User not found'
 	String get notFound => 'User not found';
 
-	/// en: 'Failed to erase account. Please try again'
+	/// en-US: 'Failed to erase account. Please try again'
 	String get generic => 'Failed to erase account. Please try again';
 }
 
 // Path: users.edit.errors
-class TranslationsUsersEditErrorsEn {
-	TranslationsUsersEditErrorsEn._(this._root);
+class TranslationsUsersEditErrorsEnUs {
+	TranslationsUsersEditErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'This field is required'
+	/// en-US: 'This field is required'
 	String get required => 'This field is required';
 
-	/// en: 'Please enter a valid email address'
+	/// en-US: 'Please enter a valid email address'
 	String get emailInvalid => 'Please enter a valid email address';
 
-	/// en: 'Username already taken'
+	/// en-US: 'Username already taken'
 	String get usernameTaken => 'Username already taken';
 
-	/// en: 'User not found'
+	/// en-US: 'User not found'
 	String get notFound => 'User not found';
 
-	/// en: 'No changes to save'
+	/// en-US: 'No changes to save'
 	String get nothingToUpdate => 'No changes to save';
 
-	/// en: 'You can only edit your own profile.'
+	/// en-US: 'You can only edit your own profile.'
 	String get forbidden => 'You can only edit your own profile.';
 
-	/// en: 'Session expired.'
+	/// en-US: 'Session expired.'
 	String get unauthorized => 'Session expired.';
 
-	/// en: 'Something went wrong. Please try again.'
+	/// en-US: 'Something went wrong. Please try again.'
 	String get generic => 'Something went wrong. Please try again.';
 }
 
 // Path: users.updateTier.errors
-class TranslationsUsersUpdateTierErrorsEn {
-	TranslationsUsersUpdateTierErrorsEn._(this._root);
+class TranslationsUsersUpdateTierErrorsEnUs {
+	TranslationsUsersUpdateTierErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'You don't have permission to change tiers.'
+	/// en-US: 'You don't have permission to change tiers.'
 	String get permissionDenied => 'You don\'t have permission to change tiers.';
 
-	/// en: 'User or tier not found.'
+	/// en-US: 'User or tier not found.'
 	String get notFound => 'User or tier not found.';
 
-	/// en: 'Permission denied.'
+	/// en-US: 'Permission denied.'
 	String get forbidden => 'Permission denied.';
 
-	/// en: 'Session expired.'
+	/// en-US: 'Session expired.'
 	String get unauthorized => 'Session expired.';
 
-	/// en: 'Failed to update tier. Please try again.'
+	/// en-US: 'Failed to update tier. Please try again.'
 	String get generic => 'Failed to update tier. Please try again.';
 }
 
 // Path: users.moderator.errors
-class TranslationsUsersModeratorErrorsEn {
-	TranslationsUsersModeratorErrorsEn._(this._root);
+class TranslationsUsersModeratorErrorsEnUs {
+	TranslationsUsersModeratorErrorsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Action not applicable — moderator status is already in sync.'
+	/// en-US: 'Action not applicable — moderator status is already in sync.'
 	String get conflict => 'Action not applicable — moderator status is already in sync.';
 
-	/// en: 'You do not have permission to manage moderators.'
+	/// en-US: 'You do not have permission to manage moderators.'
 	String get forbidden => 'You do not have permission to manage moderators.';
 
-	/// en: 'Failed to update moderator status. Please try again.'
+	/// en-US: 'Failed to update moderator status. Please try again.'
 	String get generic => 'Failed to update moderator status. Please try again.';
 }
 
 // Path: posts.moderatePost.log.eventTypes
-class TranslationsPostsModeratePostLogEventTypesEn {
-	TranslationsPostsModeratePostLogEventTypesEn._(this._root);
+class TranslationsPostsModeratePostLogEventTypesEnUs {
+	TranslationsPostsModeratePostLogEventTypesEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Moderator Review'
+	/// en-US: 'Moderator Review'
 	String get moderatorReview => 'Moderator Review';
 
-	/// en: 'Author Revision'
+	/// en-US: 'Author Revision'
 	String get authorRevision => 'Author Revision';
 }
 
 // Path: posts.moderatePost.log.actions
-class TranslationsPostsModeratePostLogActionsEn {
-	TranslationsPostsModeratePostLogActionsEn._(this._root);
+class TranslationsPostsModeratePostLogActionsEnUs {
+	TranslationsPostsModeratePostLogActionsEnUs._(this._root);
 
 	final Translations _root; // ignore: unused_field
 
 	// Translations
 
-	/// en: 'Approved'
+	/// en-US: 'Approved'
 	String get approved => 'Approved';
 
-	/// en: 'Changes Requested'
+	/// en-US: 'Changes Requested'
 	String get changesRequested => 'Changes Requested';
 }
 
-/// The flat map containing all translations for locale <en>.
+/// The flat map containing all translations for locale <en-US>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
 /// The Dart AOT compiler has issues with very large switch statements,

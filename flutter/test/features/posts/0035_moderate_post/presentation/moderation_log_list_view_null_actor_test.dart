@@ -1,4 +1,4 @@
-import 'package:bloc_test/bloc_test.dart';
+﻿import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/i18n/translations.g.dart';
 import 'package:flutter_application_1/features/posts/_shared/application/moderation_log_cubit.dart';
@@ -17,7 +17,7 @@ void main() {
   late _MockModerationLogCubit logCubit;
 
   setUpAll(() async {
-    await LocaleSettings.setLocale(AppLocale.en);
+    await LocaleSettings.setLocale(AppLocale.enUs);
   });
 
   setUp(() {

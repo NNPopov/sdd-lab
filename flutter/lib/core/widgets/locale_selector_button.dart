@@ -13,7 +13,7 @@ class LocaleSelectorButton extends StatelessWidget {
     return BlocBuilder<LocaleCubit, AppLocale>(
       builder: (context, locale) => TextButton(
         onPressed: () => _showLocaleSheet(context, locale),
-        child: Text(locale.languageTag.toUpperCase()),
+        child: Text(locale.languageTag.split('-').first.toUpperCase()),
       ),
     );
   }
@@ -42,8 +42,10 @@ class _LocaleBottomSheet extends StatelessWidget {
   final ValueChanged<AppLocale> onSelect;
 
   static const Map<AppLocale, String> _nativeNames = {
-    AppLocale.en: 'English',
-    AppLocale.ru: 'Русский',
+    AppLocale.enUs: 'English',
+    AppLocale.ruRu: 'Русский',
+    AppLocale.esEs: 'Español',
+    AppLocale.ukUa: 'Українська',
   };
 
   @override

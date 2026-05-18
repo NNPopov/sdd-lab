@@ -48,7 +48,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     );
   }
 
-  String? _validateTitle(String? value, TranslationsEn t) {
+  String? _validateTitle(String? value, Translations t) {
     if (value == null || value.isEmpty) {
       return t.posts.createPost.errors.titleTooShort;
     }
@@ -57,13 +57,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return null;
   }
 
-  String? _validateMediaUrl(String? value, TranslationsEn t) {
+  String? _validateMediaUrl(String? value, Translations t) {
     if (value == null || value.isEmpty) return null;
     if (value.trim().isEmpty) return t.posts.createPost.errors.mediaUrlEmpty;
     return null;
   }
 
-  String? _validateText(String? value, TranslationsEn t) {
+  String? _validateText(String? value, Translations t) {
     if (value == null || value.isEmpty) {
       return t.posts.createPost.errors.textTooShort;
     }
@@ -72,7 +72,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return null;
   }
 
-  String _failureMessage(Failure failure, TranslationsEn t) {
+  String _failureMessage(Failure failure, Translations t) {
     return switch (failure) {
       ForbiddenFailure() => t.posts.createPost.errors.forbidden,
       _ => t.posts.createPost.errors.generic,

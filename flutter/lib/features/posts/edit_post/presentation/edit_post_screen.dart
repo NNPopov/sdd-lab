@@ -114,7 +114,7 @@ class _EditPostScreenState extends State<EditPostScreen>
     );
   }
 
-  String? _validateTitle(String? value, TranslationsEn t) {
+  String? _validateTitle(String? value, Translations t) {
     if (value == null || value.isEmpty) {
       return t.posts.editPost.errors.titleTooShort;
     }
@@ -123,13 +123,13 @@ class _EditPostScreenState extends State<EditPostScreen>
     return null;
   }
 
-  String? _validateMediaUrl(String? value, TranslationsEn t) {
+  String? _validateMediaUrl(String? value, Translations t) {
     if (value == null || value.isEmpty) return null;
     if (value.trim().isEmpty) return t.posts.editPost.errors.mediaUrlEmpty;
     return null;
   }
 
-  String? _validateText(String? value, TranslationsEn t) {
+  String? _validateText(String? value, Translations t) {
     if (value == null || value.isEmpty) {
       return t.posts.editPost.errors.textTooShort;
     }
@@ -138,14 +138,14 @@ class _EditPostScreenState extends State<EditPostScreen>
     return null;
   }
 
-  String? _validateRevisionMessage(String? value, TranslationsEn t) {
+  String? _validateRevisionMessage(String? value, Translations t) {
     if (value == null || value.trim().isEmpty) {
       return t.posts.editPost.errors.revisionMessageRequired;
     }
     return null;
   }
 
-  String _failureMessage(Failure failure, TranslationsEn t) {
+  String _failureMessage(Failure failure, Translations t) {
     return switch (failure) {
       ForbiddenFailure() => t.posts.editPost.errors.forbidden,
       NotFoundFailure() => t.posts.editPost.errors.notFound,

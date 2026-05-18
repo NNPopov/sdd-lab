@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -23,7 +23,7 @@ void main() {
   late _MockStackRouter mockRouter;
 
   setUpAll(() async {
-    await LocaleSettings.setLocale(AppLocale.en);
+    await LocaleSettings.setLocale(AppLocale.enUs);
   });
 
   setUp(() {

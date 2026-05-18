@@ -18,7 +18,7 @@ void main() {
   late _MockAssignModeratorCubit mockCubit;
 
   setUpAll(() async {
-    await LocaleSettings.setLocale(AppLocale.en);
+    await LocaleSettings.setLocale(AppLocale.enUs);
   });
 
   setUp(() {

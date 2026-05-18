@@ -24,7 +24,7 @@ void main() {
   late _MockLocaleCubit mockCubit;
 
   setUpAll(() {
-    registerFallbackValue(AppLocale.en);
+    registerFallbackValue(AppLocale.enUs);
   });
 
   setUp(() {
@@ -33,11 +33,11 @@ void main() {
   });
 
   group('LocaleSelectorButton', () {
-    testWidgets('displays "EN" when locale is AppLocale.en', (tester) async {
+    testWidgets('displays "EN" when locale is AppLocale.enUs', (tester) async {
       whenListen(
         mockCubit,
         const Stream<AppLocale>.empty(),
-        initialState: AppLocale.en,
+        initialState: AppLocale.enUs,
       );
 
       await tester.pumpWidget(_buildApp(mockCubit));
@@ -45,11 +45,11 @@ void main() {
       expect(find.text('EN'), findsOneWidget);
     });
 
-    testWidgets('displays "RU" when locale is AppLocale.ru', (tester) async {
+    testWidgets('displays "RU" when locale is AppLocale.ruRu', (tester) async {
       whenListen(
         mockCubit,
         const Stream<AppLocale>.empty(),
-        initialState: AppLocale.ru,
+        initialState: AppLocale.ruRu,
       );
 
       await tester.pumpWidget(_buildApp(mockCubit));
@@ -63,7 +63,7 @@ void main() {
         whenListen(
           mockCubit,
           const Stream<AppLocale>.empty(),
-          initialState: AppLocale.en,
+          initialState: AppLocale.enUs,
         );
 
         await tester.pumpWidget(_buildApp(mockCubit));
@@ -76,12 +76,12 @@ void main() {
     );
 
     testWidgets(
-      'tap "Русский" calls cubit.setLocale(AppLocale.ru)',
+      'tap "Русский" calls cubit.setLocale(AppLocale.ruRu)',
       (tester) async {
         whenListen(
           mockCubit,
           const Stream<AppLocale>.empty(),
-          initialState: AppLocale.en,
+          initialState: AppLocale.enUs,
         );
 
         await tester.pumpWidget(_buildApp(mockCubit));
@@ -91,7 +91,7 @@ void main() {
         await tester.tap(find.text('Русский'));
         await tester.pumpAndSettle();
 
-        verify(() => mockCubit.setLocale(AppLocale.ru)).called(1);
+        verify(() => mockCubit.setLocale(AppLocale.ruRu)).called(1);
       },
     );
 
@@ -101,7 +101,7 @@ void main() {
         whenListen(
           mockCubit,
           const Stream<AppLocale>.empty(),
-          initialState: AppLocale.en,
+          initialState: AppLocale.enUs,
         );
 
         await tester.pumpWidget(_buildApp(mockCubit));
@@ -139,7 +139,7 @@ void main() {
       whenListen(
         mockCubit,
         const Stream<AppLocale>.empty(),
-        initialState: AppLocale.en,
+        initialState: AppLocale.enUs,
       );
 
       await tester.pumpWidget(_buildApp(mockCubit));

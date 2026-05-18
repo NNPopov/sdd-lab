@@ -18,6 +18,7 @@ class LocaleCubit extends Cubit<AppLocale> {
     final applied = await LocaleSettings.setLocale(locale);
     await _storage.saveLocale(applied);
     emit(applied);
+    await Future<void>.delayed(Duration.zero);
   }
 
   Future<void> useDeviceLocale() async {

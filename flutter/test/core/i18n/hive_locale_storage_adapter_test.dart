@@ -25,24 +25,36 @@ void main() {
   });
 
   group('saveLocale()', () {
-    test('stores "en" in box for AppLocale.en', () async {
-      await adapter.saveLocale(AppLocale.en);
+    test('stores "en-US" in box for AppLocale.enUs', () async {
+      await adapter.saveLocale(AppLocale.enUs);
       final box = await Hive.openBox<String>('locale');
-      expect(box.get('locale'), 'en');
+      expect(box.get('locale'), 'en-US');
     });
 
-    test('stores "ru" in box for AppLocale.ru', () async {
-      await adapter.saveLocale(AppLocale.ru);
+    test('stores "ru-RU" in box for AppLocale.ruRu', () async {
+      await adapter.saveLocale(AppLocale.ruRu);
       final box = await Hive.openBox<String>('locale');
-      expect(box.get('locale'), 'ru');
+      expect(box.get('locale'), 'ru-RU');
+    });
+
+    test('stores "es-ES" in box for AppLocale.esEs', () async {
+      await adapter.saveLocale(AppLocale.esEs);
+      final box = await Hive.openBox<String>('locale');
+      expect(box.get('locale'), 'es-ES');
+    });
+
+    test('stores "uk-UA" in box for AppLocale.ukUa', () async {
+      await adapter.saveLocale(AppLocale.ukUa);
+      final box = await Hive.openBox<String>('locale');
+      expect(box.get('locale'), 'uk-UA');
     });
   });
 
   group('loadLocale()', () {
-    test('returns AppLocale.ru after saveLocale(AppLocale.ru)', () async {
-      await adapter.saveLocale(AppLocale.ru);
+    test('returns AppLocale.ruRu after saveLocale(AppLocale.ruRu)', () async {
+      await adapter.saveLocale(AppLocale.ruRu);
       final result = await adapter.loadLocale();
-      expect(result, AppLocale.ru);
+      expect(result, AppLocale.ruRu);
     });
 
     test('returns null when box is empty', () async {
@@ -55,6 +67,18 @@ void main() {
       await box.put('locale', 'de');
       final result = await adapter.loadLocale();
       expect(result, isNull);
+    });
+
+    test('returns AppLocale.esEs after saveLocale(AppLocale.esEs)', () async {
+      await adapter.saveLocale(AppLocale.esEs);
+      final result = await adapter.loadLocale();
+      expect(result, AppLocale.esEs);
+    });
+
+    test('returns AppLocale.ukUa after saveLocale(AppLocale.ukUa)', () async {
+      await adapter.saveLocale(AppLocale.ukUa);
+      final result = await adapter.loadLocale();
+      expect(result, AppLocale.ukUa);
     });
   });
 }

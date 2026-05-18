@@ -1,4 +1,4 @@
-import 'package:auto_route/auto_route.dart';
+﻿import 'package:auto_route/auto_route.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/i18n/translations.g.dart';
@@ -40,7 +40,7 @@ void main() {
   late _MockStackRouter mockRouter;
 
   setUpAll(() async {
-    await LocaleSettings.setLocale(AppLocale.en);
+    await LocaleSettings.setLocale(AppLocale.enUs);
   });
 
   setUp(() {

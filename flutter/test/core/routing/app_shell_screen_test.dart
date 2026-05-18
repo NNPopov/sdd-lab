@@ -61,7 +61,7 @@ Widget _buildApp({
   whenListen(
     localeCubit,
     const Stream<AppLocale>.empty(),
-    initialState: AppLocale.en,
+    initialState: AppLocale.enUs,
   );
 
   final router = AppRouter(
@@ -273,7 +273,7 @@ void main() {
         whenListen(
           localeCubit,
           const Stream<AppLocale>.empty(),
-          initialState: AppLocale.en,
+          initialState: AppLocale.enUs,
         );
         final router = AppRouter(
           authGuard: _PermissiveAuthGuard(authCubit),

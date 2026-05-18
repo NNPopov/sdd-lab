@@ -66,12 +66,39 @@ For each scenario, follow the markdown structure literally:
 - **Setup** in tests.md → `when(...).thenAnswer(...)` / `.thenReturn(...)` /
   `.thenThrow(...)` calls.
 - **Act** in tests.md → the actual call, awaited.
-- **Expect** in tests.md → `expect(emitted, [...])` for state sequence,
+- **Expect** in tests.md → `expect`/`expectLater` for state sequence,
   `verify(...)` for boundary calls and side effects.
 
-Use `cubit.stream.listen(emitted.add)` to capture state sequences, **not**
-`bloc_test`. `bloc_test` is for unit-testing cubits in isolation; outside-in tests
-exercise the full wired chain and need the raw stream.
+Use `expectLater`/`emitsInOrder` to capture state sequences, **not**
+`bloc_test` and **not** `stream.listen` + `await cancel()`. `bloc_test` is for
+unit-testing cubits in isolation. `stream.listen` + `cancel` has a race condition:
+`BlocBase._stateController` is an async broadcast stream (`sync: false`), so each
+`emit()` schedules delivery via `scheduleMicrotask` — the method returns before the
+microtask fires, and `cancel()` removes the listener before the event is delivered.
+`expectLater` avoids this because it awaits the stream events directly:
+
+```dart
+// ❌ race condition — last state silently dropped
+final emitted = <MyState>[];
+final sub = cubit.stream.listen(emitted.add);
+await cubit.load();
+await sub.cancel();
+expect(emitted, [...]); // may fail with Actual: []
+
+// ✅ correct pattern — set up expectation BEFORE the action
+final expectation = expectLater(
+  cubit.stream,
+  emitsInOrder([
+    const MyState.loading(),
+    isA<MyStateLoaded>(),
+  ]),
+);
+await cubit.load();
+await expectation;
+// field-level assertions go on cubit.state
+final loaded = cubit.state as MyStateLoaded;
+expect(loaded.items.length, 1);
+```
 
 ### 5. Verify the test is RED
 
@@ -190,8 +217,11 @@ contract.
 - **No `getIt`** in the test. The test wires everything manually, by hand,
   through constructors. This makes the test self-contained and the dependency
   graph visible.
-- **No `bloc_test`** in the outside-in test. Use `cubit.stream.listen` to capture
-  emissions. `bloc_test` is reserved for the later unit-test phase.
+- **No `bloc_test`** in the outside-in test. `bloc_test` is reserved for the later
+  unit-test phase.
+- **No `stream.listen` + `await cancel()`** to collect states. Use
+  `expectLater`/`emitsInOrder` set up before the action — see step 4 for the full
+  pattern and the reason (`sync: false` async delivery race).
 - **No try-catch around the act phase** unless the spec explicitly requires
   asserting an exception type. Failures should propagate to the test runner.
 
@@ -211,6 +241,10 @@ contract.
   already — stop and check.
 - ❌ Using `bloc_test` in the outside-in test. Outside-in tests need the raw
   stream because they exercise the full chain, not the cubit in isolation.
+- ❌ Using `stream.listen(emitted.add)` + `await cancel()` to collect states.
+  Due to `BlocBase`'s async broadcast stream, `cancel()` races with the delivery
+  microtask and silently drops the last emitted state. Use `expectLater`/`emitsInOrder`
+  instead (see step 4).
 - ❌ Mocking the slice's own Adapter, Port, UseCase, or Cubit. Those are wired
   real. Mocking them defeats the purpose of "outside-in".
 - ❌ Using `getIt` to construct the cubit. Wire everything manually in `setUp`
