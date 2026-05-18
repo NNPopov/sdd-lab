@@ -1,0 +1,62 @@
+[importlinter]
+root_package = app
+include_external_packages = True
+# Run lint-imports from the src/ directory (or via scripts/check_arch.py) so that
+# the 'app' package is importable.  Example:
+#   cd src && lint-imports --config ../.importlinter
+#
+# Note: app/domain/ is a namespace package (no __init__.py) so grimp cannot
+# resolve it.  Domain isolation is enforced by pytest architecture tests instead.
+
+
+# ── 1. Adapters never import Features ─────────────────────────────────────
+[importlinter:contract:adapters-no-features]
+name = Adapters must not import Features
+type = forbidden
+source_modules =
+    app.adapters
+forbidden_modules =
+    app.features
+
+
+# ── 2. Core never imports Features ────────────────────────────────────────
+[importlinter:contract:core-no-features]
+name = Core must not import Features
+type = forbidden
+source_modules =
+    app.core
+forbidden_modules =
+    app.features
+
+
+# ── 3. Core never imports Adapters ────────────────────────────────────────
+[importlinter:contract:core-no-adapters]
+name = Core must not import Adapters
+type = forbidden
+source_modules =
+    app.core
+forbidden_modules =
+    app.adapters
+
+
+# ── 4. Ports never import infrastructure ──────────────────────────────────
+[importlinter:contract:ports-isolation]
+name = Ports must not import Adapters, Core, or Features
+type = forbidden
+source_modules =
+    app.ports
+forbidden_modules =
+    app.adapters
+    app.core
+    app.features
+
+
+# ── 5. VSA Feature Domain independence (users ↔ posts) ───────────────────
+# Legacy feature dirs (auth, rate_limits, tiers, tasks, health) are excluded
+# from this check per project decision — they use the flat pre-VSA pattern.
+[importlinter:contract:vsa-feature-independence]
+name = VSA Feature Domains are Independent (users vs posts)
+type = independence
+modules =
+    app.features.users
+    app.features.posts

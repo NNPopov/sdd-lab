@@ -77,6 +77,10 @@ select = [
     "UP", # pyupgrade
     # https://docs.astral.sh/ruff/rules/#isort-i
     "I", # isort
+    # https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+    "B", # flake8-bugbear: opinionated bug/design issues
+    # https://docs.astral.sh/ruff/rules/#pep8-naming-n
+    "N", # pep8-naming: enforces PEP8 naming conventions
 ]
 ignore = [
     # https://docs.astral.sh/ruff/rules/#pycodestyle-e-w
@@ -86,12 +90,31 @@ ignore = [
     "UP007", # use-pep604-annotation
     "E741",  # Ambiguous variable name
     # "UP035", # deprecated-assertion
+    # bugbear — allow mutable defaults in dataclasses/pydantic models
+    "B006",  # mutable default argument (handled by pydantic Field)
+    "B008",  # do not perform function call in default argument (FastAPI Depends pattern)
+    # pep8-naming — allow some patterns used by SQLAlchemy / FastAPI conventions
+    "N805",  # first argument of a method should be named 'self' (conflicts with cls validators)
+    "N818",  # exception name should end in 'Error' (our DomainError suffix is intentional)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = [
     "F401", # unused import
     "F403", # star imports
+]
+"tests/**/*.py" = [
+    "N",    # naming: test functions don't need to follow all conventions
+    "B011", # assert False: pytest uses assert
+]
+"migrations/**/*.py" = [
+    "N",    # naming: alembic auto-generates non-PEP8 identifiers
+    "E501", # line too long: alembic generates long lines
+    "F401", # unused import: alembic env imports
+]
+"src/app/core/config.py" = [
+    "N802", # Settings computed_field properties deliberately use UPPER_SNAKE_CASE
+            # to match pydantic-settings env var naming convention.
 ]
 
 [tool.ruff.lint.mccabe]
@@ -114,6 +137,8 @@ dev = [
     "pre-commit>=4.3.0",
     "psycopg2-binary>=2.9.12",
     "pytest-asyncio>=1.0.0",
+    "import-linter>=2.1",
+    "pytestarch>=3.0",
 ]
 
 [tool.mypy]
