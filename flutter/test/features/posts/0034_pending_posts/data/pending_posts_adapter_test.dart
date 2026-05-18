@@ -316,6 +316,94 @@ void main() {
           .first;
       expect(entry.action, ModerationAction.approved);
     });
+
+    test(
+      'moderation log entry without actor fields deserializes successfully',
+      () async {
+        mockApi(
+          PendingPostsDto(
+            items: [
+              PendingPostItemDto(
+                postUuid: 'uuid-no-actor',
+                title: 'T',
+                text: 'B',
+                status: 'pending_review',
+                createdAt: DateTime(2026),
+                authorUsername: 'bob',
+                moderationLog: [
+                  ModerationLogEntryDto(
+                    id: 440,
+                    eventType: 'moderator_review',
+                    action: 'changes_requested',
+                    message: 'strange post',
+                    createdAt: DateTime(2026),
+                  ),
+                ],
+              ),
+            ],
+            totalCount: 1,
+            page: 1,
+            itemsPerPage: 10,
+          ),
+        );
+
+        final result = await adapter(page: 1, perPage: 10);
+
+        expect(result.isRight(), isTrue);
+        final items =
+            (result as Right<Failure, PaginatedResult<PendingPostItem>>)
+                .value
+                .items;
+        expect(items.length, 1);
+        expect(items.first.moderationLog.first.actorUserId, isNull);
+        expect(items.first.moderationLog.first.actorUsername, isNull);
+      },
+    );
+
+    test(
+      'moderation log entry with actor fields still maps correctly',
+      () async {
+        mockApi(
+          PendingPostsDto(
+            items: [
+              PendingPostItemDto(
+                postUuid: 'uuid-with-actor',
+                title: 'T',
+                text: 'B',
+                status: 'pending_review',
+                createdAt: DateTime(2026),
+                authorUsername: 'bob',
+                moderationLog: [
+                  ModerationLogEntryDto(
+                    id: 1,
+                    eventType: 'moderator_review',
+                    action: 'approved',
+                    createdAt: DateTime(2026),
+                    actorUserId: 42,
+                    actorUsername: 'mod1',
+                  ),
+                ],
+              ),
+            ],
+            totalCount: 1,
+            page: 1,
+            itemsPerPage: 10,
+          ),
+        );
+
+        final result = await adapter(page: 1, perPage: 10);
+
+        final entry =
+            (result as Right<Failure, PaginatedResult<PendingPostItem>>)
+                .value
+                .items
+                .first
+                .moderationLog
+                .first;
+        expect(entry.actorUserId, 42);
+        expect(entry.actorUsername, 'mod1');
+      },
+    );
   });
 
   group('call — HTTP error mapping', () {

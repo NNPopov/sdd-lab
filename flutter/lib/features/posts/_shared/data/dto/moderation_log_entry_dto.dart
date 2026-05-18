@@ -9,8 +9,8 @@ sealed class ModerationLogEntryDto with _$ModerationLogEntryDto {
     required int id,
     @JsonKey(name: 'event_type') required String eventType,
     @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'actor_user_id') required int actorUserId,
-    @JsonKey(name: 'actor_username') required String actorUsername,
+    @JsonKey(name: 'actor_user_id') int? actorUserId,
+    @JsonKey(name: 'actor_username') String? actorUsername,
     String? action,
     String? message,
   }) = _ModerationLogEntryDto;

@@ -12,8 +12,8 @@ _ModerationLogEntryDto _$ModerationLogEntryDtoFromJson(
   id: (json['id'] as num).toInt(),
   eventType: json['event_type'] as String,
   createdAt: DateTime.parse(json['created_at'] as String),
-  actorUserId: (json['actor_user_id'] as num).toInt(),
-  actorUsername: json['actor_username'] as String,
+  actorUserId: (json['actor_user_id'] as num?)?.toInt(),
+  actorUsername: json['actor_username'] as String?,
   action: json['action'] as String?,
   message: json['message'] as String?,
 );

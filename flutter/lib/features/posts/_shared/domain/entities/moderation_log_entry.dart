@@ -6,8 +6,8 @@ class ModerationLogEntry {
     required this.id,
     required this.eventType,
     required this.createdAt,
-    required this.actorUserId,
-    required this.actorUsername,
+    this.actorUserId,
+    this.actorUsername,
     this.action,
     this.message,
   });
@@ -17,6 +17,6 @@ class ModerationLogEntry {
   final ModerationAction? action;
   final String? message;
   final DateTime createdAt;
-  final int actorUserId;
-  final String actorUsername;
+  final int? actorUserId;
+  final String? actorUsername;
 }

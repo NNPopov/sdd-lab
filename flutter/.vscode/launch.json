@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter (Chrome)",
+      "request": "launch",
+      "type": "dart",
+      "device": "chrome"
+    },
+    {
+      "name": "Flutter (Windows)",
+      "request": "launch",
+      "type": "dart",
+      "device": "windows"
+    }
+  ]
+}

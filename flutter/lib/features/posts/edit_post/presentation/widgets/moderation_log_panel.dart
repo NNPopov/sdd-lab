@@ -61,7 +61,7 @@ class _LogEntryTile extends StatelessWidget {
       leading: const Icon(Icons.history),
       title: Row(
         children: [
-          Text(entry.actorUsername, style: theme.textTheme.bodyMedium),
+          Text(entry.actorUsername ?? '', style: theme.textTheme.bodyMedium),
           if (actionLabel != null) ...[
             const SizedBox(width: 8),
             Chip(label: Text(actionLabel)),

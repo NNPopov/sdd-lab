@@ -140,3 +140,31 @@ Every Cubit has a `bloc_test`. Every use-case has a unit test. See
   UX, design it explicitly.
 - ❌ Storing a localized `String` for the error in state. Store the `Failure`; let the
   UI localize it.
+- ❌ Collecting cubit states into a list with `stream.listen` + `await cancel()` in
+  outside-in or integration tests. In bloc 9, `BlocBase._stateController` is an async
+  broadcast stream; each `emit()` schedules the listener notification via
+  `scheduleMicrotask`. `await cubit.someMethod()` returns before the last microtask
+  fires, so `await sub.cancel()` cancels the subscription and the last state is dropped.
+  Always use `expectLater`/`emitsInOrder` set up **before** the action:
+
+  ```dart
+  // ❌ loses the last state
+  final emitted = <MyState>[];
+  final sub = cubit.stream.listen(emitted.add);
+  await cubit.load();
+  await sub.cancel();
+  expect(emitted.length, 2); // fails — Actual: <1>
+
+  // ✅ correct pattern
+  final expectation = expectLater(
+    cubit.stream,
+    emitsInOrder([
+      const MyState.loading(),
+      isA<MyStateLoaded>(),
+    ]),
+  );
+  await cubit.load();
+  await expectation;
+  // individual field assertions go on cubit.state
+  final loaded = cubit.state as MyStateLoaded;
+  ```

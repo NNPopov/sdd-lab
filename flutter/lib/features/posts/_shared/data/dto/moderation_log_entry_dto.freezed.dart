@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ModerationLogEntryDto {
 
- int get id;@JsonKey(name: 'event_type') String get eventType;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'actor_user_id') int get actorUserId;@JsonKey(name: 'actor_username') String get actorUsername; String? get action; String? get message;
+ int get id;@JsonKey(name: 'event_type') String get eventType;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'actor_user_id') int? get actorUserId;@JsonKey(name: 'actor_username') String? get actorUsername; String? get action; String? get message;
 /// Create a copy of ModerationLogEntryDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ModerationLogEntryDtoCopyWith<$Res>  {
   factory $ModerationLogEntryDtoCopyWith(ModerationLogEntryDto value, $Res Function(ModerationLogEntryDto) _then) = _$ModerationLogEntryDtoCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'actor_user_id') int actorUserId,@JsonKey(name: 'actor_username') String actorUsername, String? action, String? message
+ int id,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'actor_user_id') int? actorUserId,@JsonKey(name: 'actor_username') String? actorUsername, String? action, String? message
 });
 
 
@@ -65,14 +65,14 @@ class _$ModerationLogEntryDtoCopyWithImpl<$Res>
 
 /// Create a copy of ModerationLogEntryDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventType = null,Object? createdAt = null,Object? actorUserId = null,Object? actorUsername = null,Object? action = freezed,Object? message = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventType = null,Object? createdAt = null,Object? actorUserId = freezed,Object? actorUsername = freezed,Object? action = freezed,Object? message = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,eventType: null == eventType ? _self.eventType : eventType // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,actorUserId: null == actorUserId ? _self.actorUserId : actorUserId // ignore: cast_nullable_to_non_nullable
-as int,actorUsername: null == actorUsername ? _self.actorUsername : actorUsername // ignore: cast_nullable_to_non_nullable
-as String,action: freezed == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as DateTime,actorUserId: freezed == actorUserId ? _self.actorUserId : actorUserId // ignore: cast_nullable_to_non_nullable
+as int?,actorUsername: freezed == actorUsername ? _self.actorUsername : actorUsername // ignore: cast_nullable_to_non_nullable
+as String?,action: freezed == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
 as String?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -156,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int actorUserId, @JsonKey(name: 'actor_username')  String actorUsername,  String? action,  String? message)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int? actorUserId, @JsonKey(name: 'actor_username')  String? actorUsername,  String? action,  String? message)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ModerationLogEntryDto() when $default != null:
 return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that.actorUsername,_that.action,_that.message);case _:
@@ -177,7 +177,7 @@ return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int actorUserId, @JsonKey(name: 'actor_username')  String actorUsername,  String? action,  String? message)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int? actorUserId, @JsonKey(name: 'actor_username')  String? actorUsername,  String? action,  String? message)  $default,) {final _that = this;
 switch (_that) {
 case _ModerationLogEntryDto():
 return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that.actorUsername,_that.action,_that.message);}
@@ -194,7 +194,7 @@ return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int actorUserId, @JsonKey(name: 'actor_username')  String actorUsername,  String? action,  String? message)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id, @JsonKey(name: 'event_type')  String eventType, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'actor_user_id')  int? actorUserId, @JsonKey(name: 'actor_username')  String? actorUsername,  String? action,  String? message)?  $default,) {final _that = this;
 switch (_that) {
 case _ModerationLogEntryDto() when $default != null:
 return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that.actorUsername,_that.action,_that.message);case _:
@@ -209,14 +209,14 @@ return $default(_that.id,_that.eventType,_that.createdAt,_that.actorUserId,_that
 @JsonSerializable()
 
 class _ModerationLogEntryDto implements ModerationLogEntryDto {
-  const _ModerationLogEntryDto({required this.id, @JsonKey(name: 'event_type') required this.eventType, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'actor_user_id') required this.actorUserId, @JsonKey(name: 'actor_username') required this.actorUsername, this.action, this.message});
+  const _ModerationLogEntryDto({required this.id, @JsonKey(name: 'event_type') required this.eventType, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'actor_user_id') this.actorUserId, @JsonKey(name: 'actor_username') this.actorUsername, this.action, this.message});
   factory _ModerationLogEntryDto.fromJson(Map<String, dynamic> json) => _$ModerationLogEntryDtoFromJson(json);
 
 @override final  int id;
 @override@JsonKey(name: 'event_type') final  String eventType;
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
-@override@JsonKey(name: 'actor_user_id') final  int actorUserId;
-@override@JsonKey(name: 'actor_username') final  String actorUsername;
+@override@JsonKey(name: 'actor_user_id') final  int? actorUserId;
+@override@JsonKey(name: 'actor_username') final  String? actorUsername;
 @override final  String? action;
 @override final  String? message;
 
@@ -253,7 +253,7 @@ abstract mixin class _$ModerationLogEntryDtoCopyWith<$Res> implements $Moderatio
   factory _$ModerationLogEntryDtoCopyWith(_ModerationLogEntryDto value, $Res Function(_ModerationLogEntryDto) _then) = __$ModerationLogEntryDtoCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'actor_user_id') int actorUserId,@JsonKey(name: 'actor_username') String actorUsername, String? action, String? message
+ int id,@JsonKey(name: 'event_type') String eventType,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'actor_user_id') int? actorUserId,@JsonKey(name: 'actor_username') String? actorUsername, String? action, String? message
 });
 
 
@@ -270,14 +270,14 @@ class __$ModerationLogEntryDtoCopyWithImpl<$Res>
 
 /// Create a copy of ModerationLogEntryDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventType = null,Object? createdAt = null,Object? actorUserId = null,Object? actorUsername = null,Object? action = freezed,Object? message = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventType = null,Object? createdAt = null,Object? actorUserId = freezed,Object? actorUsername = freezed,Object? action = freezed,Object? message = freezed,}) {
   return _then(_ModerationLogEntryDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,eventType: null == eventType ? _self.eventType : eventType // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,actorUserId: null == actorUserId ? _self.actorUserId : actorUserId // ignore: cast_nullable_to_non_nullable
-as int,actorUsername: null == actorUsername ? _self.actorUsername : actorUsername // ignore: cast_nullable_to_non_nullable
-as String,action: freezed == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as DateTime,actorUserId: freezed == actorUserId ? _self.actorUserId : actorUserId // ignore: cast_nullable_to_non_nullable
+as int?,actorUsername: freezed == actorUsername ? _self.actorUsername : actorUsername // ignore: cast_nullable_to_non_nullable
+as String?,action: freezed == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
 as String?,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
