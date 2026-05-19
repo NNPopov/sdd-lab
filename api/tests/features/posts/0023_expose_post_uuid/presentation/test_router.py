@@ -99,7 +99,7 @@ async def test_read_post_response_contains_post_uuid_not_raw_uuid(
     seeded_alice: dict,
 ) -> None:
     """F4, F9: read_post JSON has post_uuid but not the raw ORM column name 'uuid'."""
-    from app.features.users.dependencies import get_current_user
+    from app.features.users.dependencies import get_current_user, get_optional_user
     from app.main import app as _fastapi_app
 
     username = seeded_alice["username"]
@@ -114,7 +114,11 @@ async def test_read_post_response_contains_post_uuid_not_raw_uuid(
     finally:
         del _fastapi_app.dependency_overrides[get_current_user]
 
-    read_resp = await async_client.get(_READ.format(username=username, id=post_id))
+    _fastapi_app.dependency_overrides[get_optional_user] = lambda: seeded_alice
+    try:
+        read_resp = await async_client.get(_READ.format(username=username, id=post_id))
+    finally:
+        del _fastapi_app.dependency_overrides[get_optional_user]
     assert read_resp.status_code == 200, read_resp.text
     body = read_resp.json()
 

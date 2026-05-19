@@ -20,9 +20,16 @@ from ...core.security import (
     oauth2_scheme,
     verify_token,
 )
+from ...ports.token_blacklist import TokenBlacklistPort
 from .use_cases.authenticate import authenticate_user
 
 router = APIRouter(tags=["login"])
+
+
+def _get_token_blacklist_adapter() -> TokenBlacklistPort:
+    from ...bootstrap.container import container  # noqa: PLC0415
+
+    return container.token_blacklist_adapter()
 
 
 @router.post("/login", response_model=Token)
@@ -49,12 +56,15 @@ async def login_for_access_token(
 
 
 @router.post("/refresh")
-async def refresh_access_token(request: Request, db: AsyncSession = Depends(async_get_db)) -> dict[str, str]:
+async def refresh_access_token(
+    request: Request,
+    blacklist: Annotated[TokenBlacklistPort, Depends(_get_token_blacklist_adapter)],
+) -> dict[str, str]:
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:
         raise UnauthorizedException("Refresh token missing.")
 
-    user_data = await verify_token(refresh_token, TokenType.REFRESH, db)
+    user_data = await verify_token(refresh_token, TokenType.REFRESH, blacklist)
     if not user_data:
         raise UnauthorizedException("Invalid refresh token.")
 
@@ -67,16 +77,16 @@ async def logout(
     response: Response,
     access_token: str = Depends(oauth2_scheme),
     refresh_token: Optional[str] = Cookie(None, alias="refresh_token"),
-    db: AsyncSession = Depends(async_get_db),
+    blacklist: Annotated[TokenBlacklistPort, Depends(_get_token_blacklist_adapter)] = ...,  # type: ignore[assignment]
 ) -> dict[str, str]:
     try:
         if not refresh_token:
             raise UnauthorizedException("Refresh token not found")
 
-        await blacklist_tokens(access_token=access_token, refresh_token=refresh_token, db=db)
+        await blacklist_tokens(access_token=access_token, refresh_token=refresh_token, blacklist=blacklist)
         response.delete_cookie(key="refresh_token")
 
         return {"message": "Logged out successfully"}
 
-    except JWTError:
-        raise UnauthorizedException("Invalid token.")
+    except JWTError as err:
+        raise UnauthorizedException("Invalid token.") from err

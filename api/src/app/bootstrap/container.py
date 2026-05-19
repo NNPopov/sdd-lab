@@ -2,12 +2,14 @@
 from dependency_injector import containers, providers
 
 from ..adapters.db.session import local_session
+from ..adapters.db.token_blacklist.adapter import TokenBlacklistAdapter
 from ..core.security import get_password_hash
-from ..core.token_blacklist_service import TokenBlacklistService
 from ..features.posts.create_post.data.adapter import CreatePostAdapter
 from ..features.posts.create_post.domain.use_case import CreatePostUseCase
 from ..features.posts.get_moderation_log.data.adapter import GetModerationLogAdapter
 from ..features.posts.get_moderation_log.domain.use_case import GetModerationLogUseCase
+from ..features.posts.get_post.data.adapter import GetPostAdapter
+from ..features.posts.get_post.domain.use_case import GetPostUseCase
 from ..features.posts.list_all_posts.data.adapter import ListAllPostsAdapter
 from ..features.posts.list_all_posts.domain.use_case import ListAllPostsUseCase
 from ..features.posts.list_pending_posts.data.adapter import ListPendingPostsAdapter
@@ -94,8 +96,8 @@ class Container(containers.DeclarativeContainer):
         port=update_user_adapter,
     )
 
-    token_blacklist_service = providers.Factory(
-        TokenBlacklistService,
+    token_blacklist_adapter = providers.Factory(
+        TokenBlacklistAdapter,
         session_factory=session_factory,
     )
 
@@ -207,6 +209,16 @@ class Container(containers.DeclarativeContainer):
     get_moderation_log_use_case = providers.Factory(
         GetModerationLogUseCase,
         port=get_moderation_log_adapter,
+    )
+
+    get_post_adapter = providers.Factory(
+        GetPostAdapter,
+        session_factory=session_factory,
+    )
+
+    get_post_use_case = providers.Factory(
+        GetPostUseCase,
+        port=get_post_adapter,
     )
 
 

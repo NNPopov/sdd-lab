@@ -1,5 +1,5 @@
 # FEATURE: posts — router.
-from typing import Annotated, Any
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +12,7 @@ from ..users.repository import crud_users
 from ..users.schemas import UserRead
 from .create_post.presentation.router import router as create_post_router
 from .get_moderation_log.presentation.router import router as get_moderation_log_router
+from .get_post.presentation.router import router as get_post_router
 from .list_all_posts.presentation.router import router as list_all_posts_router
 from .list_pending_posts.presentation.router import router as list_pending_posts_router
 from .list_posts.presentation.router import router as list_posts_router
@@ -28,24 +29,7 @@ router.include_router(moderate_post_router)
 router.include_router(revise_post_router)
 router.include_router(list_pending_posts_router)
 router.include_router(get_moderation_log_router)
-
-
-@router.get("/{username}/post/{id}", response_model=PostRead)
-@cache(key_prefix="{username}_post_cache", resource_id_name="id")
-async def read_post(
-    request: Request, username: str, id: int, db: Annotated[AsyncSession, Depends(async_get_db)]
-) -> dict[str, Any]:
-    db_user = await crud_users.get(db=db, username=username, is_deleted=False, schema_to_select=UserRead)
-    if db_user is None:
-        raise NotFoundDomainError("User not found")
-
-    db_post = await crud_posts.get(
-        db=db, id=id, created_by_user_id=db_user["id"], is_deleted=False, schema_to_select=PostRead
-    )
-    if db_post is None:
-        raise NotFoundDomainError("Post not found")
-
-    return db_post
+router.include_router(get_post_router)
 
 
 @router.patch("/{username}/post/{id}")

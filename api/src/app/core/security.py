@@ -7,11 +7,10 @@ import bcrypt
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import SecretStr
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..adapters.db.token_blacklist.repository import crud_token_blacklist
+from ..ports.token_blacklist import TokenBlacklistPort
 from .config import settings
-from .schemas import TokenBlacklistCreate, TokenData
+from .schemas import TokenData
 
 SECRET_KEY: SecretStr = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -58,10 +57,9 @@ async def create_refresh_token(data: dict[str, Any], expires_delta: timedelta | 
     return encoded_jwt
 
 
-async def verify_token(token: str, expected_token_type: TokenType, db: AsyncSession) -> TokenData | None:
+async def verify_token(token: str, expected_token_type: TokenType, blacklist: TokenBlacklistPort) -> TokenData | None:
     """Verify a JWT token and return TokenData if valid."""
-    is_blacklisted = await crud_token_blacklist.exists(db, token=token)
-    if is_blacklisted:
+    if await blacklist.is_blacklisted(token):
         return None
 
     try:
@@ -78,19 +76,19 @@ async def verify_token(token: str, expected_token_type: TokenType, db: AsyncSess
         return None
 
 
-async def blacklist_tokens(access_token: str, refresh_token: str, db: AsyncSession) -> None:
+async def blacklist_tokens(access_token: str, refresh_token: str, blacklist: TokenBlacklistPort) -> None:
     """Blacklist both access and refresh tokens."""
     for token in [access_token, refresh_token]:
         payload = jwt.decode(token, SECRET_KEY.get_secret_value(), algorithms=[ALGORITHM])
         exp_timestamp = payload.get("exp")
         if exp_timestamp is not None:
             expires_at = datetime.fromtimestamp(exp_timestamp)
-            await crud_token_blacklist.create(db, object=TokenBlacklistCreate(token=token, expires_at=expires_at))
+            await blacklist.blacklist(token, expires_at)
 
 
-async def blacklist_token(token: str, db: AsyncSession) -> None:
+async def blacklist_token(token: str, blacklist: TokenBlacklistPort) -> None:
     payload = jwt.decode(token, SECRET_KEY.get_secret_value(), algorithms=[ALGORITHM])
     exp_timestamp = payload.get("exp")
     if exp_timestamp is not None:
         expires_at = datetime.fromtimestamp(exp_timestamp)
-        await crud_token_blacklist.create(db, object=TokenBlacklistCreate(token=token, expires_at=expires_at))
+        await blacklist.blacklist(token, expires_at)

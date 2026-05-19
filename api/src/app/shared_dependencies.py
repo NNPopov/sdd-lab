@@ -16,6 +16,7 @@ from .features.rate_limits.repository import crud_rate_limits
 from .features.rate_limits.schemas import RateLimitRead, sanitize_path
 from .features.tiers.repository import crud_tiers
 from .features.tiers.schemas import TierRead
+from .ports.token_blacklist import TokenBlacklistPort
 
 logger = logging.getLogger(__name__)
 
@@ -35,19 +36,28 @@ async def _get_user_by_credential(db: AsyncSession, credential: str) -> dict[str
         return None
     return {
         "id": row.id,
+        "name": row.name,
         "username": row.username,
         "email": row.email,
+        "profile_image_url": row.profile_image_url,
         "is_superuser": row.is_superuser,
         "is_moderator": row.is_moderator,
         "tier_id": row.tier_id,
     }
 
 
+def _get_token_blacklist_adapter() -> TokenBlacklistPort:
+    from .bootstrap.container import container  # noqa: PLC0415
+
+    return container.token_blacklist_adapter()
+
+
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(async_get_db)],
+    blacklist: Annotated[TokenBlacklistPort, Depends(_get_token_blacklist_adapter)],
 ) -> dict[str, Any]:
-    token_data = await verify_token(token, TokenType.ACCESS, db)
+    token_data = await verify_token(token, TokenType.ACCESS, blacklist)
     if token_data is None:
         raise UnauthorizedException("User not authenticated.")
     user = await _get_user_by_credential(db, token_data.username_or_email)
@@ -56,7 +66,11 @@ async def get_current_user(
     return user
 
 
-async def get_optional_user(request: Request, db: AsyncSession = Depends(async_get_db)) -> dict | None:
+async def get_optional_user(
+    request: Request,
+    db: AsyncSession = Depends(async_get_db),
+    blacklist: TokenBlacklistPort = Depends(_get_token_blacklist_adapter),
+) -> dict | None:
     token = request.headers.get("Authorization")
     if not token:
         return None
@@ -66,11 +80,11 @@ async def get_optional_user(request: Request, db: AsyncSession = Depends(async_g
         if token_type.lower() != "bearer" or not token_value:
             return None
 
-        token_data = await verify_token(token_value, TokenType.ACCESS, db)
+        token_data = await verify_token(token_value, TokenType.ACCESS, blacklist)
         if token_data is None:
             return None
 
-        return await get_current_user(token_value, db=db)
+        return await _get_user_by_credential(db, token_data.username_or_email)
 
     except HTTPException as http_exc:
         if http_exc.status_code != 401:

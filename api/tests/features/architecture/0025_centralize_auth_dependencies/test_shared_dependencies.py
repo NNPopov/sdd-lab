@@ -27,16 +27,20 @@ def _make_db(scalar_result: object) -> AsyncSession:
 def _make_row(
     *,
     id: int = 1,
+    name: str = "Alice",
     username: str = "alice",
     email: str = "alice@example.com",
+    profile_image_url: str = "https://www.profileimageurl.com",
     is_superuser: bool = False,
     is_moderator: bool = False,
     tier_id: int | None = 1,
 ) -> MagicMock:
     row = MagicMock()
     row.id = id
+    row.name = name
     row.username = username
     row.email = email
+    row.profile_image_url = profile_image_url
     row.is_superuser = is_superuser
     row.is_moderator = is_moderator
     row.tier_id = tier_id
@@ -47,21 +51,32 @@ def _make_row(
 
 
 async def test_returns_allowlisted_dict_on_match():
-    """F2, F4: username credential returns the six-key allowlisted dict."""
+    """F2, F4: username credential returns the eight-key allowlisted dict."""
     db = _make_db(_make_row())
 
     result = await _get_user_by_credential(db, "alice")
 
     assert result == {
         "id": 1,
+        "name": "Alice",
         "username": "alice",
         "email": "alice@example.com",
+        "profile_image_url": "https://www.profileimageurl.com",
         "is_superuser": False,
         "is_moderator": False,
         "tier_id": 1,
     }
     assert "hashed_password" not in result
-    assert set(result.keys()) == {"id", "username", "email", "is_superuser", "is_moderator", "tier_id"}
+    assert set(result.keys()) == {
+        "id",
+        "name",
+        "username",
+        "email",
+        "profile_image_url",
+        "is_superuser",
+        "is_moderator",
+        "tier_id",
+    }
 
 
 async def test_returns_none_when_no_row_matches():
@@ -120,9 +135,10 @@ async def test_raises_unauthorized_when_token_invalid(mocker):
         new=mocker.AsyncMock(),
     )
     db = MagicMock(spec=AsyncSession)
+    blacklist = AsyncMock()
 
     with pytest.raises(UnauthorizedException):
-        await get_current_user(token="garbage.token.here", db=db)
+        await get_current_user(token="garbage.token.here", db=db, blacklist=blacklist)
 
     mock_get_credential.assert_not_awaited()
 
@@ -140,17 +156,20 @@ async def test_raises_unauthorized_when_user_not_found(mocker):
         new=mocker.AsyncMock(return_value=None),
     )
     db = MagicMock(spec=AsyncSession)
+    blacklist = AsyncMock()
 
     with pytest.raises(UnauthorizedException):
-        await get_current_user(token="valid.token.here", db=db)
+        await get_current_user(token="valid.token.here", db=db, blacklist=blacklist)
 
 
 async def test_returns_user_dict_on_success(mocker):
     """F8: returns the user dict produced by _get_user_by_credential on the happy path."""
     user_dict = {
         "id": 1,
+        "name": "Alice",
         "username": "alice",
         "email": "a@b.com",
+        "profile_image_url": "https://www.profileimageurl.com",
         "is_superuser": False,
         "is_moderator": False,
         "tier_id": 1,
@@ -166,8 +185,9 @@ async def test_returns_user_dict_on_success(mocker):
         new=mocker.AsyncMock(return_value=user_dict),
     )
     db = MagicMock(spec=AsyncSession)
+    blacklist = AsyncMock()
 
-    result = await get_current_user(token="valid.token.here", db=db)
+    result = await get_current_user(token="valid.token.here", db=db, blacklist=blacklist)
 
     assert result == user_dict
 

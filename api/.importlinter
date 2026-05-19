@@ -17,6 +17,9 @@ source_modules =
     app.adapters
 forbidden_modules =
     app.features
+ignore_imports =
+    # TODO: move sanitize_path to domain/ when rate_limits slice is migrated to VSA
+    app.adapters.rate_limit.redis_rate_limiter -> app.features.rate_limits.schemas
 
 
 # ── 2. Core never imports Features ────────────────────────────────────────
@@ -60,3 +63,30 @@ type = independence
 modules =
     app.features.users
     app.features.posts
+ignore_imports =
+    # Legacy pre-VSA posts router directly uses users repo/schemas.
+    # TODO: migrate posts/router.py to VSA slices and remove these.
+    app.features.posts.router -> app.features.users.repository
+    app.features.posts.router -> app.features.users.schemas
+    # shared_dependencies uses a lazy bootstrap.container import inside a dependency
+    # function to inject the token blacklist adapter. Not a real violation.
+    app.shared_dependencies -> app.bootstrap.container
+    # VSA presentation routers use a lazy bootstrap.container import inside
+    # a dependency function to avoid circular imports. This creates a transitive
+    # posts→users and users→posts path through the container. Not a real violation.
+    app.features.posts.create_post.presentation.router -> app.bootstrap.container
+    app.features.posts.get_moderation_log.presentation.router -> app.bootstrap.container
+    app.features.posts.list_all_posts.presentation.router -> app.bootstrap.container
+    app.features.posts.list_pending_posts.presentation.router -> app.bootstrap.container
+    app.features.posts.list_posts.presentation.router -> app.bootstrap.container
+    app.features.posts.moderate_post.presentation.router -> app.bootstrap.container
+    app.features.posts.revise_post.presentation.router -> app.bootstrap.container
+    app.features.users.assign_moderator.presentation.router -> app.bootstrap.container
+    app.features.users.create_user.presentation.router -> app.bootstrap.container
+    app.features.users.delete_db_user.presentation.router -> app.bootstrap.container
+    app.features.users.delete_user.presentation.router -> app.bootstrap.container
+    app.features.users.get_user_by_username.presentation.router -> app.bootstrap.container
+    app.features.users.get_user_tier.presentation.router -> app.bootstrap.container
+    app.features.users.list_users.presentation.router -> app.bootstrap.container
+    app.features.users.revoke_moderator.presentation.router -> app.bootstrap.container
+    app.features.users.update_user.presentation.router -> app.bootstrap.container

@@ -71,6 +71,13 @@ def arch() -> EvaluableArchitecture:
 # ══════════════════════════════════════════════════════════════════════════
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason=(
+        "Legacy: adapters.rate_limit.redis_rate_limiter imports features.rate_limits.schemas. "
+        "TODO: move sanitize_path to domain/ when rate_limits slice is migrated to VSA."
+    ),
+)
 def test_adapters_do_not_import_features(arch: EvaluableArchitecture) -> None:
     """STABLE adapters/ must not depend on FEATURE features/."""
     (

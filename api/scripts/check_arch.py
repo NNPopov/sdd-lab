@@ -97,7 +97,9 @@ def main() -> None:
 
     failed = [name for name, ok in results if not ok]
     if failed:
-        print(f"\n{len(failed)} check(s) failed. Fix the issues listed above.")
+        msg = f"{len(failed)} architecture check(s) FAILED: {', '.join(failed)}"
+        print(f"\n{msg}")
+        print(msg, file=sys.stderr)
         sys.exit(1)
     else:
         print("\nAll architecture checks passed.")
