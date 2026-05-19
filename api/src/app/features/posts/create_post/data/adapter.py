@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from .....adapters.db.models.post import Post
 from .....adapters.db.models.user import User
+from ..._shared.entities import PostAuthor
 from ..domain.commands import CreatePostInternalCommand
-from ..domain.entities import CreatedPost, PostAuthor
+from ..domain.entities import CreatedPost
 from ..domain.ports.create_post_port import CreatePostPort
 
 

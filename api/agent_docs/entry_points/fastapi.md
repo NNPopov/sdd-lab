@@ -171,15 +171,28 @@ class Container(containers.DeclarativeContainer):
     )
 ```
 
-**Adding a new slice requires three bootstrap steps — all three are mandatory:**
+**Adding a new slice requires four bootstrap steps — all four are mandatory:**
 
 1. Add providers to `bootstrap/container.py` (adapters and use-case factories).
-2. Add the router to `bootstrap/router.py` via `include_router`.
+2. Add the router to the feature's aggregating `router.py` via `include_router`.
 3. **Add the router's module path to `Container.wiring_config.modules`** (the
    step most often forgotten). Without it, `Provide[...]` silently resolves to
    the provider sentinel object instead of the use-case instance, producing an
    `AttributeError` at request time rather than at startup — the error is hard
    to trace because the app starts without complaint.
+4. **Add the router to `ignore_imports` in `.importlinter`**. Every presentation
+   router imports `bootstrap.container` (for `Provide[Container.xxx]`). The
+   import-linter contract `VSA Feature Domains are Independent (users vs posts)`
+   treats this as a transitive cross-domain dependency and flags it as a
+   violation. It is not a real violation — `bootstrap.container` is the
+   composition root that intentionally knows about all features. Add one line:
+
+   ```
+   app.features.<domain>.<slice>.presentation.router -> app.bootstrap.container
+   ```
+
+   Without this entry the architecture gate test
+   (`test_architecture_gate_core_must_not_import_adapters`) fails.
 
 ## Auth dependencies
 

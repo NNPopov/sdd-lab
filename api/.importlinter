@@ -82,6 +82,9 @@ ignore_imports =
     app.features.posts.list_posts.presentation.router -> app.bootstrap.container
     app.features.posts.moderate_post.presentation.router -> app.bootstrap.container
     app.features.posts.revise_post.presentation.router -> app.bootstrap.container
+    app.features.posts.update_post.presentation.router -> app.bootstrap.container
+    app.features.posts.erase_post.presentation.router -> app.bootstrap.container
+    app.features.posts.erase_db_post.presentation.router -> app.bootstrap.container
     app.features.users.assign_moderator.presentation.router -> app.bootstrap.container
     app.features.users.create_user.presentation.router -> app.bootstrap.container
     app.features.users.delete_db_user.presentation.router -> app.bootstrap.container

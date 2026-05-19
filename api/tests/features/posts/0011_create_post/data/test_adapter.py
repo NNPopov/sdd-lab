@@ -6,9 +6,10 @@ from datetime import datetime
 import pytest
 from httpx import AsyncClient
 
+from app.features.posts._shared.entities import PostAuthor
 from app.features.posts.create_post.data.adapter import CreatePostAdapter
 from app.features.posts.create_post.domain.commands import CreatePostInternalCommand
-from app.features.posts.create_post.domain.entities import CreatedPost, PostAuthor
+from app.features.posts.create_post.domain.entities import CreatedPost
 
 pytestmark = pytest.mark.asyncio
 

@@ -6,6 +6,10 @@ from ..adapters.db.token_blacklist.adapter import TokenBlacklistAdapter
 from ..core.security import get_password_hash
 from ..features.posts.create_post.data.adapter import CreatePostAdapter
 from ..features.posts.create_post.domain.use_case import CreatePostUseCase
+from ..features.posts.erase_db_post.data.adapter import EraseDbPostAdapter
+from ..features.posts.erase_db_post.domain.use_case import EraseDbPostUseCase
+from ..features.posts.erase_post.data.adapter import ErasePostAdapter
+from ..features.posts.erase_post.domain.use_case import ErasePostUseCase
 from ..features.posts.get_moderation_log.data.adapter import GetModerationLogAdapter
 from ..features.posts.get_moderation_log.domain.use_case import GetModerationLogUseCase
 from ..features.posts.get_post.data.adapter import GetPostAdapter
@@ -20,6 +24,8 @@ from ..features.posts.moderate_post.data.adapter import ModeratePostAdapter
 from ..features.posts.moderate_post.domain.use_case import ModeratePostUseCase
 from ..features.posts.revise_post.data.adapter import RevisePostAdapter
 from ..features.posts.revise_post.domain.use_case import RevisePostUseCase
+from ..features.posts.update_post.data.adapter import UpdatePostAdapter
+from ..features.posts.update_post.domain.use_case import UpdatePostUseCase
 from ..features.users.assign_moderator.data.adapter import AssignModeratorAdapter
 from ..features.users.assign_moderator.domain.use_case import AssignModeratorUseCase
 from ..features.users.create_user.data.adapter import CreateUserAdapter
@@ -65,6 +71,9 @@ class Container(containers.DeclarativeContainer):
             f"{_app_pkg}.features.posts.moderate_post.presentation.router",
             f"{_app_pkg}.features.posts.revise_post.presentation.router",
             f"{_app_pkg}.features.posts.get_moderation_log.presentation.router",
+            f"{_app_pkg}.features.posts.update_post.presentation.router",
+            f"{_app_pkg}.features.posts.erase_post.presentation.router",
+            f"{_app_pkg}.features.posts.erase_db_post.presentation.router",
             f"{_app_pkg}.shared_dependencies",
         ]
     )
@@ -247,6 +256,36 @@ class Container(containers.DeclarativeContainer):
     get_post_use_case = providers.Factory(
         GetPostUseCase,
         port=get_post_adapter,
+    )
+
+    update_post_adapter = providers.Factory(
+        UpdatePostAdapter,
+        session_factory=session_factory,
+    )
+
+    update_post_use_case = providers.Factory(
+        UpdatePostUseCase,
+        port=update_post_adapter,
+    )
+
+    erase_post_adapter = providers.Factory(
+        ErasePostAdapter,
+        session_factory=session_factory,
+    )
+
+    erase_post_use_case = providers.Factory(
+        ErasePostUseCase,
+        port=erase_post_adapter,
+    )
+
+    erase_db_post_adapter = providers.Factory(
+        EraseDbPostAdapter,
+        session_factory=session_factory,
+    )
+
+    erase_db_post_use_case = providers.Factory(
+        EraseDbPostUseCase,
+        port=erase_db_post_adapter,
     )
 
 

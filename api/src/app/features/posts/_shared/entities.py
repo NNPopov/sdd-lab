@@ -2,7 +2,14 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+
+class PostAuthor(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    username: str
 
 
 class PostItem(BaseModel):

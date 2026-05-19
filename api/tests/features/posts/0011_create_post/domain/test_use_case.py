@@ -8,8 +8,9 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from app.domain.errors import ForbiddenDomainError, NotFoundDomainError
+from app.features.posts._shared.entities import PostAuthor
 from app.features.posts.create_post.domain.commands import CreatePostCommand
-from app.features.posts.create_post.domain.entities import CreatedPost, PostAuthor
+from app.features.posts.create_post.domain.entities import CreatedPost
 from app.features.posts.create_post.domain.use_case import CreatePostUseCase
 
 _AUTHOR = PostAuthor(id=42, username="alice")

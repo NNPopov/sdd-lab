@@ -1,0 +1,78 @@
+# FEATURE: erase_post — use-case unit tests.
+#
+# Covers: F3, F4, F5, F6.
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
+from app.domain.errors import ForbiddenDomainError, NotFoundDomainError
+from app.features.posts._shared.entities import PostAuthor
+from app.features.posts.erase_post.domain.commands import ErasePostCommand
+from app.features.posts.erase_post.domain.entities import ErasePostRecord
+from app.features.posts.erase_post.domain.use_case import ErasePostUseCase
+
+_AUTHOR = PostAuthor(id=1, username="alice")
+_POST = ErasePostRecord(id=10)
+_CMD = ErasePostCommand(username="alice", post_id=10, requester_username="alice")
+
+
+def _make_port(
+    *,
+    author: PostAuthor | None = _AUTHOR,
+    post: ErasePostRecord | None = _POST,
+) -> MagicMock:
+    port = MagicMock()
+    port.get_user_by_username = AsyncMock(return_value=author)
+    port.find_post = AsyncMock(return_value=post)
+    port.soft_delete = AsyncMock(return_value=None)
+    return port
+
+
+# ── F3: user not found ────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_raises_not_found_when_user_missing() -> None:
+    """F3 — get_user_by_username returns None → NotFoundDomainError('User not found')."""
+    use_case = ErasePostUseCase(port=_make_port(author=None))  # type: ignore[arg-type]
+    with pytest.raises(NotFoundDomainError) as exc_info:
+        await use_case(_CMD)
+    assert exc_info.value.message == "User not found"
+
+
+# ── F4: ownership mismatch ────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_raises_forbidden_when_requester_differs() -> None:
+    """F4 — requester_username != user.username → ForbiddenDomainError; soft_delete not called."""
+    cmd = ErasePostCommand(username="alice", post_id=10, requester_username="bob")
+    port = _make_port()
+    use_case = ErasePostUseCase(port=port)  # type: ignore[arg-type]
+    with pytest.raises(ForbiddenDomainError):
+        await use_case(cmd)
+    port.soft_delete.assert_not_called()
+
+
+# ── F5: post not found ────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_raises_not_found_when_post_missing() -> None:
+    """F5 — find_post returns None → NotFoundDomainError('Post not found')."""
+    use_case = ErasePostUseCase(port=_make_port(post=None))  # type: ignore[arg-type]
+    with pytest.raises(NotFoundDomainError) as exc_info:
+        await use_case(_CMD)
+    assert exc_info.value.message == "Post not found"
+
+
+# ── F6: happy path ────────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_happy_path_calls_soft_delete_once() -> None:
+    """F6 — all checks pass → port.soft_delete called exactly once with post_id."""
+    port = _make_port()
+    use_case = ErasePostUseCase(port=port)  # type: ignore[arg-type]
+    await use_case(_CMD)
+    port.soft_delete.assert_called_once_with(_CMD.post_id)

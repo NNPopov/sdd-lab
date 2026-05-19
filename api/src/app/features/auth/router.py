@@ -1,6 +1,6 @@
 # FEATURE: auth — login, refresh, and logout routes.
 from datetime import timedelta
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
@@ -76,7 +76,7 @@ async def refresh_access_token(
 async def logout(
     response: Response,
     access_token: str = Depends(oauth2_scheme),
-    refresh_token: Optional[str] = Cookie(None, alias="refresh_token"),
+    refresh_token: str | None = Cookie(None, alias="refresh_token"),
     blacklist: Annotated[TokenBlacklistPort, Depends(_get_token_blacklist_adapter)] = ...,  # type: ignore[assignment]
 ) -> dict[str, str]:
     try:

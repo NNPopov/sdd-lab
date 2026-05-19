@@ -27,7 +27,10 @@ Global index of all slices. Owned by `/to-prd`. Other skills read; never write.
 | 0021 | posts | list_posts_visibility | Complete | `specs/features/posts/0021_list_posts_visibility/` |
 | 0022 | posts | list_all_posts_visibility | Complete | `specs/features/posts/0022_list_all_posts_visibility/` |
 | 0023 | posts | expose_post_uuid | Complete | `specs/features/posts/0023_expose_post_uuid/` |
-| 0024 | posts | get_moderation_log | Planned | `specs/features/posts/0024_get_moderation_log/` |
-| 0025 | infra | refactor_token_blacklist | Planned | `specs/features/infra/0025_refactor_token_blacklist/` |
-| 0026 | posts | get_post | Planned | `specs/features/posts/0026_get_post/` |
-| 0027 | infra | migrate_di_wiring | Planned | `specs/features/infra/0027_migrate_di_wiring/` |
+| 0024 | posts | get_moderation_log | Complete | `specs/features/posts/0024_get_moderation_log/` |
+| 0025 | infra | refactor_token_blacklist | Complete | `specs/features/infra/0025_refactor_token_blacklist/` |
+| 0026 | posts | get_post | Complete | `specs/features/posts/0026_get_post/` |
+| 0027 | infra | migrate_di_wiring | Complete | `specs/features/infra/0027_migrate_di_wiring/` |
+| 0028 | posts | update_post | Complete | `specs/features/posts/0028_update_post/` |
+| 0029 | posts | erase_post | Complete | `specs/features/posts/0029_erase_post/` |
+| 0030 | posts | erase_db_post | Planned | `specs/features/posts/0030_erase_db_post/` |
