@@ -4,9 +4,9 @@ from unittest.mock import AsyncMock
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.bootstrap.container import container
 from app.domain.errors import DuplicateValueDomainError
 from app.features.users.create_user.domain.entities import CreatedUser
-from app.features.users.create_user.presentation.router import _get_create_user_use_case
 
 _ENDPOINT = "/api/v1/user"
 
@@ -36,12 +36,9 @@ def mocked_use_case() -> AsyncMock:
 async def http_client(mocked_use_case: AsyncMock) -> AsyncClient:
     from app.main import app
 
-    app.dependency_overrides[_get_create_user_use_case] = lambda: mocked_use_case
-    try:
+    with container.create_user_use_case.override(mocked_use_case):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
             yield client
-    finally:
-        app.dependency_overrides.pop(_get_create_user_use_case, None)
 
 
 @pytest.mark.asyncio

@@ -2,8 +2,10 @@
 import uuid
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_moderator_or_superuser
 from ..domain.commands import ModeratePostCommand
 from ..domain.use_case import ModeratePostUseCase
@@ -12,21 +14,16 @@ from .schemas import ModeratePostRequest, ModeratePostResponse, ModerationLogEnt
 router = APIRouter()
 
 
-def _get_moderate_post_use_case() -> ModeratePostUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.moderate_post_use_case()
-
-
 @router.post(
     "/posts/{post_uuid}/moderate",
     response_model=ModeratePostResponse,
     status_code=status.HTTP_200_OK,
 )
+@inject
 async def moderate_post_endpoint(
     post_uuid: uuid.UUID,
     request: ModeratePostRequest,
-    use_case: Annotated[ModeratePostUseCase, Depends(_get_moderate_post_use_case)],
+    use_case: Annotated[ModeratePostUseCase, Depends(Provide[Container.moderate_post_use_case])],
     current_user: Annotated[dict, Depends(get_current_moderator_or_superuser)],
 ) -> ModeratePostResponse:
     command = ModeratePostCommand(

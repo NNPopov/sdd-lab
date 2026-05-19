@@ -39,8 +39,36 @@ from ..features.users.revoke_moderator.domain.use_case import RevokeModeratorUse
 from ..features.users.update_user.data.adapter import UpdateUserAdapter
 from ..features.users.update_user.domain.use_case import UpdateUserUseCase
 
+# Derive app package prefix from this module's qualified name so WiringConfiguration
+# uses the same namespace the app was loaded under — "app" when started from src/,
+# "src.app" when started as `uvicorn src.app.main:app` from the project root.
+_app_pkg = __name__.rsplit(".bootstrap.container", 1)[0]
+
 
 class Container(containers.DeclarativeContainer):
+    wiring_config = containers.WiringConfiguration(
+        modules=[
+            f"{_app_pkg}.features.users.create_user.presentation.router",
+            f"{_app_pkg}.features.users.list_users.presentation.router",
+            f"{_app_pkg}.features.users.get_user_by_username.presentation.router",
+            f"{_app_pkg}.features.users.get_user_tier.presentation.router",
+            f"{_app_pkg}.features.users.update_user.presentation.router",
+            f"{_app_pkg}.features.users.delete_user.presentation.router",
+            f"{_app_pkg}.features.users.delete_db_user.presentation.router",
+            f"{_app_pkg}.features.users.assign_moderator.presentation.router",
+            f"{_app_pkg}.features.users.revoke_moderator.presentation.router",
+            f"{_app_pkg}.features.posts.create_post.presentation.router",
+            f"{_app_pkg}.features.posts.list_posts.presentation.router",
+            f"{_app_pkg}.features.posts.list_all_posts.presentation.router",
+            f"{_app_pkg}.features.posts.list_pending_posts.presentation.router",
+            f"{_app_pkg}.features.posts.get_post.presentation.router",
+            f"{_app_pkg}.features.posts.moderate_post.presentation.router",
+            f"{_app_pkg}.features.posts.revise_post.presentation.router",
+            f"{_app_pkg}.features.posts.get_moderation_log.presentation.router",
+            f"{_app_pkg}.shared_dependencies",
+        ]
+    )
+
     session_factory = providers.Object(local_session)
 
     password_hasher = providers.Object(get_password_hash)

@@ -2,8 +2,10 @@
 import uuid
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_user
 from ..domain.commands import RevisePostCommand
 from ..domain.use_case import RevisePostUseCase
@@ -12,21 +14,16 @@ from .schemas import RevisePostRequest, RevisePostResponse, RevisionLogEntrySche
 router = APIRouter()
 
 
-def _get_revise_post_use_case() -> RevisePostUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.revise_post_use_case()
-
-
 @router.patch(
     "/posts/{post_uuid}/revise",
     response_model=RevisePostResponse,
     status_code=status.HTTP_200_OK,
 )
+@inject
 async def revise_post_endpoint(
     post_uuid: uuid.UUID,
     request: RevisePostRequest,
-    use_case: Annotated[RevisePostUseCase, Depends(_get_revise_post_use_case)],
+    use_case: Annotated[RevisePostUseCase, Depends(Provide[Container.revise_post_use_case])],
     current_user: Annotated[dict, Depends(get_current_user)],
 ) -> RevisePostResponse:
     command = RevisePostCommand(

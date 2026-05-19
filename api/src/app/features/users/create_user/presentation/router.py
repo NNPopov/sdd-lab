@@ -1,8 +1,10 @@
 # FEATURE: create_user — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
+from .....bootstrap.container import Container
 from ..domain.commands import CreateUserCommand
 from ..domain.use_case import CreateUserUseCase
 from .schemas import CreateUserRequest, CreateUserResponse
@@ -10,17 +12,11 @@ from .schemas import CreateUserRequest, CreateUserResponse
 router = APIRouter()
 
 
-def _get_create_user_use_case() -> CreateUserUseCase:
-    # Relative import keeps us in the same module hierarchy regardless of entry point.
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.create_user_use_case()
-
-
 @router.post("/user", response_model=CreateUserResponse, status_code=201)
+@inject
 async def create_user(
     request: CreateUserRequest,
-    use_case: Annotated[CreateUserUseCase, Depends(_get_create_user_use_case)],
+    use_case: Annotated[CreateUserUseCase, Depends(Provide[Container.create_user_use_case])],
 ) -> CreateUserResponse:
     command = CreateUserCommand(
         name=request.name,

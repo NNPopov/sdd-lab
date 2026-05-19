@@ -1,21 +1,17 @@
 # FEATURE: list_all_posts — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, Request
 
 from .....adapters.cache.redis_cache import cache
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_optional_user
 from ..domain.commands import ListAllPostsQuery
 from ..domain.use_case import ListAllPostsUseCase
 from .schemas import ListAllPostsResponse, PostItemSchema
 
 router = APIRouter(tags=["posts"])
-
-
-def _get_list_all_posts_use_case() -> ListAllPostsUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.list_all_posts_use_case()
 
 
 async def _get_view(
@@ -32,9 +28,10 @@ async def _get_view(
     resource_id_name="page",
     expiration=60,
 )
+@inject
 async def list_all_posts_endpoint(
     request: Request,
-    use_case: Annotated[ListAllPostsUseCase, Depends(_get_list_all_posts_use_case)],
+    use_case: Annotated[ListAllPostsUseCase, Depends(Provide[Container.list_all_posts_use_case])],
     view: Annotated[str, Depends(_get_view)],
     page: int = Query(default=1, ge=1),
     items_per_page: int = Query(default=10, ge=1, le=100),

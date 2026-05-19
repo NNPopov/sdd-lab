@@ -100,7 +100,7 @@ async def test_create_user_duplicate_username(client: AsyncClient, db_session, _
     )
 
     assert response.status_code == 409
-    assert response.json() == {"message": "Username or email already taken"}
+    assert response.json() == {"error": {"code": "duplicatevalue", "message": "Username or email already taken"}}
 ```
 
 Notes on the code:

@@ -1,8 +1,10 @@
 # FEATURE: list_pending_posts — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_moderator_or_superuser
 from ..domain.commands import ListPendingPostsQuery
 from ..domain.use_case import ListPendingPostsUseCase
@@ -11,19 +13,14 @@ from .schemas import ListPendingPostsResponse, PendingModerationLogEntrySchema, 
 router = APIRouter()
 
 
-def _get_list_pending_posts_use_case() -> ListPendingPostsUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.list_pending_posts_use_case()
-
-
 @router.get(
     "/posts/pending",
     response_model=ListPendingPostsResponse,
     status_code=status.HTTP_200_OK,
 )
+@inject
 async def list_pending_posts_endpoint(
-    use_case: Annotated[ListPendingPostsUseCase, Depends(_get_list_pending_posts_use_case)],
+    use_case: Annotated[ListPendingPostsUseCase, Depends(Provide[Container.list_pending_posts_use_case])],
     current_user: Annotated[dict, Depends(get_current_moderator_or_superuser)],
     page: int = Query(default=1, ge=1),
     items_per_page: int = Query(default=10, ge=1, le=100),

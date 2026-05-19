@@ -1,8 +1,10 @@
 # FEATURE: get_user_by_username — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
+from .....bootstrap.container import Container
 from ..domain.commands import GetUserByUsernameQuery
 from ..domain.use_case import GetUserByUsernameUseCase
 from .schemas import GetUserByUsernameResponse
@@ -10,16 +12,11 @@ from .schemas import GetUserByUsernameResponse
 router = APIRouter()
 
 
-def _get_get_user_by_username_use_case() -> GetUserByUsernameUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.get_user_by_username_use_case()
-
-
 @router.get("/user/{username}", response_model=GetUserByUsernameResponse, status_code=200)
+@inject
 async def get_user_by_username(
     username: str,
-    use_case: Annotated[GetUserByUsernameUseCase, Depends(_get_get_user_by_username_use_case)],
+    use_case: Annotated[GetUserByUsernameUseCase, Depends(Provide[Container.get_user_by_username_use_case])],
 ) -> GetUserByUsernameResponse:
     query = GetUserByUsernameQuery(username=username)
     entity = await use_case(query)

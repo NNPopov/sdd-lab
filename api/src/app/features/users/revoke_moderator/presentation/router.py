@@ -1,8 +1,10 @@
 # FEATURE: revoke_moderator — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_superuser
 from ..domain.commands import RevokeModeratorCommand
 from ..domain.use_case import RevokeModeratorUseCase
@@ -11,20 +13,15 @@ from .schemas import RevokeModeratorResponse
 router = APIRouter()
 
 
-def _get_revoke_moderator_use_case() -> RevokeModeratorUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.revoke_moderator_use_case()
-
-
 @router.patch(
     "/users/{username}/revoke-moderator",
     response_model=RevokeModeratorResponse,
     status_code=200,
 )
+@inject
 async def revoke_moderator_endpoint(
     username: str,
-    use_case: Annotated[RevokeModeratorUseCase, Depends(_get_revoke_moderator_use_case)],
+    use_case: Annotated[RevokeModeratorUseCase, Depends(Provide[Container.revoke_moderator_use_case])],
     current_superuser: Annotated[dict, Depends(get_current_superuser)],
 ) -> RevokeModeratorResponse:
     command = RevokeModeratorCommand(

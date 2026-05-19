@@ -1,6 +1,7 @@
 # STABLE: Cross-slice dependencies. Rate limiting and auth helpers cross all feature slices.
 from typing import Annotated, Any
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import Depends, HTTPException, Request
 from fastcrud.exceptions.http_exceptions import ForbiddenException, RateLimitException, UnauthorizedException
 from sqlalchemy import select
@@ -9,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .adapters.db.models.user import User as UserModel
 from .adapters.db.session import async_get_db
 from .adapters.rate_limit.redis_rate_limiter import rate_limiter
+from .bootstrap.container import Container
 from .core.config import settings
 from .core.logger import logging
 from .core.security import TokenType, oauth2_scheme, verify_token
@@ -46,16 +48,11 @@ async def _get_user_by_credential(db: AsyncSession, credential: str) -> dict[str
     }
 
 
-def _get_token_blacklist_adapter() -> TokenBlacklistPort:
-    from .bootstrap.container import container  # noqa: PLC0415
-
-    return container.token_blacklist_adapter()
-
-
+@inject
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[AsyncSession, Depends(async_get_db)],
-    blacklist: Annotated[TokenBlacklistPort, Depends(_get_token_blacklist_adapter)],
+    blacklist: Annotated[TokenBlacklistPort, Depends(Provide[Container.token_blacklist_adapter])],
 ) -> dict[str, Any]:
     token_data = await verify_token(token, TokenType.ACCESS, blacklist)
     if token_data is None:
@@ -66,10 +63,11 @@ async def get_current_user(
     return user
 
 
+@inject
 async def get_optional_user(
     request: Request,
     db: AsyncSession = Depends(async_get_db),
-    blacklist: TokenBlacklistPort = Depends(_get_token_blacklist_adapter),
+    blacklist: TokenBlacklistPort = Depends(Provide[Container.token_blacklist_adapter]),
 ) -> dict | None:
     token = request.headers.get("Authorization")
     if not token:

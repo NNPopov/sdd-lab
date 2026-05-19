@@ -22,6 +22,9 @@ from ..adapters.http.middleware.client_cache_middleware import ClientCacheMiddle
 from ..adapters.http.middleware.logger_middleware import LoggerMiddleware
 from ..adapters.queue import arq_queue as queue
 from ..adapters.rate_limit.redis_rate_limiter import rate_limiter
+from ..bootstrap.container import (
+    container as _container,  # noqa: F401 — must precede shared_dependencies to resolve circular-import from wiring
+)
 from ..core.config import (
     AppSettings,
     ClientSideCacheSettings,

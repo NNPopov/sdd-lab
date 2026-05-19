@@ -76,6 +76,7 @@ ignore_imports =
     # posts→users and users→posts path through the container. Not a real violation.
     app.features.posts.create_post.presentation.router -> app.bootstrap.container
     app.features.posts.get_moderation_log.presentation.router -> app.bootstrap.container
+    app.features.posts.get_post.presentation.router -> app.bootstrap.container
     app.features.posts.list_all_posts.presentation.router -> app.bootstrap.container
     app.features.posts.list_pending_posts.presentation.router -> app.bootstrap.container
     app.features.posts.list_posts.presentation.router -> app.bootstrap.container

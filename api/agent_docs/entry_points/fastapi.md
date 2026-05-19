@@ -33,7 +33,7 @@ types, invoke the use-case, and convert the result back. Nothing else.
 # FEATURE: create_user — router.
 from typing import Annotated
 
-from dependency_injector.wiring import Provide
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
 from app.bootstrap.container import Container
@@ -52,6 +52,7 @@ router = APIRouter(tags=["users"])
     response_model=CreateUserResponse,
     status_code=status.HTTP_201_CREATED,
 )
+@inject
 async def create_user_endpoint(
     request: CreateUserRequest,
     use_case: Annotated[
@@ -145,11 +146,12 @@ Use the `dependency_injector` pattern with `Annotated` and `Provide`:
 
 ```python
 from typing import Annotated
-from dependency_injector.wiring import Provide
+from dependency_injector.wiring import Provide, inject
 from fastapi import Depends
 
 from app.bootstrap.container import Container
 
+@inject
 async def endpoint(
     use_case: Annotated[SomeUseCase, Depends(Provide[Container.some_use_case])],
 ) -> ...: ...
@@ -169,9 +171,15 @@ class Container(containers.DeclarativeContainer):
     )
 ```
 
-Adding a slice means adding its router module to the wiring list. This is
-permitted as part of normal feature work (the same way adding a router to
-`bootstrap/router.py` is permitted).
+**Adding a new slice requires three bootstrap steps — all three are mandatory:**
+
+1. Add providers to `bootstrap/container.py` (adapters and use-case factories).
+2. Add the router to `bootstrap/router.py` via `include_router`.
+3. **Add the router's module path to `Container.wiring_config.modules`** (the
+   step most often forgotten). Without it, `Provide[...]` silently resolves to
+   the provider sentinel object instead of the use-case instance, producing an
+   `AttributeError` at request time rather than at startup — the error is hard
+   to trace because the app starts without complaint.
 
 ## Auth dependencies
 
@@ -197,6 +205,7 @@ async def get_current_superuser(
 Endpoints that require an authenticated user inject one of these:
 
 ```python
+@inject
 async def delete_post_endpoint(
     post_id: int,
     actor: Annotated[CurrentUser, Depends(get_current_user)],
@@ -238,6 +247,7 @@ from app.adapters.cache.redis_cache import cache
     resource_id_name="username",
     expiration=60,
 )
+@inject
 async def list_user_posts_endpoint(
     request: Request,  # required by the decorator
     username: str,
@@ -256,6 +266,7 @@ Invalidation on writes:
     resource_id_name="post_id",
     pattern_to_invalidate_extra=["user_posts:{username}:*"],
 )
+@inject
 async def delete_post_endpoint(...): ...
 ```
 

@@ -1,8 +1,10 @@
 # FEATURE: assign_moderator — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_superuser
 from ..domain.commands import AssignModeratorCommand
 from ..domain.use_case import AssignModeratorUseCase
@@ -11,20 +13,15 @@ from .schemas import AssignModeratorResponse
 router = APIRouter()
 
 
-def _get_assign_moderator_use_case() -> AssignModeratorUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.assign_moderator_use_case()
-
-
 @router.patch(
     "/user/{username}/assign-moderator",
     response_model=AssignModeratorResponse,
     status_code=200,
 )
+@inject
 async def assign_moderator_endpoint(
     username: str,
-    use_case: Annotated[AssignModeratorUseCase, Depends(_get_assign_moderator_use_case)],
+    use_case: Annotated[AssignModeratorUseCase, Depends(Provide[Container.assign_moderator_use_case])],
     current_superuser: Annotated[dict, Depends(get_current_superuser)],
 ) -> AssignModeratorResponse:
     command = AssignModeratorCommand(

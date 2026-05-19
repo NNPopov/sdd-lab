@@ -2,8 +2,10 @@
 from typing import Annotated
 from uuid import UUID
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, status
 
+from .....bootstrap.container import Container
 from .....shared_dependencies import get_current_user
 from ..domain.commands import GetModerationLogQuery
 from ..domain.use_case import GetModerationLogUseCase
@@ -12,20 +14,15 @@ from .schemas import GetModerationLogResponse, ModerationLogEntrySchema
 router = APIRouter()
 
 
-def _get_get_moderation_log_use_case() -> GetModerationLogUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.get_moderation_log_use_case()
-
-
 @router.get(
     "/posts/{post_uuid}/moderation-log",
     response_model=GetModerationLogResponse,
     status_code=status.HTTP_200_OK,
 )
+@inject
 async def get_moderation_log_endpoint(
     post_uuid: UUID,
-    use_case: Annotated[GetModerationLogUseCase, Depends(_get_get_moderation_log_use_case)],
+    use_case: Annotated[GetModerationLogUseCase, Depends(Provide[Container.get_moderation_log_use_case])],
     current_user: Annotated[dict, Depends(get_current_user)],
 ) -> GetModerationLogResponse:
     query = GetModerationLogQuery(

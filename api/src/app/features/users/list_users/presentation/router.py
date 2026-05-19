@@ -1,8 +1,10 @@
 # FEATURE: list_users — HTTP router.
 from typing import Annotated
 
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 
+from .....bootstrap.container import Container
 from ..domain.commands import ListUsersQuery
 from ..domain.use_case import ListUsersUseCase
 from .schemas import ListedUserSchema, ListUsersResponse
@@ -10,15 +12,10 @@ from .schemas import ListedUserSchema, ListUsersResponse
 router = APIRouter()
 
 
-def _get_list_users_use_case() -> ListUsersUseCase:
-    from .....bootstrap.container import container  # noqa: PLC0415
-
-    return container.list_users_use_case()
-
-
 @router.get("/users", response_model=ListUsersResponse, status_code=200)
+@inject
 async def list_users(
-    use_case: Annotated[ListUsersUseCase, Depends(_get_list_users_use_case)],
+    use_case: Annotated[ListUsersUseCase, Depends(Provide[Container.list_users_use_case])],
     page: int = Query(default=1, ge=1),
     items_per_page: int = Query(default=10, ge=1),
 ) -> ListUsersResponse:
