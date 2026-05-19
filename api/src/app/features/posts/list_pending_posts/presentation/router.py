@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, status
 
-from ....users.dependencies import get_current_moderator_or_superuser
+from .....shared_dependencies import get_current_moderator_or_superuser
 from ..domain.commands import ListPendingPostsQuery
 from ..domain.use_case import ListPendingPostsUseCase
 from .schemas import ListPendingPostsResponse, PendingModerationLogEntrySchema, PendingPostItemSchema

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from ...dependencies import get_current_user
+from .....shared_dependencies import get_current_user
 from ..domain.commands import UpdateUserCommand
 from ..domain.use_case import UpdateUserUseCase
 from .schemas import UpdateUserRequest, UpdateUserResponse

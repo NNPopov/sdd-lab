@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from .....core.security import oauth2_scheme
 from .....core.token_blacklist_service import TokenBlacklistService
-from ...dependencies import get_current_user
+from .....shared_dependencies import get_current_user
 from ..domain.commands import DeleteUserCommand
 from ..domain.use_case import DeleteUserUseCase
 from .schemas import DeleteUserResponse

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ...adapters.cache.redis_cache import cache
 from ...adapters.db.session import async_get_db
 from ...domain.errors import ForbiddenDomainError, NotFoundDomainError
-from ..users.dependencies import get_current_superuser, get_current_user
+from ...shared_dependencies import get_current_superuser, get_current_user
 from ..users.repository import crud_users
 from ..users.schemas import UserRead
 from .create_post.presentation.router import router as create_post_router

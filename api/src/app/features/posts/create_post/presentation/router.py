@@ -3,7 +3,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, status
 
-from .....features.users.dependencies import get_current_user
+from .....shared_dependencies import get_current_user
 from ..domain.commands import CreatePostCommand
 from ..domain.use_case import CreatePostUseCase
 from .schemas import CreatePostRequest, CreatePostResponse

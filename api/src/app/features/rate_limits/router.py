@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends
 from fastcrud import PaginatedListResponse
 
-from ...features.users.dependencies import get_current_superuser
+from ...shared_dependencies import get_current_superuser
 from ..rate_limits.schemas import RateLimitRead
 from .use_cases.rate_limit_delete import erase_rate_limit
 from .use_cases.rate_limit_get import read_rate_limits

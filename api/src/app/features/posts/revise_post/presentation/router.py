@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from ....users.dependencies import get_current_user
+from .....shared_dependencies import get_current_user
 from ..domain.commands import RevisePostCommand
 from ..domain.use_case import RevisePostUseCase
 from .schemas import RevisePostRequest, RevisePostResponse, RevisionLogEntrySchema

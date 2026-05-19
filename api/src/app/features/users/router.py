@@ -1,12 +1,12 @@
 # FEATURE: users — router.
 from fastapi import APIRouter, Depends
 
+from ...shared_dependencies import get_current_superuser
 from ..users.schemas import UserMeRead
 from .assign_moderator.presentation.router import router as assign_moderator_router
 from .create_user.presentation.router import router as create_user_router
 from .delete_db_user.presentation.router import router as delete_db_user_router
 from .delete_user.presentation.router import router as delete_user_router
-from .dependencies import get_current_superuser
 from .get_user_by_username.presentation.router import router as get_user_by_username_router
 from .get_user_tier.presentation.router import router as get_user_tier_router
 from .list_users.presentation.router import router as list_users_router

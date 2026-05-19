@@ -35,7 +35,7 @@ from ..core.config import (
     settings,
 )
 from ..domain.errors import DomainError
-from ..features.users.dependencies import get_current_superuser
+from ..shared_dependencies import get_current_superuser
 
 
 # -------------- database --------------

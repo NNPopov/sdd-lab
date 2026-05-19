@@ -4,7 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 
-from ....users.dependencies import get_current_user
+from .....shared_dependencies import get_current_user
 from ..domain.commands import GetModerationLogQuery
 from ..domain.use_case import GetModerationLogUseCase
 from .schemas import GetModerationLogResponse, ModerationLogEntrySchema

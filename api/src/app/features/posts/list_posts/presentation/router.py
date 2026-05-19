@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request
 
 from .....adapters.cache.redis_cache import cache
-from ....users.dependencies import get_optional_user
+from .....shared_dependencies import get_optional_user
 from ..domain.commands import ListPostsQuery
 from ..domain.use_case import ListPostsUseCase
 from .schemas import ListPostsResponse, PostItemSchema

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from ...dependencies import get_current_superuser
+from .....shared_dependencies import get_current_superuser
 from ..domain.commands import AssignModeratorCommand
 from ..domain.use_case import AssignModeratorUseCase
 from .schemas import AssignModeratorResponse

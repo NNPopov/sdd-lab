@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from ....users.dependencies import get_current_moderator_or_superuser
+from .....shared_dependencies import get_current_moderator_or_superuser
 from ..domain.commands import ModeratePostCommand
 from ..domain.use_case import ModeratePostUseCase
 from .schemas import ModeratePostRequest, ModeratePostResponse, ModerationLogEntrySchema

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ...adapters.db.session import async_get_db
 from ...domain.errors import DuplicateValueDomainError, NotFoundDomainError
-from ..users.dependencies import get_current_superuser
+from ...shared_dependencies import get_current_superuser
 from .repository import crud_tiers
 from .schemas import TierCreate, TierCreateInternal, TierRead, TierUpdate
 

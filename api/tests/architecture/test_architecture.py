@@ -20,6 +20,7 @@ from VSA-specific checks:
   features/users/use_cases/
   features/*/repository.py
 """
+
 from __future__ import annotations
 
 import ast
@@ -55,9 +56,9 @@ _VSA_DOMAINS = ("users", "posts")
 # pytestarch 4.x API: root_path = dir containing the package; module_path = abs
 # path to the package. Module names in rules carry the "src.app.*" prefix because
 # root_path's parent (project root) is the implicit namespace root.
-_PYTESTARCH_ROOT = str(_SRC)          # "…/api/src"
-_PYTESTARCH_MODULE = str(_APP)         # "…/api/src/app"
-_M = "src.app"                         # module name prefix used in all Rule() calls
+_PYTESTARCH_ROOT = str(_SRC)  # "…/api/src"
+_PYTESTARCH_MODULE = str(_APP)  # "…/api/src/app"
+_M = "src.app"  # module name prefix used in all Rule() calls
 
 
 @pytest.fixture(scope="session")
@@ -318,13 +319,9 @@ def test_vsa_domains_do_not_import_each_other(domain: str, other: str) -> None:
                 feat_idx = next((i for i, s in enumerate(segments) if s == "features"), -1)
                 if feat_idx != -1 and feat_idx + 1 < len(segments):
                     if segments[feat_idx + 1] == other:
-                        violations.append(
-                            f"{filepath.relative_to(_APP)}: "
-                            f"relative import {'.' * level}{module}"
-                        )
-    assert not violations, (
-        f"Domain '{domain}' imports from domain '{other}':\n"
-        + "\n".join(f"  {v}" for v in violations)
+                        violations.append(f"{filepath.relative_to(_APP)}: relative import {'.' * level}{module}")
+    assert not violations, f"Domain '{domain}' imports from domain '{other}':\n" + "\n".join(
+        f"  {v}" for v in violations
     )
 
 
@@ -342,16 +339,10 @@ def test_use_case_class_has_async_call(filepath: Path) -> None:
     tree = ast.parse(filepath.read_text(encoding="utf-8"))
     use_case_classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
 
-    assert use_case_classes, (
-        f"{filepath.relative_to(_APP)}: no class defined in use_case.py"
-    )
+    assert use_case_classes, f"{filepath.relative_to(_APP)}: no class defined in use_case.py"
 
     for cls in use_case_classes:
-        method_names = {
-            n.name
-            for n in ast.walk(cls)
-            if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
-        }
+        method_names = {n.name for n in ast.walk(cls) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
         assert "__call__" in method_names, (
             f"{filepath.relative_to(_APP)}: class {cls.name!r} has no __call__ method.\n"
             f"  Use-cases must be callable classes."
@@ -374,9 +365,7 @@ def test_adapter_inherits_from_port(filepath: Path) -> None:
     contract.
     """
     tree = ast.parse(filepath.read_text(encoding="utf-8"))
-    adapter_classes = [
-        n for n in ast.walk(tree) if isinstance(n, ast.ClassDef) and "Adapter" in n.name
-    ]
+    adapter_classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef) and "Adapter" in n.name]
 
     assert adapter_classes, (
         f"{filepath.relative_to(_APP)}: no class with 'Adapter' in the name found.\n"
@@ -413,9 +402,7 @@ _FEATURE_PY_FILES = [
 ]
 
 
-@pytest.mark.parametrize(
-    "filepath", _FEATURE_PY_FILES, ids=lambda p: str(p.relative_to(_APP))
-)
+@pytest.mark.parametrize("filepath", _FEATURE_PY_FILES, ids=lambda p: str(p.relative_to(_APP)))
 def test_feature_file_has_stability_header(filepath: Path) -> None:
     """Every .py file in features/ must begin with # STABLE: or # FEATURE:."""
     first_line = filepath.read_text(encoding="utf-8").splitlines()[0] if filepath.stat().st_size > 0 else ""
@@ -427,6 +414,7 @@ def test_feature_file_has_stability_header(filepath: Path) -> None:
 
 
 # ── sanity: ensure file collection is non-empty ────────────────────────────
+
 
 def test_collection_sanity() -> None:
     """Guard against misconfigured paths that would make all parametrize tests vacuous."""
