@@ -159,6 +159,8 @@ class _NavTab extends StatelessWidget {
   }
 }
 
+enum _UserMenuAction { myProfile, myPosts, signOut }
+
 class _AuthAppBarAction extends StatelessWidget {
   const _AuthAppBarAction();
 
@@ -166,17 +168,31 @@ class _AuthAppBarAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) => switch (state) {
-        AuthAuthenticated(:final currentUser) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(currentUser?.username ?? ''),
-            IconButton(
-              icon: const Icon(Icons.logout),
-              tooltip: context.t.auth.logout.confirm,
-              onPressed: () => _confirmLogout(context),
+        AuthAuthenticated(:final currentUser) when currentUser != null =>
+          PopupMenuButton<_UserMenuAction>(
+            onSelected: (action) =>
+                _onMenuAction(context, action, currentUser.username),
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: _UserMenuAction.myProfile,
+                child: Text(context.t.userMenu.myProfile),
+              ),
+              PopupMenuItem(
+                value: _UserMenuAction.myPosts,
+                child: Text(context.t.userMenu.myPosts),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: _UserMenuAction.signOut,
+                child: Text(context.t.auth.logout.confirm),
+              ),
+            ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(currentUser.username),
             ),
-          ],
-        ),
+          ),
+        AuthAuthenticated() => const SizedBox.shrink(),
         AuthUnauthenticated() || AuthError() => TextButton(
           onPressed: () => unawaited(context.router.push(LoginRoute())),
           child: Text(context.t.auth.login.signInButton),
@@ -192,6 +208,21 @@ class _AuthAppBarAction extends StatelessWidget {
         AuthUnknown() => const SizedBox.shrink(),
       },
     );
+  }
+
+  void _onMenuAction(
+    BuildContext context,
+    _UserMenuAction action,
+    String username,
+  ) {
+    switch (action) {
+      case _UserMenuAction.myProfile:
+        unawaited(context.router.push(UserDetailsRoute(username: username)));
+      case _UserMenuAction.myPosts:
+        unawaited(context.router.push(UserPostsRoute(username: username)));
+      case _UserMenuAction.signOut:
+        _confirmLogout(context);
+    }
   }
 
   void _confirmLogout(BuildContext context) {

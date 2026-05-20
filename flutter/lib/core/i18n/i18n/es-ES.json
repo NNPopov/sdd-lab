@@ -231,6 +231,10 @@
       }
     }
   },
+  "userMenu": {
+    "myProfile": "Mi perfil",
+    "myPosts": "Mis publicaciones"
+  },
   "users": {
     "title": "Usuarios",
     "list": {

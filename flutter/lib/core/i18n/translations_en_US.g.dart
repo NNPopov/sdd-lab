@@ -46,6 +46,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsCommonEnUs common = TranslationsCommonEnUs._(_root);
 	late final TranslationsTiersEnUs tiers = TranslationsTiersEnUs._(_root);
 	late final TranslationsPostsEnUs posts = TranslationsPostsEnUs._(_root);
+	late final TranslationsUserMenuEnUs userMenu = TranslationsUserMenuEnUs._(_root);
 	late final TranslationsUsersEnUs users = TranslationsUsersEnUs._(_root);
 }
 
@@ -151,6 +152,21 @@ class TranslationsPostsEnUs {
 	late final TranslationsPostsPendingPostsEnUs pendingPosts = TranslationsPostsPendingPostsEnUs._(_root);
 	late final TranslationsPostsModeratePostEnUs moderatePost = TranslationsPostsModeratePostEnUs._(_root);
 	late final TranslationsPostsCreatePostEnUs createPost = TranslationsPostsCreatePostEnUs._(_root);
+}
+
+// Path: userMenu
+class TranslationsUserMenuEnUs {
+	TranslationsUserMenuEnUs._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en-US: 'My Profile'
+	String get myProfile => 'My Profile';
+
+	/// en-US: 'My Posts'
+	String get myPosts => 'My Posts';
 }
 
 // Path: users
@@ -1439,6 +1455,8 @@ extension on Translations {
 			'posts.createPost.errors.textTooLong' => 'Text must be at most 63206 characters',
 			'posts.createPost.errors.forbidden' => 'You can only publish posts as yourself',
 			'posts.createPost.errors.generic' => 'Failed to publish post. Please try again.',
+			'userMenu.myProfile' => 'My Profile',
+			'userMenu.myPosts' => 'My Posts',
 			'users.title' => 'Users',
 			'users.list.loadMoreError' => 'Failed to load more users',
 			'users.list.userDetails' => 'Details',

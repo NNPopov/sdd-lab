@@ -43,6 +43,7 @@ class TranslationsEsEs with BaseTranslations<AppLocale, Translations> implements
 	@override late final _TranslationsCommonEsEs common = _TranslationsCommonEsEs._(_root);
 	@override late final _TranslationsTiersEsEs tiers = _TranslationsTiersEsEs._(_root);
 	@override late final _TranslationsPostsEsEs posts = _TranslationsPostsEsEs._(_root);
+	@override late final _TranslationsUserMenuEsEs userMenu = _TranslationsUserMenuEsEs._(_root);
 	@override late final _TranslationsUsersEsEs users = _TranslationsUsersEsEs._(_root);
 }
 
@@ -126,6 +127,17 @@ class _TranslationsPostsEsEs implements TranslationsPostsEnUs {
 	@override late final _TranslationsPostsPendingPostsEsEs pendingPosts = _TranslationsPostsPendingPostsEsEs._(_root);
 	@override late final _TranslationsPostsModeratePostEsEs moderatePost = _TranslationsPostsModeratePostEsEs._(_root);
 	@override late final _TranslationsPostsCreatePostEsEs createPost = _TranslationsPostsCreatePostEsEs._(_root);
+}
+
+// Path: userMenu
+class _TranslationsUserMenuEsEs implements TranslationsUserMenuEnUs {
+	_TranslationsUserMenuEsEs._(this._root);
+
+	final TranslationsEsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get myProfile => 'Mi perfil';
+	@override String get myPosts => 'Mis publicaciones';
 }
 
 // Path: users
@@ -972,6 +984,8 @@ extension on TranslationsEsEs {
 			'posts.createPost.errors.textTooLong' => 'El texto no puede superar los 63206 caracteres',
 			'posts.createPost.errors.forbidden' => 'Solo puede publicar como usted mismo',
 			'posts.createPost.errors.generic' => 'Error al publicar. Inténtelo de nuevo.',
+			'userMenu.myProfile' => 'Mi perfil',
+			'userMenu.myPosts' => 'Mis publicaciones',
 			'users.title' => 'Usuarios',
 			'users.list.loadMoreError' => 'Error al cargar más usuarios',
 			'users.list.userDetails' => 'Detalles',

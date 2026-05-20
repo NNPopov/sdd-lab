@@ -128,38 +128,38 @@ void main() {
     // Stub cubits that are resolved via getIt by destination pages.
 
     final usersListCubit = _MockUsersListCubit();
-    when(() => usersListCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
-    when(() => usersListCubit.state)
-        .thenReturn(const UsersListState.initial());
+    when(() => usersListCubit.stream).thenAnswer((_) => const Stream.empty());
+    when(() => usersListCubit.state).thenReturn(const UsersListState.initial());
     when(usersListCubit.fetchUsers).thenAnswer((_) async {});
 
     final userDetailsCubit = _MockUserDetailsCubit();
-    when(() => userDetailsCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
-    when(() => userDetailsCubit.state)
-        .thenReturn(const UserDetailsState.initial());
+    when(() => userDetailsCubit.stream).thenAnswer((_) => const Stream.empty());
+    when(
+      () => userDetailsCubit.state,
+    ).thenReturn(const UserDetailsState.initial());
     when(() => userDetailsCubit.load(any())).thenAnswer((_) async {});
     when(() => userDetailsCubit.retry(any())).thenAnswer((_) async {});
 
     final getUserTierCubit = _MockGetUserTierCubit();
-    when(() => getUserTierCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
-    when(() => getUserTierCubit.state)
-        .thenReturn(const GetUserTierState.initial());
+    when(() => getUserTierCubit.stream).thenAnswer((_) => const Stream.empty());
+    when(
+      () => getUserTierCubit.state,
+    ).thenReturn(const GetUserTierState.initial());
     when(() => getUserTierCubit.load(any())).thenAnswer((_) async {});
 
     final updateUserTierCubit = _MockUpdateUserTierCubit();
-    when(() => updateUserTierCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
-    when(() => updateUserTierCubit.state)
-        .thenReturn(const UpdateUserTierState.initial());
+    when(
+      () => updateUserTierCubit.stream,
+    ).thenAnswer((_) => const Stream.empty());
+    when(
+      () => updateUserTierCubit.state,
+    ).thenReturn(const UpdateUserTierState.initial());
 
     final deleteUserCubit = _MockDeleteUserCubit();
-    when(() => deleteUserCubit.stream)
-        .thenAnswer((_) => const Stream.empty());
-    when(() => deleteUserCubit.state)
-        .thenReturn(const DeleteUserState.initial());
+    when(() => deleteUserCubit.stream).thenAnswer((_) => const Stream.empty());
+    when(
+      () => deleteUserCubit.state,
+    ).thenReturn(const DeleteUserState.initial());
     when(deleteUserCubit.requestConfirmation).thenReturn(null);
 
     getIt

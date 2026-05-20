@@ -155,9 +155,9 @@ the test for:
 COPY THIS PROMPT FOR THE IMPLEMENTATION SESSION
 ─────────────────────────────────────────────────────────────────
 
-Реализуй слайс <slice>. Все спеки и тест уже готовы.
+Implement the <slice> slice. All specs and the test are already ready.
 
-Источники (читай в этом порядке):
+Sources (read in this order):
 - specs/features/<feature>/<NNNN>_<slice>/plan.md
 - specs/features/<feature>/<NNNN>_<slice>/requirements.md
 - specs/features/<feature>/<NNNN>_<slice>/tests.md
@@ -165,25 +165,25 @@ COPY THIS PROMPT FOR THE IMPLEMENTATION SESSION
 
 Acceptance gate:
 - test/features/<feature>/<NNNN>_<slice>/<slice>_outside_in_test.dart
-  должен стать GREEN.
-- Тестовый файл НЕ ТРОГАТЬ. Если тест падает из-за бага в
-  реализации — чини реализацию, не тест.
-- Если тест падает из-за дефекта в самом тесте — стоп и спроси,
-  не правь молча.
+  must turn GREEN.
+- Do NOT touch the test file. If the test fails due to a bug in the
+  implementation — fix the implementation, not the test.
+- If the test fails due to a defect in the test itself — stop and ask,
+  do not fix silently.
 
-После того как outside-in тест зелёный — напиши недостающие
-unit-тесты по плану (см. plan.md секция "Tests planned" и
-agent_docs/testing.md): use-case, adapter, cubit, widget.
+Once the outside-in test is green — write the missing unit tests per the
+plan (see plan.md section "Tests planned" and agent_docs/testing.md):
+use-case, adapter, cubit, widget.
 
-Перед запуском тестов с новыми i18n-ключами или JSON:
+Before running tests with new i18n keys or JSON:
 - dart run slang
 - dart run build_runner build --delete-conflicting-outputs
 
-Quality gates перед завершением:
+Quality gates before finishing:
 - dart analyze
 - flutter test
 
-Все должны пройти без новых предупреждений.
+All must pass with no new warnings.
 
 ─────────────────────────────────────────────────────────────────
 ```
@@ -197,8 +197,7 @@ Rules for the block:
   inconsistently and might be misinterpreted.
 - **One copy of the block per run.** Do not output it twice. Do not
   output it partially.
-- **Russian wording** in the block matches the project's prompt
-  convention. Do not translate to English.
+- **English only** in the block.
 - The block goes **last** in your reply. Nothing after it.
 
 If for any reason the test is **not** in a verified red state (passing, or

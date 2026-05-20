@@ -43,6 +43,7 @@ class TranslationsRuRu with BaseTranslations<AppLocale, Translations> implements
 	@override late final _TranslationsCommonRuRu common = _TranslationsCommonRuRu._(_root);
 	@override late final _TranslationsTiersRuRu tiers = _TranslationsTiersRuRu._(_root);
 	@override late final _TranslationsPostsRuRu posts = _TranslationsPostsRuRu._(_root);
+	@override late final _TranslationsUserMenuRuRu userMenu = _TranslationsUserMenuRuRu._(_root);
 	@override late final _TranslationsUsersRuRu users = _TranslationsUsersRuRu._(_root);
 }
 
@@ -126,6 +127,17 @@ class _TranslationsPostsRuRu implements TranslationsPostsEnUs {
 	@override late final _TranslationsPostsPendingPostsRuRu pendingPosts = _TranslationsPostsPendingPostsRuRu._(_root);
 	@override late final _TranslationsPostsModeratePostRuRu moderatePost = _TranslationsPostsModeratePostRuRu._(_root);
 	@override late final _TranslationsPostsCreatePostRuRu createPost = _TranslationsPostsCreatePostRuRu._(_root);
+}
+
+// Path: userMenu
+class _TranslationsUserMenuRuRu implements TranslationsUserMenuEnUs {
+	_TranslationsUserMenuRuRu._(this._root);
+
+	final TranslationsRuRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get myProfile => 'Мой профиль';
+	@override String get myPosts => 'Мои публикации';
 }
 
 // Path: users
@@ -972,6 +984,8 @@ extension on TranslationsRuRu {
 			'posts.createPost.errors.textTooLong' => 'Текст не должен превышать 63206 символов',
 			'posts.createPost.errors.forbidden' => 'Вы можете публиковать посты только от своего имени',
 			'posts.createPost.errors.generic' => 'Не удалось опубликовать пост. Попробуйте ещё раз.',
+			'userMenu.myProfile' => 'Мой профиль',
+			'userMenu.myPosts' => 'Мои публикации',
 			'users.title' => 'Пользователи',
 			'users.list.loadMoreError' => 'Не удалось загрузить больше пользователей',
 			'users.list.userDetails' => 'Детали',

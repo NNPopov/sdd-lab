@@ -43,6 +43,7 @@ class TranslationsUkUa with BaseTranslations<AppLocale, Translations> implements
 	@override late final _TranslationsCommonUkUa common = _TranslationsCommonUkUa._(_root);
 	@override late final _TranslationsTiersUkUa tiers = _TranslationsTiersUkUa._(_root);
 	@override late final _TranslationsPostsUkUa posts = _TranslationsPostsUkUa._(_root);
+	@override late final _TranslationsUserMenuUkUa userMenu = _TranslationsUserMenuUkUa._(_root);
 	@override late final _TranslationsUsersUkUa users = _TranslationsUsersUkUa._(_root);
 }
 
@@ -126,6 +127,17 @@ class _TranslationsPostsUkUa implements TranslationsPostsEnUs {
 	@override late final _TranslationsPostsPendingPostsUkUa pendingPosts = _TranslationsPostsPendingPostsUkUa._(_root);
 	@override late final _TranslationsPostsModeratePostUkUa moderatePost = _TranslationsPostsModeratePostUkUa._(_root);
 	@override late final _TranslationsPostsCreatePostUkUa createPost = _TranslationsPostsCreatePostUkUa._(_root);
+}
+
+// Path: userMenu
+class _TranslationsUserMenuUkUa implements TranslationsUserMenuEnUs {
+	_TranslationsUserMenuUkUa._(this._root);
+
+	final TranslationsUkUa _root; // ignore: unused_field
+
+	// Translations
+	@override String get myProfile => 'Мій профіль';
+	@override String get myPosts => 'Мої публікації';
 }
 
 // Path: users
@@ -972,6 +984,8 @@ extension on TranslationsUkUa {
 			'posts.createPost.errors.textTooLong' => 'Текст не може перевищувати 63206 символів',
 			'posts.createPost.errors.forbidden' => 'Ви можете публікувати лише від свого імені',
 			'posts.createPost.errors.generic' => 'Не вдалося опублікувати. Спробуйте ще раз.',
+			'userMenu.myProfile' => 'Мій профіль',
+			'userMenu.myPosts' => 'Мої публікації',
 			'users.title' => 'Користувачі',
 			'users.list.loadMoreError' => 'Не вдалося завантажити більше користувачів',
 			'users.list.userDetails' => 'Деталі',

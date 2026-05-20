@@ -12,12 +12,22 @@ import 'package:flutter_application_1/core/i18n/locale_cubit.dart';
 import 'package:flutter_application_1/core/i18n/translations.g.dart';
 import 'package:flutter_application_1/core/rbac/permission_cubit.dart';
 import 'package:flutter_application_1/core/routing/app_router.dart';
+import 'package:flutter_application_1/features/posts/user_posts/application/user_posts_cubit.dart';
+import 'package:flutter_application_1/features/posts/user_posts/application/user_posts_state.dart';
 import 'package:flutter_application_1/features/tiers/list_tiers/application/list_tiers_cubit.dart';
 import 'package:flutter_application_1/features/tiers/list_tiers/application/list_tiers_state.dart';
 import 'package:flutter_application_1/features/users/create_user/application/create_user_cubit.dart';
 import 'package:flutter_application_1/features/users/create_user/application/create_user_state.dart';
+import 'package:flutter_application_1/features/users/delete_user/application/delete_user_cubit.dart';
+import 'package:flutter_application_1/features/users/delete_user/application/delete_user_state.dart';
+import 'package:flutter_application_1/features/users/get_user_tier/application/get_user_tier_cubit.dart';
+import 'package:flutter_application_1/features/users/get_user_tier/application/get_user_tier_state.dart';
 import 'package:flutter_application_1/features/users/list_users/application/users_list_cubit.dart';
 import 'package:flutter_application_1/features/users/list_users/application/users_list_state.dart';
+import 'package:flutter_application_1/features/users/update_user_tier/application/update_user_tier_cubit.dart';
+import 'package:flutter_application_1/features/users/update_user_tier/application/update_user_tier_state.dart';
+import 'package:flutter_application_1/features/users/user_details/application/user_details_cubit.dart';
+import 'package:flutter_application_1/features/users/user_details/application/user_details_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -38,6 +48,29 @@ class _MockListTiersCubit extends MockCubit<ListTiersState>
 
 class _MockCreateUserCubit extends MockCubit<CreateUserState>
     implements CreateUserCubit {}
+
+class _MockUserDetailsCubit extends MockCubit<UserDetailsState>
+    implements UserDetailsCubit {}
+
+class _MockGetUserTierCubit extends MockCubit<GetUserTierState>
+    implements GetUserTierCubit {}
+
+class _MockUpdateUserTierCubit extends MockCubit<UpdateUserTierState>
+    implements UpdateUserTierCubit {}
+
+class _MockDeleteUserCubit extends MockCubit<DeleteUserState>
+    implements DeleteUserCubit {}
+
+class _MockUserPostsCubit extends MockCubit<UserPostsState>
+    implements UserPostsCubit {}
+
+const _alice = CurrentUser(
+  username: 'alice',
+  email: 'alice@example.com',
+  name: 'Alice',
+  isSuperuser: false,
+  isModerator: false,
+);
 
 /// Subclass of the real AuthGuard that always allows navigation.
 /// Necessary because AppRouter.authGuard expects the concrete AuthGuard type.
@@ -304,6 +337,202 @@ void main() {
         // Shell AppBar has no back button (automaticallyImplyLeading: false).
         // The pushed child screen's own AppBar auto-implies exactly one BackButton.
         expect(find.byType(BackButton), findsOneWidget);
+      },
+    );
+  });
+
+  // ---------------------------------------------------------------------------
+  // _AuthAppBarAction — user menu
+  // ---------------------------------------------------------------------------
+
+  group('_AuthAppBarAction — user menu', () {
+    void registerUserDetailsCubits() {
+      final userDetailsCubit = _MockUserDetailsCubit();
+      when(
+        () => userDetailsCubit.stream,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => userDetailsCubit.state,
+      ).thenReturn(const UserDetailsState.initial());
+      when(() => userDetailsCubit.load(any())).thenAnswer((_) async {});
+      when(() => userDetailsCubit.retry(any())).thenAnswer((_) async {});
+
+      final getUserTierCubit = _MockGetUserTierCubit();
+      when(
+        () => getUserTierCubit.stream,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => getUserTierCubit.state,
+      ).thenReturn(const GetUserTierState.initial());
+      when(() => getUserTierCubit.load(any())).thenAnswer((_) async {});
+
+      final updateUserTierCubit = _MockUpdateUserTierCubit();
+      when(
+        () => updateUserTierCubit.stream,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => updateUserTierCubit.state,
+      ).thenReturn(const UpdateUserTierState.initial());
+
+      final deleteUserCubit = _MockDeleteUserCubit();
+      when(
+        () => deleteUserCubit.stream,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => deleteUserCubit.state,
+      ).thenReturn(const DeleteUserState.initial());
+      when(deleteUserCubit.requestConfirmation).thenReturn(null);
+
+      getIt
+        ..registerFactory<UserDetailsCubit>(() => userDetailsCubit)
+        ..registerFactory<GetUserTierCubit>(() => getUserTierCubit)
+        ..registerFactory<UpdateUserTierCubit>(() => updateUserTierCubit)
+        ..registerFactory<DeleteUserCubit>(() => deleteUserCubit);
+    }
+
+    void registerUserPostsCubit() {
+      final userPostsCubit = _MockUserPostsCubit();
+      when(() => userPostsCubit.stream).thenAnswer((_) => const Stream.empty());
+      when(
+        () => userPostsCubit.state,
+      ).thenReturn(const UserPostsState.initial());
+      when(() => userPostsCubit.load(any())).thenAnswer((_) async {});
+      when(() => userPostsCubit.loadMore(any())).thenAnswer((_) async {});
+      getIt.registerFactory<UserPostsCubit>(() => userPostsCubit);
+    }
+
+    testWidgets(
+      'shows username as tappable widget when authenticated',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('alice'), findsWidgets);
+      },
+    );
+
+    testWidgets(
+      'opening the menu shows My Profile, My Posts, and Sign out',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('alice').first);
+        await tester.pumpAndSettle();
+
+        expect(find.text('My Profile'), findsOneWidget);
+        expect(find.text('My Posts'), findsOneWidget);
+        expect(find.text('Sign out'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'tapping My Profile navigates to user details screen',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        registerUserDetailsCubits();
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('alice').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('My Profile'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(BackButton), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'tapping My Posts navigates to user posts screen',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        registerUserPostsCubit();
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('alice').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('My Posts'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(BackButton), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'tapping Sign out opens the confirmation dialog',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('alice').first);
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Sign out'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AlertDialog), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'standalone logout IconButton is no longer present',
+      (tester) async {
+        prepare(const AuthState.authenticated(currentUser: _alice));
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(Icons.logout), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'unauthenticated: no username or menu, shows Sign in button',
+      (tester) async {
+        prepare(const AuthState.unauthenticated());
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('alice'), findsNothing);
+        expect(
+          find.byWidgetPredicate((w) => w is PopupMenuButton),
+          findsNothing,
+        );
+        expect(find.text('Sign in'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'authenticated with null currentUser: no popup menu rendered',
+      (tester) async {
+        prepare(const AuthState.authenticated());
+        await tester.pumpWidget(
+          _buildApp(authCubit: authCubit, permCubit: permCubit),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('alice'), findsNothing);
+        expect(
+          find.byWidgetPredicate((w) => w is PopupMenuButton),
+          findsNothing,
+        );
       },
     );
   });
