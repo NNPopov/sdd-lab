@@ -12,3 +12,20 @@ linter:
   rules:
     public_member_api_docs: false
     one_member_abstracts: false
+
+# dart_code_linter — code metrics thresholds.
+# Run: dart run dart_code_linter:metrics analyze lib/
+# Architectural import-boundary checks live in scripts/check_arch.sh.
+dart_code_linter:
+  metrics:
+    cyclomatic-complexity: 10
+    number-of-parameters: 5
+    maximum-nesting-level: 5
+    source-lines-of-code: 50
+  metrics-exclude:
+    - test/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+    - "**/*.config.dart"
+    - lib/core/i18n/**
