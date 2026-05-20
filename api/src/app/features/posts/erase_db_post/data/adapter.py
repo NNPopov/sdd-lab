@@ -1,6 +1,7 @@
 # FEATURE: erase_db_post — data adapter.
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.orm import selectinload
 
 from .....adapters.db.models.post import Post
 from .....adapters.db.models.user import User
@@ -37,5 +38,9 @@ class EraseDbPostAdapter(EraseDbPostPort):
 
     async def hard_delete(self, post_id: int) -> None:
         async with self._session_factory() as session:
-            await session.execute(delete(Post).where(Post.id == post_id))
+            result = await session.execute(
+                select(Post).where(Post.id == post_id).options(selectinload(Post.moderation_logs))
+            )
+            post = result.scalar_one()
+            await session.delete(post)
             await session.commit()

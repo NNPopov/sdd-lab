@@ -34,7 +34,7 @@ async def test_admin_hard_deletes_post_row_is_gone_and_get_returns_404(
     ep30_alice: dict,
     ep30_alice_post: dict,
 ) -> None:
-    """Scenario 1 — admin hard-deletes alice's post; DB row is permanently gone; GET → 404."""
+    """Scenario 1 — admin hard-deletes alice's post; DB row and all moderation logs permanently gone; GET → 404."""
     from app.bootstrap.container import container as _di_container
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
@@ -42,6 +42,25 @@ async def test_admin_hard_deletes_post_row_is_gone_and_get_returns_404(
     post_id = ep30_alice_post["id"]
     delete_url = _DELETE_PATH.format(username="ep30alice", id=post_id)
     get_url = _GET_PATH.format(username="ep30alice", id=post_id)
+
+    # Seed a PostModerationLog row to exercise the cascade-delete path (F2, N2).
+    async with _di_container.session_factory()() as session:
+        log_insert = await session.execute(
+            text(
+                "INSERT INTO post_moderation_log"
+                " (post_id, user_id, event_type, action, message, created_at)"
+                " VALUES (:post_id, :user_id, :event_type, :action, :message, NOW()) RETURNING id"
+            ),
+            {
+                "post_id": post_id,
+                "user_id": ep30_alice["id"],
+                "event_type": "moderate",
+                "action": "approve",
+                "message": "seeded for cascade test",
+            },
+        )
+        await session.commit()
+        log_id = log_insert.scalar_one()
 
     # Warm any cache that may be present (also proves the post is visible pre-deletion).
     get_pre = await async_client.get(get_url)
@@ -64,6 +83,14 @@ async def test_admin_hard_deletes_post_row_is_gone_and_get_returns_404(
         )
         row = result.first()
         assert row is None, "post row still exists after hard delete"
+
+        # Cascade assertion: moderation log rows for the post must also be gone (F2).
+        log_result = await session.execute(
+            text("SELECT id FROM post_moderation_log WHERE post_id = :post_id"),
+            {"post_id": post_id},
+        )
+        log_row = log_result.first()
+        assert log_row is None, f"post_moderation_log row {log_id} still exists after hard delete"
 
     # Cache invalidation: subsequent GET must not serve stale data.
     get_post = await async_client.get(get_url)

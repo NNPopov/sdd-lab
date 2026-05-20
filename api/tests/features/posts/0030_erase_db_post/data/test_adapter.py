@@ -158,3 +158,48 @@ async def test_hard_delete_removes_row_permanently(
         row = result.first()
 
     assert row is None, "post row still exists after hard_delete"
+
+
+async def test_hard_delete_removes_post_and_moderation_logs(
+    ep30_alice: dict,
+    ep30_alice_post: dict,
+    async_client: AsyncClient,
+) -> None:
+    """F2 — hard_delete removes the post row and all PostModerationLog rows in the same transaction."""
+    from app.bootstrap.container import container as _di_container
+
+    post_id = ep30_alice_post["id"]
+
+    async with _di_container.session_factory()() as session:
+        log_insert = await session.execute(
+            text(
+                "INSERT INTO post_moderation_log"
+                " (post_id, user_id, event_type, action, message, created_at)"
+                " VALUES (:post_id, :user_id, :event_type, :action, :message, NOW()) RETURNING id"
+            ),
+            {
+                "post_id": post_id,
+                "user_id": ep30_alice["id"],
+                "event_type": "moderate",
+                "action": "approve",
+                "message": "seeded for cascade test",
+            },
+        )
+        await session.commit()
+        log_id = log_insert.scalar_one()
+
+    adapter = _make_adapter()
+    await adapter.hard_delete(post_id)
+
+    async with _di_container.session_factory()() as session:
+        post_result = await session.execute(
+            text('SELECT id FROM "post" WHERE id = :id'),
+            {"id": post_id},
+        )
+        assert post_result.first() is None, "post row still exists after hard_delete"
+
+        log_result = await session.execute(
+            text("SELECT id FROM post_moderation_log WHERE post_id = :post_id"),
+            {"post_id": post_id},
+        )
+        assert log_result.first() is None, f"post_moderation_log row {log_id} still exists after hard_delete"
