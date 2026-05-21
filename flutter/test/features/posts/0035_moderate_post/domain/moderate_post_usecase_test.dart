@@ -26,7 +26,7 @@ void main() {
         message: '',
       );
       expect(result.isLeft(), isTrue);
-      expect(result.fold(id, id), isA<ValidationFailure>());
+      expect(result.fold(id, id), isA<FieldValidationFailure>());
       verifyNever(
         () => port(
           postUuid: any(named: 'postUuid'),
@@ -45,7 +45,7 @@ void main() {
         action: 'changes_requested',
       );
       expect(result.isLeft(), isTrue);
-      expect(result.fold(id, id), isA<ValidationFailure>());
+      expect(result.fold(id, id), isA<FieldValidationFailure>());
       verifyNever(
         () => port(
           postUuid: any(named: 'postUuid'),

@@ -12,11 +12,13 @@ class AssignModeratorButton extends StatelessWidget {
   const AssignModeratorButton({
     required this.username,
     required this.isModerator,
+    required this.onToggled,
     super.key,
   });
 
   final String username;
   final bool isModerator;
+  final void Function(bool isModerator) onToggled;
 
   @override
   Widget build(BuildContext context) {
@@ -25,34 +27,22 @@ class AssignModeratorButton extends StatelessWidget {
       child: _AssignModeratorButtonInner(
         username: username,
         isModerator: isModerator,
+        onToggled: onToggled,
       ),
     );
   }
 }
 
-class _AssignModeratorButtonInner extends StatefulWidget {
+class _AssignModeratorButtonInner extends StatelessWidget {
   const _AssignModeratorButtonInner({
     required this.username,
     required this.isModerator,
+    required this.onToggled,
   });
 
   final String username;
   final bool isModerator;
-
-  @override
-  State<_AssignModeratorButtonInner> createState() =>
-      _AssignModeratorButtonInnerState();
-}
-
-class _AssignModeratorButtonInnerState
-    extends State<_AssignModeratorButtonInner> {
-  late bool _isModerator;
-
-  @override
-  void initState() {
-    super.initState();
-    _isModerator = widget.isModerator;
-  }
+  final void Function(bool isModerator) onToggled;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +50,7 @@ class _AssignModeratorButtonInnerState
     return BlocListener<AssignModeratorCubit, AssignModeratorState>(
       listener: (context, state) {
         if (state is AssignModeratorSuccess) {
-          setState(() => _isModerator = state.isModerator);
+          onToggled(state.isModerator);
         }
         if (state is AssignModeratorError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -77,16 +67,16 @@ class _AssignModeratorButtonInnerState
               child: CircularProgressIndicator(strokeWidth: 2),
             );
           }
-          final label = _isModerator
+          final label = isModerator
               ? t.users.moderator.revoke
               : t.users.moderator.assign;
           return TextButton(
             onPressed: () {
               final cubit = context.read<AssignModeratorCubit>();
-              if (_isModerator) {
-                unawaited(cubit.revoke(widget.username));
+              if (isModerator) {
+                unawaited(cubit.revoke(username));
               } else {
-                unawaited(cubit.assign(widget.username));
+                unawaited(cubit.assign(username));
               }
             },
             child: Text(label),

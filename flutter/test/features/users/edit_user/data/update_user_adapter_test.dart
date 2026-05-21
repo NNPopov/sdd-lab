@@ -131,9 +131,9 @@ void main() {
       expect(result.isLeft(), isTrue);
       result.fold(
         (f) {
-          expect(f, isA<ValidationFailure>());
+          expect(f, isA<FieldValidationFailure>());
           expect(
-            (f as ValidationFailure).fieldErrors,
+            (f as FieldValidationFailure).fields,
             {'email': 'Invalid email'},
           );
         },

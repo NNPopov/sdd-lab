@@ -55,13 +55,15 @@ extension CreateUserStatePatterns on CreateUserState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreateUserInitial value)?  initial,TResult Function( CreateUserSubmitting value)?  submitting,TResult Function( CreateUserSuccess value)?  success,TResult Function( CreateUserFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreateUserIdle value)?  idle,TResult Function( CreateUserSubmitting value)?  submitting,TResult Function( CreateUserSuccess value)?  success,TResult Function( CreateUserValidationError value)?  validationError,TResult Function( CreateUserConflict value)?  conflict,TResult Function( CreateUserFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case CreateUserInitial() when initial != null:
-return initial(_that);case CreateUserSubmitting() when submitting != null:
+case CreateUserIdle() when idle != null:
+return idle(_that);case CreateUserSubmitting() when submitting != null:
 return submitting(_that);case CreateUserSuccess() when success != null:
-return success(_that);case CreateUserFailure() when failure != null:
+return success(_that);case CreateUserValidationError() when validationError != null:
+return validationError(_that);case CreateUserConflict() when conflict != null:
+return conflict(_that);case CreateUserFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -80,13 +82,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreateUserInitial value)  initial,required TResult Function( CreateUserSubmitting value)  submitting,required TResult Function( CreateUserSuccess value)  success,required TResult Function( CreateUserFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreateUserIdle value)  idle,required TResult Function( CreateUserSubmitting value)  submitting,required TResult Function( CreateUserSuccess value)  success,required TResult Function( CreateUserValidationError value)  validationError,required TResult Function( CreateUserConflict value)  conflict,required TResult Function( CreateUserFailure value)  failure,}){
 final _that = this;
 switch (_that) {
-case CreateUserInitial():
-return initial(_that);case CreateUserSubmitting():
+case CreateUserIdle():
+return idle(_that);case CreateUserSubmitting():
 return submitting(_that);case CreateUserSuccess():
-return success(_that);case CreateUserFailure():
+return success(_that);case CreateUserValidationError():
+return validationError(_that);case CreateUserConflict():
+return conflict(_that);case CreateUserFailure():
 return failure(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -101,13 +105,15 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreateUserInitial value)?  initial,TResult? Function( CreateUserSubmitting value)?  submitting,TResult? Function( CreateUserSuccess value)?  success,TResult? Function( CreateUserFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreateUserIdle value)?  idle,TResult? Function( CreateUserSubmitting value)?  submitting,TResult? Function( CreateUserSuccess value)?  success,TResult? Function( CreateUserValidationError value)?  validationError,TResult? Function( CreateUserConflict value)?  conflict,TResult? Function( CreateUserFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
-case CreateUserInitial() when initial != null:
-return initial(_that);case CreateUserSubmitting() when submitting != null:
+case CreateUserIdle() when idle != null:
+return idle(_that);case CreateUserSubmitting() when submitting != null:
 return submitting(_that);case CreateUserSuccess() when success != null:
-return success(_that);case CreateUserFailure() when failure != null:
+return success(_that);case CreateUserValidationError() when validationError != null:
+return validationError(_that);case CreateUserConflict() when conflict != null:
+return conflict(_that);case CreateUserFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -125,12 +131,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  submitting,TResult Function( User user)?  success,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function( User user)?  success,TResult Function( String message)?  validationError,TResult Function( String message)?  conflict,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case CreateUserInitial() when initial != null:
-return initial();case CreateUserSubmitting() when submitting != null:
+case CreateUserIdle() when idle != null:
+return idle();case CreateUserSubmitting() when submitting != null:
 return submitting();case CreateUserSuccess() when success != null:
-return success(_that.user);case CreateUserFailure() when failure != null:
+return success(_that.user);case CreateUserValidationError() when validationError != null:
+return validationError(_that.message);case CreateUserConflict() when conflict != null:
+return conflict(_that.message);case CreateUserFailure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -149,12 +157,14 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  submitting,required TResult Function( User user)  success,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function( User user)  success,required TResult Function( String message)  validationError,required TResult Function( String message)  conflict,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
-case CreateUserInitial():
-return initial();case CreateUserSubmitting():
+case CreateUserIdle():
+return idle();case CreateUserSubmitting():
 return submitting();case CreateUserSuccess():
-return success(_that.user);case CreateUserFailure():
+return success(_that.user);case CreateUserValidationError():
+return validationError(_that.message);case CreateUserConflict():
+return conflict(_that.message);case CreateUserFailure():
 return failure(_that.failure);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -169,12 +179,14 @@ return failure(_that.failure);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  submitting,TResult? Function( User user)?  success,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function( User user)?  success,TResult? Function( String message)?  validationError,TResult? Function( String message)?  conflict,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
-case CreateUserInitial() when initial != null:
-return initial();case CreateUserSubmitting() when submitting != null:
+case CreateUserIdle() when idle != null:
+return idle();case CreateUserSubmitting() when submitting != null:
 return submitting();case CreateUserSuccess() when success != null:
-return success(_that.user);case CreateUserFailure() when failure != null:
+return success(_that.user);case CreateUserValidationError() when validationError != null:
+return validationError(_that.message);case CreateUserConflict() when conflict != null:
+return conflict(_that.message);case CreateUserFailure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -186,8 +198,8 @@ return failure(_that.failure);case _:
 /// @nodoc
 
 
-class CreateUserInitial implements CreateUserState {
-  const CreateUserInitial();
+class CreateUserIdle implements CreateUserState {
+  const CreateUserIdle();
   
 
 
@@ -197,7 +209,7 @@ class CreateUserInitial implements CreateUserState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateUserInitial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateUserIdle);
 }
 
 
@@ -206,7 +218,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CreateUserState.initial()';
+  return 'CreateUserState.idle()';
 }
 
 
@@ -320,6 +332,138 @@ $UserCopyWith<$Res> get user {
     return _then(_self.copyWith(user: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class CreateUserValidationError implements CreateUserState {
+  const CreateUserValidationError({required this.message});
+  
+
+ final  String message;
+
+/// Create a copy of CreateUserState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CreateUserValidationErrorCopyWith<CreateUserValidationError> get copyWith => _$CreateUserValidationErrorCopyWithImpl<CreateUserValidationError>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateUserValidationError&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'CreateUserState.validationError(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CreateUserValidationErrorCopyWith<$Res> implements $CreateUserStateCopyWith<$Res> {
+  factory $CreateUserValidationErrorCopyWith(CreateUserValidationError value, $Res Function(CreateUserValidationError) _then) = _$CreateUserValidationErrorCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$CreateUserValidationErrorCopyWithImpl<$Res>
+    implements $CreateUserValidationErrorCopyWith<$Res> {
+  _$CreateUserValidationErrorCopyWithImpl(this._self, this._then);
+
+  final CreateUserValidationError _self;
+  final $Res Function(CreateUserValidationError) _then;
+
+/// Create a copy of CreateUserState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(CreateUserValidationError(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class CreateUserConflict implements CreateUserState {
+  const CreateUserConflict({required this.message});
+  
+
+ final  String message;
+
+/// Create a copy of CreateUserState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CreateUserConflictCopyWith<CreateUserConflict> get copyWith => _$CreateUserConflictCopyWithImpl<CreateUserConflict>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateUserConflict&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'CreateUserState.conflict(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CreateUserConflictCopyWith<$Res> implements $CreateUserStateCopyWith<$Res> {
+  factory $CreateUserConflictCopyWith(CreateUserConflict value, $Res Function(CreateUserConflict) _then) = _$CreateUserConflictCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$CreateUserConflictCopyWithImpl<$Res>
+    implements $CreateUserConflictCopyWith<$Res> {
+  _$CreateUserConflictCopyWithImpl(this._self, this._then);
+
+  final CreateUserConflict _self;
+  final $Res Function(CreateUserConflict) _then;
+
+/// Create a copy of CreateUserState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(CreateUserConflict(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
 }
 
 /// @nodoc

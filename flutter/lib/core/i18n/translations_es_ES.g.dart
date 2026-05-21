@@ -550,6 +550,7 @@ class _TranslationsTiersCreateTierErrorsEsEs implements TranslationsTiersCreateT
 	// Translations
 	@override String get required => 'Este campo es obligatorio';
 	@override String get generic => 'Error al crear el nivel';
+	@override String get permissionDenied => 'No tienes permiso para crear niveles';
 }
 
 // Path: tiers.editTier.errors
@@ -731,6 +732,7 @@ class _TranslationsUsersCreateErrorsEsEs implements TranslationsUsersCreateError
 	@override String get usernameTaken => 'Nombre de usuario ya en uso';
 	@override String get emailTaken => 'Correo electrónico ya en uso';
 	@override String get generic => 'Algo salió mal. Inténtelo de nuevo.';
+	@override String get permissionDenied => 'No tienes permiso para crear usuarios';
 }
 
 // Path: users.delete.errors
@@ -866,6 +868,7 @@ extension on TranslationsEsEs {
 			'tiers.createTier.success' => 'Nivel creado',
 			'tiers.createTier.errors.required' => 'Este campo es obligatorio',
 			'tiers.createTier.errors.generic' => 'Error al crear el nivel',
+			'tiers.createTier.errors.permissionDenied' => 'No tienes permiso para crear niveles',
 			'tiers.tierDetails.title' => 'Detalles del nivel',
 			'tiers.tierDetails.id' => 'ID',
 			'tiers.tierDetails.createdAt' => 'Creado',
@@ -1008,6 +1011,7 @@ extension on TranslationsEsEs {
 			'users.create.errors.usernameTaken' => 'Nombre de usuario ya en uso',
 			'users.create.errors.emailTaken' => 'Correo electrónico ya en uso',
 			'users.create.errors.generic' => 'Algo salió mal. Inténtelo de nuevo.',
+			'users.create.errors.permissionDenied' => 'No tienes permiso para crear usuarios',
 			'users.delete.tooltip' => 'Eliminar cuenta',
 			'users.delete.confirmTitle' => '¿Eliminar cuenta?',
 			'users.delete.confirmMessage' => 'Esto eliminará permanentemente su cuenta. Esta acción no se puede deshacer.',

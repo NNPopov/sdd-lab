@@ -133,7 +133,7 @@ void main() {
       final result = await useCase(changesRequestedEmptyMsg);
 
       expect(result.isLeft(), isTrue);
-      expect(result.fold((f) => f, (_) => null), isA<ValidationFailure>());
+      expect(result.fold((f) => f, (_) => null), isA<FieldValidationFailure>());
       verifyNever(() => editPort(any()));
       verifyNever(() => revisePort(any()));
     },

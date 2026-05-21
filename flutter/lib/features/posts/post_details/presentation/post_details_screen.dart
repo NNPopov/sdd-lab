@@ -37,130 +37,135 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       appBar: AppBar(
         title: Text(t.posts.postDetails.title),
         actions: [
-          BlocBuilder<PostDetailsCubit, PostDetailsState>(
-            builder: (context, postState) {
-              if (postState is! PostDetailsLoaded) {
-                return const SizedBox.shrink();
-              }
-              return BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, authState) {
-                  final currentUser = authState is AuthAuthenticated
-                      ? authState.currentUser
-                      : null;
-                  final isAuthor = currentUser?.username == widget.username;
-                  final isSuperuser = currentUser?.isSuperuser ?? false;
-                  final showErase = isSuperuser && !isAuthor;
-
-                  if (!isAuthor && !showErase) {
-                    return const SizedBox.shrink();
-                  }
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (isAuthor) ...[
-                        DeletePostButton(
-                          username: widget.username,
-                          id: widget.id,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.edit_outlined),
-                          tooltip: t.posts.editPost.title,
-                          onPressed: () async {
-                            final cubit = context.read<PostDetailsCubit>();
-                            await context.router.push(
-                              EditPostRoute(
-                                post: postState.post,
-                                username: widget.username,
-                              ),
-                            );
-                            if (!mounted) return;
-                            unawaited(
-                              cubit.load(widget.username, widget.id),
-                            );
-                          },
-                        ),
-                      ],
-                      if (showErase)
-                        EraseDbPostButton(
-                          username: widget.username,
-                          id: widget.id,
-                        ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
+          _PostDetailsActions(username: widget.username, id: widget.id),
         ],
       ),
-      body: BlocBuilder<PostDetailsCubit, PostDetailsState>(
-        builder: (context, state) => switch (state) {
-          PostDetailsInitial() || PostDetailsLoading() => const Center(
-            child: CircularProgressIndicator(),
-          ),
-          PostDetailsError() => Center(
-            child: Column(
+      body: _PostDetailsBody(username: widget.username, id: widget.id),
+    );
+  }
+}
+
+class _PostDetailsActions extends StatelessWidget {
+  const _PostDetailsActions({required this.username, required this.id});
+
+  final String username;
+  final int id;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostDetailsCubit, PostDetailsState>(
+      builder: (context, postState) {
+        if (postState is! PostDetailsLoaded) return const SizedBox.shrink();
+        return BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, authState) {
+            final currentUser = authState is AuthAuthenticated
+                ? authState.currentUser
+                : null;
+            final isAuthor = currentUser?.username == username;
+            final isSuperuser = currentUser?.isSuperuser ?? false;
+            final showErase = isSuperuser && !isAuthor;
+            if (!isAuthor && !showErase) return const SizedBox.shrink();
+            return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(t.posts.postDetails.loadError),
-                const SizedBox(height: 8),
-                FilledButton(
-                  onPressed: () => unawaited(
-                    context.read<PostDetailsCubit>().load(
-                      widget.username,
-                      widget.id,
-                    ),
+                if (isAuthor) ...[
+                  DeletePostButton(username: username, id: id),
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: context.t.posts.editPost.title,
+                    onPressed: () async {
+                      final cubit = context.read<PostDetailsCubit>();
+                      await context.router.push(
+                        EditPostRoute(
+                          post: postState.post,
+                          username: username,
+                        ),
+                      );
+                      unawaited(cubit.load(username, id));
+                    },
                   ),
-                  child: Text(t.common.retry),
-                ),
+                ],
+                if (showErase) EraseDbPostButton(username: username, id: id),
               ],
-            ),
-          ),
-          PostDetailsLoaded(:final post) => BlocBuilder<AuthCubit, AuthState>(
-            builder: (context, authState) {
-              final currentUser = authState is AuthAuthenticated
-                  ? authState.currentUser
-                  : null;
-              final isAuthor =
-                  post.username != null &&
-                  currentUser?.username == post.username;
+            );
+          },
+        );
+      },
+    );
+  }
+}
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    if (isAuthor) ...[
-                      const SizedBox(height: 8),
-                      PostStatusChip(status: post.status),
-                    ],
-                    if (post.mediaUrl != null) ...[
-                      const SizedBox(height: 12),
-                      Image.network(
-                        post.mediaUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.broken_image, size: 48),
-                      ),
-                    ],
+class _PostDetailsBody extends StatelessWidget {
+  const _PostDetailsBody({required this.username, required this.id});
+
+  final String username;
+  final int id;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.t;
+    return BlocBuilder<PostDetailsCubit, PostDetailsState>(
+      builder: (context, state) => switch (state) {
+        PostDetailsInitial() || PostDetailsLoading() => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        PostDetailsError() => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(t.posts.postDetails.loadError),
+              const SizedBox(height: 8),
+              FilledButton(
+                onPressed: () => unawaited(
+                  context.read<PostDetailsCubit>().load(username, id),
+                ),
+                child: Text(t.common.retry),
+              ),
+            ],
+          ),
+        ),
+        PostDetailsLoaded(:final post) => BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, authState) {
+            final currentUser = authState is AuthAuthenticated
+                ? authState.currentUser
+                : null;
+            final isAuthor =
+                post.username != null && currentUser?.username == post.username;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post.title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  if (isAuthor) ...[
+                    const SizedBox(height: 8),
+                    PostStatusChip(status: post.status),
+                  ],
+                  if (post.mediaUrl != null) ...[
                     const SizedBox(height: 12),
-                    MarkdownBody(data: post.text),
-                    const SizedBox(height: 12),
-                    Text(
-                      DateFormat('dd MMM yyyy, HH:mm').format(post.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall,
+                    Image.network(
+                      post.mediaUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) =>
+                          const Icon(Icons.broken_image, size: 48),
                     ),
                   ],
-                ),
-              );
-            },
-          ),
-        },
-      ),
+                  const SizedBox(height: 12),
+                  MarkdownBody(data: post.text),
+                  const SizedBox(height: 12),
+                  Text(
+                    DateFormat('dd MMM yyyy, HH:mm').format(post.createdAt),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      },
     );
   }
 }

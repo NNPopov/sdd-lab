@@ -20,6 +20,7 @@ import 'package:flutter_application_1/features/users/update_user_tier/applicatio
 import 'package:flutter_application_1/features/users/update_user_tier/presentation/update_user_tier_button.dart';
 import 'package:flutter_application_1/features/users/user_details/application/user_details_cubit.dart';
 import 'package:flutter_application_1/features/users/user_details/application/user_details_state.dart';
+import 'package:flutter_application_1/features/users/user_details/presentation/user_action_visibility.dart';
 import 'package:flutter_application_1/features/users/user_details/presentation/widgets/user_details_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,79 +46,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.username),
-        actions: [
-          BlocBuilder<PermissionCubit, Set<Permission>>(
-            builder: (context, permissions) {
-              return BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, authState) {
-                  final isMe =
-                      authState is AuthAuthenticated &&
-                      authState.currentUser?.username == widget.username;
-                  final canErase = permissions.contains(Permission.eraseUsers);
-                  final canEditTier = permissions.contains(
-                    Permission.editUserTier,
-                  );
-                  final canManageModerators = permissions.contains(
-                    Permission.manageModerators,
-                  );
-
-                  final showEdit = isMe;
-                  final showDelete = isMe;
-                  final showErase = canErase;
-
-                  if (!showEdit &&
-                      !showDelete &&
-                      !showErase &&
-                      !canEditTier &&
-                      !canManageModerators) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (canManageModerators)
-                        BlocBuilder<UserDetailsCubit, UserDetailsState>(
-                          builder: (context, userState) {
-                            if (userState is UserDetailsLoaded) {
-                              return AssignModeratorButton(
-                                username: widget.username,
-                                isModerator: userState.user.isModerator,
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
-                        ),
-                      if (canEditTier)
-                        UpdateUserTierButton(username: widget.username),
-                      if (showEdit)
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          tooltip: t.users.edit.title,
-                          onPressed: () async {
-                            final cubit = context.read<UserDetailsCubit>();
-                            final updated = await context.router.push<User>(
-                              EditUserRoute(username: widget.username),
-                            );
-                            if (!mounted) return;
-                            unawaited(
-                              cubit.load(
-                                updated?.username ?? widget.username,
-                              ),
-                            );
-                          },
-                        ),
-                      if (showDelete)
-                        DeleteAccountButton(username: widget.username),
-                      if (showErase)
-                        EraseDbUserButton(username: widget.username),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ],
+        actions: [_UserDetailsAppBarActions(username: widget.username)],
       ),
       body: MultiBlocListener(
         listeners: [
@@ -210,5 +139,63 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       UnauthorizedFailure() => t.users.updateTier.errors.unauthorized,
       _ => t.users.updateTier.errors.generic,
     };
+  }
+}
+
+class _UserDetailsAppBarActions extends StatelessWidget {
+  const _UserDetailsAppBarActions({required this.username});
+
+  final String username;
+
+  @override
+  Widget build(BuildContext context) {
+    final permissions = context.select<PermissionCubit, Set<Permission>>(
+      (c) => c.state,
+    );
+    final authState = context.select<AuthCubit, AuthState>(
+      (c) => c.state,
+    );
+    final visibility = UserActionVisibility.from(
+      permissions,
+      authState,
+      username,
+    );
+    if (!visibility.showAny) return const SizedBox.shrink();
+
+    final bool? isModerator = context.select<UserDetailsCubit, bool?>(
+      (c) {
+        final s = c.state;
+        return s is UserDetailsLoaded ? s.user.isModerator : null;
+      },
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (visibility.canManageModerators && isModerator != null)
+          AssignModeratorButton(
+            username: username,
+            isModerator: isModerator,
+            onToggled: (val) =>
+                context.read<UserDetailsCubit>().updateIsModerator(val),
+          ),
+        if (visibility.canEditTier) UpdateUserTierButton(username: username),
+        if (visibility.showEdit)
+          IconButton(
+            icon: const Icon(Icons.edit),
+            tooltip: context.t.users.edit.title,
+            onPressed: () async {
+              final cubit = context.read<UserDetailsCubit>();
+              final router = context.router;
+              final updated = await router.push<User>(
+                EditUserRoute(username: username),
+              );
+              unawaited(cubit.load(updated?.username ?? username));
+            },
+          ),
+        if (visibility.showDelete) DeleteAccountButton(username: username),
+        if (visibility.showErase) EraseDbUserButton(username: username),
+      ],
+    );
   }
 }

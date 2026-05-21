@@ -6,7 +6,7 @@ part 'create_tier_state.freezed.dart';
 
 @freezed
 sealed class CreateTierState with _$CreateTierState {
-  const factory CreateTierState.initial() = CreateTierInitial;
+  const factory CreateTierState.idle() = CreateTierIdle;
   const factory CreateTierState.submitting() = CreateTierSubmitting;
   const factory CreateTierState.success(Tier tier) = CreateTierSuccess;
   const factory CreateTierState.failure(Failure failure) = CreateTierFailure;

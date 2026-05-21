@@ -46,7 +46,7 @@ class RevisePostAdapter implements IRevisePostPort {
       403 => const Failure.forbidden(message: 'Forbidden'),
       404 => const Failure.notFound(),
       409 => const Failure.conflict(message: 'Post status has changed'),
-      422 => const Failure.validation(fieldErrors: {}),
+      422 => const MessageValidationFailure(message: 'Validation error'),
       _ =>
         e.type == DioExceptionType.connectionError
             ? const Failure.network()

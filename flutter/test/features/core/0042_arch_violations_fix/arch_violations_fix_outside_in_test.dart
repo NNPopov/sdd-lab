@@ -83,7 +83,7 @@ void main() {
   );
 
   test(
-    'Scenario 2: 422 ValidationFailure lands in Cubit state, not thrown',
+    'Scenario 2: 422 MessageValidationFailure lands in Cubit state, not thrown',
     () async {
       when(() => dio.fetch<Map<String, dynamic>>(any())).thenThrow(
         DioException(
@@ -91,15 +91,7 @@ void main() {
           response: Response<dynamic>(
             requestOptions: RequestOptions(path: '/tier'),
             statusCode: 422,
-            data: {
-              'detail': [
-                {
-                  'loc': ['body', 'name'],
-                  'msg': 'Name already taken',
-                  'type': 'value_error',
-                },
-              ],
-            },
+            data: {'detail': 'Name already taken'},
           ),
           type: DioExceptionType.badResponse,
         ),
@@ -117,9 +109,11 @@ void main() {
       await expectation;
 
       final state = cubit.state as CreateTierFailure;
-      expect(state.failure, isA<ValidationFailure>());
-      final validationFailure = state.failure as ValidationFailure;
-      expect(validationFailure.fieldErrors['name'], 'Name already taken');
+      expect(state.failure, isA<MessageValidationFailure>());
+      expect(
+        (state.failure as MessageValidationFailure).message,
+        'Name already taken',
+      );
       verify(() => dio.fetch<Map<String, dynamic>>(any())).called(1);
     },
   );

@@ -6,8 +6,12 @@ part 'create_user_state.freezed.dart';
 
 @freezed
 sealed class CreateUserState with _$CreateUserState {
-  const factory CreateUserState.initial() = CreateUserInitial;
+  const factory CreateUserState.idle() = CreateUserIdle;
   const factory CreateUserState.submitting() = CreateUserSubmitting;
   const factory CreateUserState.success(User user) = CreateUserSuccess;
+  const factory CreateUserState.validationError({required String message}) =
+      CreateUserValidationError;
+  const factory CreateUserState.conflict({required String message}) =
+      CreateUserConflict;
   const factory CreateUserState.failure(Failure failure) = CreateUserFailure;
 }

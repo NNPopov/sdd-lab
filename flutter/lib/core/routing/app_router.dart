@@ -37,8 +37,7 @@ class AppRouter extends RootStackRouter {
   final AuthGuard authGuard;
   final PermissionCubit permissionCubit;
 
-  @override
-  List<AutoRoute> get routes => [
+  late final List<AutoRoute> _routeTree = [
     AutoRoute(page: LoginRoute.page, path: '/login'),
     AutoRoute(
       page: AppShellRoute.page,
@@ -166,4 +165,7 @@ class AppRouter extends RootStackRouter {
       ],
     ),
   ];
+
+  @override
+  List<AutoRoute> get routes => _routeTree;
 }

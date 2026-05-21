@@ -69,6 +69,43 @@ void main() {
       );
     });
 
+    test(
+      'returns MessageValidationFailure on 422 with string detail',
+      () async {
+        final dioException = DioException(
+          requestOptions: RequestOptions(path: '/user'),
+          response: Response(
+            requestOptions: RequestOptions(path: '/user'),
+            statusCode: 422,
+            data: {'detail': 'That username is taken'},
+          ),
+          type: DioExceptionType.badResponse,
+        );
+        when(() => apiClient.createUser(any())).thenThrow(dioException);
+
+        final result = await adapter(
+          const NewUserData(
+            name: 'Test',
+            username: 'test',
+            email: 'test@example.com',
+            password: 'Password1!',
+          ),
+        );
+
+        expect(result.isLeft(), isTrue);
+        result.fold(
+          (f) {
+            expect(f, isA<MessageValidationFailure>());
+            expect(
+              (f as MessageValidationFailure).message,
+              'That username is taken',
+            );
+          },
+          (_) => fail('Expected Left'),
+        );
+      },
+    );
+
     test('returns UnknownFailure on unexpected exception', () async {
       when(() => apiClient.createUser(any())).thenThrow(TypeError());
 

@@ -19,7 +19,6 @@ class CreateTierScreen extends StatefulWidget {
 class _CreateTierScreenState extends State<CreateTierScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  Map<String, String> _serverErrors = {};
 
   @override
   void dispose() {
@@ -27,15 +26,8 @@ class _CreateTierScreenState extends State<CreateTierScreen> {
     super.dispose();
   }
 
-  void _clearServerError(String field) {
-    if (_serverErrors.containsKey(field)) {
-      setState(() => _serverErrors = Map.of(_serverErrors)..remove(field));
-    }
-  }
-
   void _submit(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _serverErrors = {});
     unawaited(
       context.read<CreateTierCubit>().submit(
         NewTierData(name: _nameController.text.trim()),
@@ -56,9 +48,8 @@ class _CreateTierScreenState extends State<CreateTierScreen> {
             unawaited(context.router.maybePop(tier));
           case CreateTierFailure(:final failure):
             switch (failure) {
-              case ValidationFailure(:final fieldErrors):
-                setState(() => _serverErrors = fieldErrors);
-                _formKey.currentState?.validate();
+              case MessageValidationFailure():
+                break;
               case ConflictFailure(:final message):
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(message)),
@@ -89,7 +80,8 @@ class _CreateTierScreenState extends State<CreateTierScreen> {
                     labelText: t.tiers.createTier.name,
                   ),
                   textInputAction: TextInputAction.done,
-                  onChanged: (_) => _clearServerError('name'),
+                  onChanged: (_) =>
+                      context.read<CreateTierCubit>().clearError(),
                   onFieldSubmitted: (_) {
                     if (!isSubmitting) _submit(context);
                   },
@@ -97,7 +89,7 @@ class _CreateTierScreenState extends State<CreateTierScreen> {
                     if (v == null || v.trim().isEmpty) {
                       return t.tiers.createTier.errors.required;
                     }
-                    return _serverErrors['name'];
+                    return null;
                   },
                 ),
                 const SizedBox(height: 32),
@@ -110,6 +102,27 @@ class _CreateTierScreenState extends State<CreateTierScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(t.tiers.createTier.submit),
+                ),
+                BlocBuilder<CreateTierCubit, CreateTierState>(
+                  buildWhen: (_, s) =>
+                      s is CreateTierFailure || s is CreateTierIdle,
+                  builder: (context, state) {
+                    if (state is CreateTierFailure &&
+                        state.failure is MessageValidationFailure) {
+                      final msg =
+                          (state.failure as MessageValidationFailure).message;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          msg,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
                 ),
               ],
             ),

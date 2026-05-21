@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_application_1/core/errors/failure.dart';
 import 'package:flutter_application_1/core/logging/domain/app_logger.dart';
 import 'package:flutter_application_1/features/posts/_shared/application/post_event.dart';
@@ -118,7 +116,7 @@ void main() {
           isA<ModeratePostError>().having(
             (s) => s.failure,
             'failure',
-            isA<ValidationFailure>(),
+            isA<FieldValidationFailure>(),
           ),
         ]),
       );

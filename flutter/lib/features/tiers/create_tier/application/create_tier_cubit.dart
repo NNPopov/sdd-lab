@@ -6,9 +6,11 @@ import 'package:injectable/injectable.dart';
 
 @injectable
 class CreateTierCubit extends Cubit<CreateTierState> {
-  CreateTierCubit(this._useCase) : super(const CreateTierState.initial());
+  CreateTierCubit(this._useCase) : super(const CreateTierState.idle());
 
   final CreateTierUseCase _useCase;
+
+  void clearError() => emit(const CreateTierState.idle());
 
   Future<void> submit(NewTierData data) async {
     emit(const CreateTierState.submitting());

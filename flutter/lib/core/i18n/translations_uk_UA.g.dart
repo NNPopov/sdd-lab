@@ -550,6 +550,7 @@ class _TranslationsTiersCreateTierErrorsUkUa implements TranslationsTiersCreateT
 	// Translations
 	@override String get required => 'Це поле обов\'язкове';
 	@override String get generic => 'Не вдалося створити рівень';
+	@override String get permissionDenied => 'У вас немає прав для створення рівнів';
 }
 
 // Path: tiers.editTier.errors
@@ -731,6 +732,7 @@ class _TranslationsUsersCreateErrorsUkUa implements TranslationsUsersCreateError
 	@override String get usernameTaken => 'Ім\'я користувача вже зайнято';
 	@override String get emailTaken => 'Електронна пошта вже зайнята';
 	@override String get generic => 'Щось пішло не так. Спробуйте ще раз.';
+	@override String get permissionDenied => 'У вас немає прав для створення користувачів';
 }
 
 // Path: users.delete.errors
@@ -866,6 +868,7 @@ extension on TranslationsUkUa {
 			'tiers.createTier.success' => 'Рівень створено',
 			'tiers.createTier.errors.required' => 'Це поле обов\'язкове',
 			'tiers.createTier.errors.generic' => 'Не вдалося створити рівень',
+			'tiers.createTier.errors.permissionDenied' => 'У вас немає прав для створення рівнів',
 			'tiers.tierDetails.title' => 'Деталі рівня',
 			'tiers.tierDetails.id' => 'ID',
 			'tiers.tierDetails.createdAt' => 'Створено',
@@ -1008,6 +1011,7 @@ extension on TranslationsUkUa {
 			'users.create.errors.usernameTaken' => 'Ім\'я користувача вже зайнято',
 			'users.create.errors.emailTaken' => 'Електронна пошта вже зайнята',
 			'users.create.errors.generic' => 'Щось пішло не так. Спробуйте ще раз.',
+			'users.create.errors.permissionDenied' => 'У вас немає прав для створення користувачів',
 			'users.delete.tooltip' => 'Видалити обліковий запис',
 			'users.delete.confirmTitle' => 'Видалити обліковий запис?',
 			'users.delete.confirmMessage' => 'Це назавжди видалить ваш обліковий запис. Цю дію не можна скасувати.',

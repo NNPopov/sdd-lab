@@ -143,9 +143,9 @@ void main() {
       );
 
       blocTest<EditUserCubit, EditUserState>(
-        'emits [submitting, submitError] with ValidationFailure',
+        'emits [submitting, submitError] with FieldValidationFailure',
         build: () {
-          const failure = Failure.validation(fieldErrors: {'email': 'Invalid'});
+          const failure = FieldValidationFailure(fields: {'email': 'Invalid'});
           when(
             () => updateUser(
               original: any(named: 'original'),
@@ -160,7 +160,7 @@ void main() {
           const EditUserState.submitting(user),
           const EditUserState.submitError(
             user,
-            Failure.validation(fieldErrors: {'email': 'Invalid'}),
+            FieldValidationFailure(fields: {'email': 'Invalid'}),
           ),
         ],
       );

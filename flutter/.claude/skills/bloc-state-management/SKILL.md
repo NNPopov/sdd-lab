@@ -140,6 +140,48 @@ Every Cubit has a `bloc_test`. Every use-case has a unit test. See
   UX, design it explicitly.
 - ❌ Storing a localized `String` for the error in state. Store the `Failure`; let the
   UI localize it.
+- ❌ Nesting a `BlocBuilder` (or another `BlocConsumer`) inside an outer
+  `BlocConsumer.builder`. The outer builder already receives the current state as a
+  parameter — use it directly with local variables and conditional expressions. A nested
+  `BlocBuilder` introduces a frame boundary between the inner and outer rebuild cycles:
+  transitions that **remove** a widget from the tree (e.g., hiding a validation error
+  on `idle`) may silently not rebuild in tests even after `tester.pump()`. Flatten to a
+  single `BlocConsumer` and derive what you need from `state`:
+
+  ```dart
+  // ❌ nested BlocBuilder — validation error text may not disappear on idle
+  BlocConsumer<MyCubit, MyState>(
+    listener: ...,
+    builder: (context, state) {
+      return Column(children: [
+        ...fields,
+        BlocBuilder<MyCubit, MyState>(
+          buildWhen: (_, s) => s is MyValidationError || s is MyIdle,
+          builder: (context, state) =>
+              state is MyValidationError ? Text(state.message) : const SizedBox.shrink(),
+        ),
+      ]);
+    },
+  )
+
+  // ✅ single BlocConsumer — state is used directly
+  BlocConsumer<MyCubit, MyState>(
+    listener: ...,
+    builder: (context, state) {
+      final validationMessage =
+          state is MyValidationError ? state.message : null;
+      return Column(children: [
+        ...fields,
+        if (validationMessage != null) Text(validationMessage),
+      ]);
+    },
+  )
+  ```
+
+  In widget tests, removing a widget via `BlocConsumer` requires **two** `pump()` calls
+  (one for the stream delivery, one for the frame propagation through the internal
+  `BlocListener`); adding a widget requires only one. This asymmetry is normal and
+  expected when using a single `BlocConsumer` — it is not a sign of a bug.
 - ❌ Collecting cubit states into a list with `stream.listen` + `await cancel()` in
   outside-in or integration tests. In bloc 9, `BlocBase._stateController` is an async
   broadcast stream (`sync: false`); each `emit()` schedules the listener notification via

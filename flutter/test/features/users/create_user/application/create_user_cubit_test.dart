@@ -52,19 +52,69 @@ void main() {
     );
 
     blocTest<CreateUserCubit, CreateUserState>(
-      'emits [submitting, failure] with ConflictFailure on 409',
+      'emits [submitting, validationError] on MessageValidationFailure',
       build: () {
-        const failure = Failure.conflict(message: 'Username already taken');
+        const failure = MessageValidationFailure(message: 'Username taken');
         when(() => useCase(any())).thenAnswer((_) async => const Left(failure));
         return CreateUserCubit(useCase);
       },
       act: (cubit) => cubit.submit(data),
       expect: () => [
         const CreateUserState.submitting(),
-        const CreateUserState.failure(
-          Failure.conflict(message: 'Username already taken'),
-        ),
+        const CreateUserState.validationError(message: 'Username taken'),
       ],
+    );
+
+    blocTest<CreateUserCubit, CreateUserState>(
+      'emits [submitting, conflict] on ConflictFailure',
+      build: () {
+        const failure = ConflictFailure(message: 'Already exists');
+        when(() => useCase(any())).thenAnswer((_) async => const Left(failure));
+        return CreateUserCubit(useCase);
+      },
+      act: (cubit) => cubit.submit(data),
+      expect: () => [
+        const CreateUserState.submitting(),
+        const CreateUserState.conflict(message: 'Already exists'),
+      ],
+    );
+
+    blocTest<CreateUserCubit, CreateUserState>(
+      'emits [submitting, failure] on NetworkFailure',
+      build: () {
+        const failure = NetworkFailure();
+        when(() => useCase(any())).thenAnswer((_) async => const Left(failure));
+        return CreateUserCubit(useCase);
+      },
+      act: (cubit) => cubit.submit(data),
+      expect: () => [
+        const CreateUserState.submitting(),
+        const CreateUserState.failure(NetworkFailure()),
+      ],
+    );
+
+    blocTest<CreateUserCubit, CreateUserState>(
+      'clearError from validationError emits [idle]',
+      build: () => CreateUserCubit(useCase),
+      seed: () =>
+          const CreateUserState.validationError(message: 'Username taken'),
+      act: (cubit) => cubit.clearError(),
+      expect: () => [const CreateUserState.idle()],
+    );
+
+    blocTest<CreateUserCubit, CreateUserState>(
+      'clearError from failure emits [idle]',
+      build: () => CreateUserCubit(useCase),
+      seed: () => const CreateUserState.failure(NetworkFailure()),
+      act: (cubit) => cubit.clearError(),
+      expect: () => [const CreateUserState.idle()],
+    );
+
+    blocTest<CreateUserCubit, CreateUserState>(
+      'clearError from idle emits [idle]',
+      build: () => CreateUserCubit(useCase),
+      act: (cubit) => cubit.clearError(),
+      expect: () => [const CreateUserState.idle()],
     );
   });
 }

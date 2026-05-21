@@ -45,7 +45,7 @@ class CreatePostAdapter implements CreatePostPort {
     return switch (e.response?.statusCode) {
       401 => const Failure.unauthorized(message: 'Unauthorized'),
       403 => const Failure.forbidden(message: 'Forbidden'),
-      422 => const Failure.validation(fieldErrors: {}),
+      422 => const MessageValidationFailure(message: 'Validation error'),
       _ =>
         e.type == DioExceptionType.connectionError
             ? const Failure.network()

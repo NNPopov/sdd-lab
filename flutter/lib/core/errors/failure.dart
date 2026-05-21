@@ -11,9 +11,11 @@ sealed class Failure with _$Failure {
   }) = ServerFailure;
   const factory Failure.cache({String? message}) = CacheFailure;
   const factory Failure.permissionDenied() = PermissionDenied;
-  const factory Failure.validation({
-    required Map<String, String> fieldErrors,
-  }) = ValidationFailure;
+  const factory Failure.fieldValidation({
+    required Map<String, String> fields,
+  }) = FieldValidationFailure;
+  const factory Failure.messageValidation({required String message}) =
+      MessageValidationFailure;
   const factory Failure.conflict({required String message}) = ConflictFailure;
   const factory Failure.notFound({String? message}) = NotFoundFailure;
   const factory Failure.unknown({Object? error}) = UnknownFailure;

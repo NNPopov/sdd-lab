@@ -19,4 +19,11 @@ class UserDetailsCubit extends Cubit<UserDetailsState> {
   }
 
   Future<void> retry(String username) => load(username);
+
+  void updateIsModerator(bool isModerator) {
+    final current = state;
+    if (current is UserDetailsLoaded) {
+      emit(UserDetailsLoaded(current.user.copyWith(isModerator: isModerator)));
+    }
+  }
 }

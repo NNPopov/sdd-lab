@@ -88,7 +88,10 @@ void main() {
       final result = await adapter(data);
 
       expect(result.isLeft(), isTrue);
-      expect(result.fold((f) => f, (_) => null), isA<ValidationFailure>());
+      expect(
+        result.fold((f) => f, (_) => null),
+        isA<MessageValidationFailure>(),
+      );
     });
 
     test('DioException 500 → Left(ServerFailure)', () async {

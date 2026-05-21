@@ -33,6 +33,7 @@ void main() {
   Widget buildSubject({
     required AssignModeratorState state,
     required bool isModerator,
+    void Function(bool)? onToggled,
     Stream<AssignModeratorState>? stream,
   }) {
     when(() => mockCubit.state).thenReturn(state);
@@ -47,6 +48,7 @@ void main() {
               AssignModeratorButton(
                 username: 'alice',
                 isModerator: isModerator,
+                onToggled: onToggled ?? (_) {},
               ),
             ],
           ),
@@ -129,27 +131,44 @@ void main() {
   });
 
   testWidgets(
-    'success state → label toggles to opposite (false→true)',
+    'success state → onToggled is called with isModerator value',
     (tester) async {
       final controller = StreamController<AssignModeratorState>.broadcast();
+      bool? toggledValue;
 
       await tester.pumpWidget(
         buildSubject(
           state: const AssignModeratorState.initial(),
           isModerator: false,
+          onToggled: (val) => toggledValue = val,
           stream: controller.stream,
         ),
       );
 
-      expect(find.text('Assign Moderator'), findsOneWidget);
-
       controller.add(const AssignModeratorState.success(isModerator: true));
       await tester.pump();
 
-      expect(find.text('Revoke Moderator'), findsOneWidget);
-      expect(find.text('Assign Moderator'), findsNothing);
+      expect(toggledValue, isTrue);
 
       await controller.close();
+    },
+  );
+
+  testWidgets(
+    'widget is StatelessWidget — no State subclass',
+    (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          state: const AssignModeratorState.initial(),
+          isModerator: false,
+        ),
+      );
+      await tester.pump();
+
+      final buttonFinder = find.byType(AssignModeratorButton);
+      expect(buttonFinder, findsOneWidget);
+      final element = tester.element(buttonFinder);
+      expect(element, isA<StatelessElement>());
     },
   );
 }

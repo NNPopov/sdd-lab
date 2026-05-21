@@ -101,27 +101,19 @@ void main() {
       );
     });
 
-    test('returns Left(ValidationFailure) on 422', () async {
+    test('returns Left(MessageValidationFailure) on 422', () async {
       when(() => apiClient.createTier(any())).thenThrow(
-        _dioError(422, {
-          'detail': [
-            {
-              'loc': ['body', 'name'],
-              'msg': 'field required',
-              'type': 'value_error.missing',
-            },
-          ],
-        }),
+        _dioError(422, {'detail': 'Name already taken'}),
       );
 
       final result = await adapter(data);
 
       result.fold(
         (l) {
-          expect(l, isA<ValidationFailure>());
+          expect(l, isA<MessageValidationFailure>());
           expect(
-            (l as ValidationFailure).fieldErrors,
-            containsPair('name', 'field required'),
+            (l as MessageValidationFailure).message,
+            'Name already taken',
           );
         },
         (_) => fail('Expected Left'),

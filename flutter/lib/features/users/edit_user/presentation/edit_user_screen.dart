@@ -39,7 +39,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
             unawaited(context.router.maybePop<User>(user));
           case EditUserSubmitError(:final failure):
             switch (failure) {
-              case ValidationFailure() || ConflictFailure():
+              case FieldValidationFailure() || ConflictFailure():
                 // Shown inline via serverErrors — no snackbar needed.
                 break;
               case UnauthorizedFailure():
@@ -125,7 +125,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
 
   Map<String, String> _extractServerErrors(Failure failure) =>
       switch (failure) {
-        ValidationFailure(:final fieldErrors) => fieldErrors,
+        FieldValidationFailure(:final fields) => fields,
         ConflictFailure(:final message) => {'username': message},
         _ => const {},
       };

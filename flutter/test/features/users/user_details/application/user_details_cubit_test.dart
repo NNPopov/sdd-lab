@@ -91,5 +91,22 @@ void main() {
         const UserDetailsState.loaded(_user),
       ],
     );
+
+    blocTest<UserDetailsCubit, UserDetailsState>(
+      'updateIsModerator from loaded emits updated user',
+      build: () => cubit,
+      seed: () => const UserDetailsState.loaded(_user),
+      act: (c) => c.updateIsModerator(true),
+      expect: () => [
+        UserDetailsState.loaded(_user.copyWith(isModerator: true)),
+      ],
+    );
+
+    blocTest<UserDetailsCubit, UserDetailsState>(
+      'updateIsModerator when not loaded emits nothing',
+      build: () => cubit,
+      act: (c) => c.updateIsModerator(true),
+      expect: () => <UserDetailsState>[],
+    );
   });
 }

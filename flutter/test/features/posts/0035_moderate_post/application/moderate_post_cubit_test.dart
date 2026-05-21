@@ -100,7 +100,7 @@ void main() {
         ),
       ).thenAnswer(
         (_) async => const Left(
-          Failure.validation(fieldErrors: {'message': 'required'}),
+          FieldValidationFailure(fields: {'message': 'required'}),
         ),
       );
     },
@@ -114,7 +114,7 @@ void main() {
       isA<ModeratePostError>().having(
         (s) => s.failure,
         'failure',
-        isA<ValidationFailure>(),
+        isA<FieldValidationFailure>(),
       ),
     ],
   );

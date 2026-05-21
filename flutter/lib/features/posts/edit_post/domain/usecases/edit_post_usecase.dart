@@ -27,8 +27,8 @@ class EditPostUseCase {
       final msg = data.revisionMessage?.trim() ?? '';
       if (msg.isEmpty) {
         return const Left(
-          Failure.validation(
-            fieldErrors: {'message': 'Revision message is required'},
+          FieldValidationFailure(
+            fields: {'message': 'Revision message is required'},
           ),
         );
       }

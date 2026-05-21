@@ -297,7 +297,7 @@ void main() {
         ).thenAnswer((_) => const Stream.empty());
         when(
           () => createUserCubit.state,
-        ).thenReturn(const CreateUserState.initial());
+        ).thenReturn(const CreateUserState.idle());
         getIt.registerFactory<CreateUserCubit>(() => createUserCubit);
 
         prepare(const AuthState.unauthenticated());

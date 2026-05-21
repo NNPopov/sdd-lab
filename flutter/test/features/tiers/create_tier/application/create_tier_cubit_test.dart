@@ -54,5 +54,20 @@ void main() {
         ),
       ],
     );
+
+    blocTest<CreateTierCubit, CreateTierState>(
+      'clearError from failure emits [idle]',
+      build: () => CreateTierCubit(useCase),
+      seed: () => const CreateTierState.failure(Failure.network()),
+      act: (cubit) => cubit.clearError(),
+      expect: () => [const CreateTierState.idle()],
+    );
+
+    blocTest<CreateTierCubit, CreateTierState>(
+      'clearError from idle emits [idle]',
+      build: () => CreateTierCubit(useCase),
+      act: (cubit) => cubit.clearError(),
+      expect: () => [const CreateTierState.idle()],
+    );
   });
 }

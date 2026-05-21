@@ -18,7 +18,7 @@ class ModeratePostUseCase {
     if (action == 'changes_requested' &&
         (message == null || message.trim().isEmpty)) {
       return Future.value(
-        const Left(Failure.validation(fieldErrors: {'message': 'required'})),
+        const Left(FieldValidationFailure(fields: {'message': 'required'})),
       );
     }
     return _port(postUuid: postUuid, action: action, message: message);

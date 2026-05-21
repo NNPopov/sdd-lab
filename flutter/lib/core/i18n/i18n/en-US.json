@@ -51,7 +51,8 @@
       "success": "Tier created",
       "errors": {
         "required": "This field is required",
-        "generic": "Failed to create tier"
+        "generic": "Failed to create tier",
+        "permissionDenied": "You don't have permission to create tiers"
       }
     },
     "tierDetails": {
@@ -263,7 +264,8 @@
         "passwordTooShort": "Password must be at least 8 characters",
         "usernameTaken": "Username already taken",
         "emailTaken": "Email already taken",
-        "generic": "Something went wrong. Please try again."
+        "generic": "Something went wrong. Please try again.",
+        "permissionDenied": "You don't have permission to create users"
       }
     },
     "delete": {

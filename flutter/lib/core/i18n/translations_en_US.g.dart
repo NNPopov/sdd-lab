@@ -858,6 +858,9 @@ class TranslationsTiersCreateTierErrorsEnUs {
 
 	/// en-US: 'Failed to create tier'
 	String get generic => 'Failed to create tier';
+
+	/// en-US: 'You don't have permission to create tiers'
+	String get permissionDenied => 'You don\'t have permission to create tiers';
 }
 
 // Path: tiers.editTier.errors
@@ -1146,6 +1149,9 @@ class TranslationsUsersCreateErrorsEnUs {
 
 	/// en-US: 'Something went wrong. Please try again.'
 	String get generic => 'Something went wrong. Please try again.';
+
+	/// en-US: 'You don't have permission to create users'
+	String get permissionDenied => 'You don\'t have permission to create users';
 }
 
 // Path: users.delete.errors
@@ -1337,6 +1343,7 @@ extension on Translations {
 			'tiers.createTier.success' => 'Tier created',
 			'tiers.createTier.errors.required' => 'This field is required',
 			'tiers.createTier.errors.generic' => 'Failed to create tier',
+			'tiers.createTier.errors.permissionDenied' => 'You don\'t have permission to create tiers',
 			'tiers.tierDetails.title' => 'Tier details',
 			'tiers.tierDetails.id' => 'ID',
 			'tiers.tierDetails.createdAt' => 'Created',
@@ -1479,6 +1486,7 @@ extension on Translations {
 			'users.create.errors.usernameTaken' => 'Username already taken',
 			'users.create.errors.emailTaken' => 'Email already taken',
 			'users.create.errors.generic' => 'Something went wrong. Please try again.',
+			'users.create.errors.permissionDenied' => 'You don\'t have permission to create users',
 			'users.delete.tooltip' => 'Delete account',
 			'users.delete.confirmTitle' => 'Delete account?',
 			'users.delete.confirmMessage' => 'This will permanently delete your account. This action cannot be undone.',

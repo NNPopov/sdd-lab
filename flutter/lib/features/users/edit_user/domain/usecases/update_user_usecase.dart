@@ -18,7 +18,7 @@ class UpdateUserUseCase {
     if (update.isEmpty) {
       return Future.value(
         const Left(
-          Failure.validation(fieldErrors: {'_form': 'Nothing to update'}),
+          FieldValidationFailure(fields: {'_form': 'Nothing to update'}),
         ),
       );
     }

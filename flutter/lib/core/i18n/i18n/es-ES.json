@@ -51,7 +51,8 @@
       "success": "Nivel creado",
       "errors": {
         "required": "Este campo es obligatorio",
-        "generic": "Error al crear el nivel"
+        "generic": "Error al crear el nivel",
+        "permissionDenied": "No tienes permiso para crear niveles"
       }
     },
     "tierDetails": {
@@ -263,7 +264,8 @@
         "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
         "usernameTaken": "Nombre de usuario ya en uso",
         "emailTaken": "Correo electrónico ya en uso",
-        "generic": "Algo salió mal. Inténtelo de nuevo."
+        "generic": "Algo salió mal. Inténtelo de nuevo.",
+        "permissionDenied": "No tienes permiso para crear usuarios"
       }
     },
     "delete": {

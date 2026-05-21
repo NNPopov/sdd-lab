@@ -55,11 +55,11 @@ extension CreateTierStatePatterns on CreateTierState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreateTierInitial value)?  initial,TResult Function( CreateTierSubmitting value)?  submitting,TResult Function( CreateTierSuccess value)?  success,TResult Function( CreateTierFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreateTierIdle value)?  idle,TResult Function( CreateTierSubmitting value)?  submitting,TResult Function( CreateTierSuccess value)?  success,TResult Function( CreateTierFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case CreateTierInitial() when initial != null:
-return initial(_that);case CreateTierSubmitting() when submitting != null:
+case CreateTierIdle() when idle != null:
+return idle(_that);case CreateTierSubmitting() when submitting != null:
 return submitting(_that);case CreateTierSuccess() when success != null:
 return success(_that);case CreateTierFailure() when failure != null:
 return failure(_that);case _:
@@ -80,11 +80,11 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreateTierInitial value)  initial,required TResult Function( CreateTierSubmitting value)  submitting,required TResult Function( CreateTierSuccess value)  success,required TResult Function( CreateTierFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreateTierIdle value)  idle,required TResult Function( CreateTierSubmitting value)  submitting,required TResult Function( CreateTierSuccess value)  success,required TResult Function( CreateTierFailure value)  failure,}){
 final _that = this;
 switch (_that) {
-case CreateTierInitial():
-return initial(_that);case CreateTierSubmitting():
+case CreateTierIdle():
+return idle(_that);case CreateTierSubmitting():
 return submitting(_that);case CreateTierSuccess():
 return success(_that);case CreateTierFailure():
 return failure(_that);}
@@ -101,11 +101,11 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreateTierInitial value)?  initial,TResult? Function( CreateTierSubmitting value)?  submitting,TResult? Function( CreateTierSuccess value)?  success,TResult? Function( CreateTierFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreateTierIdle value)?  idle,TResult? Function( CreateTierSubmitting value)?  submitting,TResult? Function( CreateTierSuccess value)?  success,TResult? Function( CreateTierFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
-case CreateTierInitial() when initial != null:
-return initial(_that);case CreateTierSubmitting() when submitting != null:
+case CreateTierIdle() when idle != null:
+return idle(_that);case CreateTierSubmitting() when submitting != null:
 return submitting(_that);case CreateTierSuccess() when success != null:
 return success(_that);case CreateTierFailure() when failure != null:
 return failure(_that);case _:
@@ -125,10 +125,10 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  submitting,TResult Function( Tier tier)?  success,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  submitting,TResult Function( Tier tier)?  success,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case CreateTierInitial() when initial != null:
-return initial();case CreateTierSubmitting() when submitting != null:
+case CreateTierIdle() when idle != null:
+return idle();case CreateTierSubmitting() when submitting != null:
 return submitting();case CreateTierSuccess() when success != null:
 return success(_that.tier);case CreateTierFailure() when failure != null:
 return failure(_that.failure);case _:
@@ -149,10 +149,10 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  submitting,required TResult Function( Tier tier)  success,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  submitting,required TResult Function( Tier tier)  success,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
-case CreateTierInitial():
-return initial();case CreateTierSubmitting():
+case CreateTierIdle():
+return idle();case CreateTierSubmitting():
 return submitting();case CreateTierSuccess():
 return success(_that.tier);case CreateTierFailure():
 return failure(_that.failure);}
@@ -169,10 +169,10 @@ return failure(_that.failure);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  submitting,TResult? Function( Tier tier)?  success,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  submitting,TResult? Function( Tier tier)?  success,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
-case CreateTierInitial() when initial != null:
-return initial();case CreateTierSubmitting() when submitting != null:
+case CreateTierIdle() when idle != null:
+return idle();case CreateTierSubmitting() when submitting != null:
 return submitting();case CreateTierSuccess() when success != null:
 return success(_that.tier);case CreateTierFailure() when failure != null:
 return failure(_that.failure);case _:
@@ -186,8 +186,8 @@ return failure(_that.failure);case _:
 /// @nodoc
 
 
-class CreateTierInitial implements CreateTierState {
-  const CreateTierInitial();
+class CreateTierIdle implements CreateTierState {
+  const CreateTierIdle();
   
 
 
@@ -197,7 +197,7 @@ class CreateTierInitial implements CreateTierState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateTierInitial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateTierIdle);
 }
 
 
@@ -206,7 +206,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'CreateTierState.initial()';
+  return 'CreateTierState.idle()';
 }
 
 

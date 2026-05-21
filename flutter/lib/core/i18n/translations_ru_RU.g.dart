@@ -550,6 +550,7 @@ class _TranslationsTiersCreateTierErrorsRuRu implements TranslationsTiersCreateT
 	// Translations
 	@override String get required => 'Это поле обязательно';
 	@override String get generic => 'Не удалось создать тир';
+	@override String get permissionDenied => 'У вас нет прав для создания тиров';
 }
 
 // Path: tiers.editTier.errors
@@ -731,6 +732,7 @@ class _TranslationsUsersCreateErrorsRuRu implements TranslationsUsersCreateError
 	@override String get usernameTaken => 'Имя пользователя уже занято';
 	@override String get emailTaken => 'Email уже занят';
 	@override String get generic => 'Что-то пошло не так. Попробуйте ещё раз.';
+	@override String get permissionDenied => 'У вас нет прав для создания пользователей';
 }
 
 // Path: users.delete.errors
@@ -866,6 +868,7 @@ extension on TranslationsRuRu {
 			'tiers.createTier.success' => 'Тир создан',
 			'tiers.createTier.errors.required' => 'Это поле обязательно',
 			'tiers.createTier.errors.generic' => 'Не удалось создать тир',
+			'tiers.createTier.errors.permissionDenied' => 'У вас нет прав для создания тиров',
 			'tiers.tierDetails.title' => 'Детали уровня',
 			'tiers.tierDetails.id' => 'ID',
 			'tiers.tierDetails.createdAt' => 'Создан',
@@ -1008,6 +1011,7 @@ extension on TranslationsRuRu {
 			'users.create.errors.usernameTaken' => 'Имя пользователя уже занято',
 			'users.create.errors.emailTaken' => 'Email уже занят',
 			'users.create.errors.generic' => 'Что-то пошло не так. Попробуйте ещё раз.',
+			'users.create.errors.permissionDenied' => 'У вас нет прав для создания пользователей',
 			'users.delete.tooltip' => 'Удалить аккаунт',
 			'users.delete.confirmTitle' => 'Удалить аккаунт?',
 			'users.delete.confirmMessage' => 'Аккаунт будет удалён навсегда. Действие нельзя отменить.',

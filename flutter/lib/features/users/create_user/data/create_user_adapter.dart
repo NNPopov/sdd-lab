@@ -57,23 +57,10 @@ class CreateUserAdapter implements CreateUserPort {
     }
   }
 
-  Failure _parseValidation(DioException e) {
+  MessageValidationFailure _parseValidation(DioException e) {
     final rawDetail = (e.response?.data as Map<String, dynamic>?)?['detail'];
-    if (rawDetail is List) {
-      final fieldErrors = <String, String>{};
-      for (final item in rawDetail) {
-        if (item is Map<String, dynamic>) {
-          final loc = item['loc'] as List?;
-          final field = loc != null && loc.length > 1
-              ? loc.last.toString()
-              : 'error';
-          fieldErrors[field] = item['msg']?.toString() ?? '';
-        }
-      }
-      return Failure.validation(fieldErrors: fieldErrors);
-    }
-    return Failure.validation(
-      fieldErrors: {'error': rawDetail?.toString() ?? 'Validation error'},
+    return MessageValidationFailure(
+      message: rawDetail?.toString() ?? 'Validation error',
     );
   }
 }
