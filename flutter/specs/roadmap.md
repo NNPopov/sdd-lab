@@ -43,3 +43,4 @@
 | 0039 | posts | adapt_moderation_log_contract | 📋 | [specs/features/posts/0039_adapt_moderation_log_contract/](features/posts/0039_adapt_moderation_log_contract/) |
 | 0040 | core/i18n | extend_locales | 📋 | [specs/features/core/0040_extend_locales/](features/core/0040_extend_locales/) |
 | 0041 | core/routing | user_header_menu | 📋 | [specs/features/core/0041_user_header_menu/](features/core/0041_user_header_menu/) |
+| 0042 | core/quality | arch_violations_fix | 📋 | [specs/features/core/0042_arch_violations_fix/](features/core/0042_arch_violations_fix/) |
