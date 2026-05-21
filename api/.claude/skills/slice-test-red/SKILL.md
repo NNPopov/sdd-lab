@@ -185,8 +185,9 @@ Quality gates before completion:
 - ruff check src/app tests
 - mypy src/app
 - pytest
+- Architecture contracts: find and run the import-linter using .importlinter config
 
-All must pass.
+All must pass with no new warnings.
 
 ─────────────────────────────────────────────────────────────────
 ```

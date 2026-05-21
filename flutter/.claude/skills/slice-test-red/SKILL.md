@@ -182,6 +182,7 @@ Before running tests with new i18n keys or JSON:
 Quality gates before finishing:
 - dart analyze
 - flutter test
+- bash scripts/check_arch.sh
 
 All must pass with no new warnings.
 
