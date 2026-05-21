@@ -44,8 +44,9 @@ Each slice = one use-case class (`__call__()`) with its own
 | Cache | Redis via `@cache` decorator |
 | DI | `dependency_injector` + `Annotated[X, Depends(...)]` |
 | Errors | `DomainError` hierarchy — never `HTTPException` in use-cases |
-| Lint / type-check | Ruff · mypy strict |
+| Lint / format | Ruff (F E W C UP I B N) · mypy strict |
 | Tests | pytest · pytest-asyncio · httpx.AsyncClient |
+| Architecture | import-linter (5 layer contracts) · pytestarch |
 
 ### Quick start
 
@@ -61,8 +62,8 @@ uvicorn src.app.main:app --reload
 pytest
 ```
 
-**Slices implemented:** 23 complete, 1 planned.
-Features: `users`, `posts`, `moderation`.
+**Slices implemented:** 29 complete, 2 planned.
+Features: `users`, `posts`, `moderation`, `infra`.
 
 ## Flutter — `flutter/`
 
@@ -80,6 +81,8 @@ Each slice has `domain/ports/`, `data/` (adapters), and `presentation/`.
 | Serialization | `freezed` + `json_serializable` |
 | Tests | `bloc_test` + `mocktail` |
 | Lints | `very_good_analysis` |
+| Metrics | `dart_code_linter` (cyclomatic ≤ 10, params ≤ 5, nesting ≤ 5, SLOC ≤ 50) |
+| Architecture | `scripts/check_arch.sh` (format + analyze + metrics + boundary checks) |
 
 ### Quick start
 
@@ -94,9 +97,9 @@ flutter run
 flutter test
 ```
 
-**Slices implemented:** 36 complete, 1 planned.
+**Slices implemented:** 38 complete, 6 planned.
 Features: `users`, `posts`, `tiers`, `core/auth`, `core/rbac`,
-`core/routing`, `core/i18n`.
+`core/routing`, `core/i18n`, `core/quality`.
 
 ## Acknowledgements
 

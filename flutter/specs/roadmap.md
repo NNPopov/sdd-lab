@@ -45,3 +45,4 @@
 | 0041 | core/routing | user_header_menu | 📋 | [specs/features/core/0041_user_header_menu/](features/core/0041_user_header_menu/) |
 | 0042 | core/quality | arch_violations_fix | 📋 | [specs/features/core/0042_arch_violations_fix/](features/core/0042_arch_violations_fix/) |
 | 0043 | core/quality | build_cc_decomposition | 📋 | [specs/features/core/0043_build_cc_decomposition/](features/core/0043_build_cc_decomposition/) |
+| 0044 | core/quality | create_user_screen_decomposition | 📋 | [specs/features/core/0044_create_user_screen_decomposition/](features/core/0044_create_user_screen_decomposition/) |

@@ -1,130 +1,55 @@
-# Flutter каркас — AI-обвязка для Claude Code
+# sdd-lab Flutter Client
 
-Набор подготовлен под стек: **BLoC 9 + auto_route + slang + RBAC + Hexagonal/Vertical Slice**,
-iOS/macOS-first приоритет.
+Cross-platform client (iOS-first) for the sdd-lab API.
 
-## Что внутри
+**Architecture:** Vertical Slice + Hexagonal. Each feature is split into slices; inside each slice — ports (narrow interfaces in `domain/ports/`) and adapters (implementations in `data/`).
 
-```
-├── CLAUDE.md                 # главный файл — ваша архитектура и соглашения
-└── .claude/
-    └── skills/               # 21 Agent Skill
-        ├── architecture-feature-first/    # от evanca — feature-first структура
-        ├── bloc/                          # от evanca — BLoC/Cubit паттерны
-        ├── flutter-architecting-apps/     # от Flutter team — layered arch
-        ├── flutter-managing-state/        # от Flutter team
-        ├── flutter-implementing-navigation-and-routing/
-        ├── flutter-localizing-apps/
-        ├── flutter-handling-http-and-json/
-        ├── flutter-testing-apps/
-        ├── flutter-theming-apps/
-        ├── flutter-handling-concurrency/
-        ├── flutter-caching-data/
-        ├── flutter-working-with-databases/
-        ├── flutter-building-forms/
-        ├── flutter-improving-accessibility/
-        ├── flutter-app-architecture/      # от evanca, доп. материал
-        ├── effective-dart/
-        ├── dart-3-updates/
-        ├── mocktail/
-        ├── testing/
-        ├── code-review/
-        └── flutter-errors/
-```
+Development is iterative and spec-driven: each new slice goes through a full specification cycle — PRD → plan → requirements → validation → tests — and is considered done only when the outside-in acceptance test turns green.
 
-## Установка
+## Stack
 
-### Вариант 1 — в конкретный проект (рекомендуется на старте)
+| Concern | Choice |
+|---|---|
+| State | `flutter_bloc` 9.x — Cubit by default, Bloc when event traceability is needed |
+| DI | `get_it` + `injectable` |
+| Navigation | `auto_route` 9.x |
+| HTTP | `dio` + `retrofit` |
+| Serialization | `freezed` + `json_serializable` |
+| Localization | `slang` (en-US · es-ES · ru-RU · uk-UA) |
+| Tests | `bloc_test` + `mocktail` + `flutter_test` |
+| Lints | `very_good_analysis` |
+| Metrics | `dart_code_linter` (cyclomatic ≤ 10, params ≤ 5, nesting ≤ 5, SLOC ≤ 50) |
 
-Распакуйте содержимое архива в **корень Flutter-проекта**:
-
-```
-your_flutter_project/
-├── lib/
-├── test/
-├── pubspec.yaml
-├── CLAUDE.md               ← сюда
-└── .claude/                ← и сюда
-    └── skills/
-```
-
-Claude Code при запуске в этой папке автоматически подхватит `CLAUDE.md` и увидит
-скиллы в `.claude/skills/`.
-
-### Вариант 2 — глобально для всех Flutter-проектов
-
-Если у вас несколько Flutter-проектов с одинаковым стеком, положите скиллы
-в домашнюю директорию:
+## Quick start
 
 ```bash
-mkdir -p ~/.claude/skills
-cp -r .claude/skills/* ~/.claude/skills/
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter run
 ```
-
-А `CLAUDE.md` всё равно держите per-project — архитектурные решения у разных
-проектов могут отличаться.
-
-## Как этим пользоваться
-
-1. **Откройте Claude Code в корне проекта** — он сам загрузит `CLAUDE.md`.
-2. **На старте новой задачи** явно просите Claude свериться со скиллом:
-   ```
-   Read @.claude/skills/bloc/SKILL.md and create AuthCubit for the auth feature
-   per our CLAUDE.md architecture.
-   ```
-3. **Для новой фичи** — двухшаговый промпт:
-   ```
-   1. Read @.claude/skills/architecture-feature-first/SKILL.md
-   2. Scaffold a new feature "catalog" following our CLAUDE.md structure:
-      domain/data/application/presentation with a CatalogCubit and RBAC guard
-      on the catalog route.
-   ```
-
-## Следующие рекомендуемые шаги
-
-1. **Поставить Dart/Flutter MCP Server** — даст Claude Code live-доступ к pub.dev,
-   анализатору, hot reload:
-   https://docs.flutter.dev/ai/mcp-server
-
-2. **Проверить `CLAUDE.md`** — адаптировать под ваш конкретный проект:
-   - список `UserRole` и `Permission` под вашу бизнес-модель
-   - список поддерживаемых локалей (сейчас подразумеваются en/ru)
-   - специфические правила вашей команды
-
-3. **Сгенерировать первый feature-слайс** через Claude Code — например, auth —
-   и убедиться, что структура соответствует `CLAUDE.md`. Это будет эталон
-   для остальных фич.
-
-## Источники
-
-- Официальные скиллы Flutter-команды: https://github.com/flutter/skills
-- Community-скиллы evanca: https://github.com/evanca/flutter-ai-rules
-- Архитектурные рекомендации Flutter: https://docs.flutter.dev/app-architecture
-- Flutter AI rules: https://docs.flutter.dev/ai/ai-rules
-- Dart/Flutter MCP Server: https://docs.flutter.dev/ai/mcp-server
-
-## Обновление скиллов
-
-Скиллы периодически обновляются в upstream-репах. Чтобы подтянуть свежие версии:
 
 ```bash
-# официальные
-git clone --depth 1 https://github.com/flutter/skills.git /tmp/flutter-skills
-cp -r /tmp/flutter-skills/skills/* .claude/skills/
-rm -rf /tmp/flutter-skills
-
-# community
-git clone --depth 1 https://github.com/evanca/flutter-ai-rules.git /tmp/evanca
-cp -r /tmp/evanca/skills/architecture-feature-first .claude/skills/
-cp -r /tmp/evanca/skills/bloc .claude/skills/
-# ...и остальные нужные вам
-rm -rf /tmp/evanca
+flutter test
 ```
 
-## Лицензии
+## Architecture gate
 
-- Скиллы из `flutter/skills` — под лицензией Flutter project (BSD-style), см.
-  LICENSE в репозитории.
-- Скиллы из `evanca/flutter-ai-rules` — MIT, см. LICENSE в репозитории.
-- Эти лицензионные файлы не включены сюда ради компактности — в production
-  положите их рядом, если планируете распространять каркас дальше.
+Run `scripts/check_arch.sh` to verify four layers in sequence:
+
+1. **dart format** — no formatting drift (`dart format --set-exit-if-changed lib/ test/`)
+2. **dart analyze** — no analyzer warnings
+3. **dart_code_linter metrics** — complexity, parameter count, nesting, and SLOC thresholds (configured in `analysis_options.yaml`)
+4. **Import boundary checks** — grep-based, zero extra dependencies:
+   - `domain/` is pure Dart — no Flutter, Dio, or infra packages
+   - `presentation/` does not call HTTP directly
+   - `core/` does not import `features/` (exception: `app_router.dart` composition root)
+   - Feature isolation: `users`, `posts`, and `tiers` do not import each other
+   - No `setState` in widgets that already use a Cubit or Bloc
+
+Exit code `0` means all checks passed; non-zero means at least one violation was found.
+
+## Slices
+
+**38 complete, 6 planned.** Features: `users`, `posts`, `tiers`, `core/auth`, `core/rbac`,
+`core/routing`, `core/i18n`, `core/quality`.
+See `specs/roadmap.md` for the full index.
