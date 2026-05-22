@@ -4,6 +4,7 @@ from dependency_injector import containers, providers
 from ..adapters.db.session import local_session
 from ..adapters.db.token_blacklist.adapter import TokenBlacklistAdapter
 from ..core.security import get_password_hash
+from ..features.posts._shared.user_lookup_adapter import UserLookupAdapter
 from ..features.posts.create_post.data.adapter import CreatePostAdapter
 from ..features.posts.create_post.domain.use_case import CreatePostUseCase
 from ..features.posts.erase_db_post.data.adapter import EraseDbPostAdapter
@@ -178,6 +179,11 @@ class Container(containers.DeclarativeContainer):
         port=list_all_posts_adapter,
     )
 
+    user_lookup_adapter = providers.Factory(
+        UserLookupAdapter,
+        session_factory=session_factory,
+    )
+
     create_post_adapter = providers.Factory(
         CreatePostAdapter,
         session_factory=session_factory,
@@ -186,6 +192,7 @@ class Container(containers.DeclarativeContainer):
     create_post_use_case = providers.Factory(
         CreatePostUseCase,
         port=create_post_adapter,
+        user_lookup=user_lookup_adapter,
     )
 
     assign_moderator_adapter = providers.Factory(
@@ -266,6 +273,7 @@ class Container(containers.DeclarativeContainer):
     update_post_use_case = providers.Factory(
         UpdatePostUseCase,
         port=update_post_adapter,
+        user_lookup=user_lookup_adapter,
     )
 
     erase_post_adapter = providers.Factory(
@@ -276,6 +284,7 @@ class Container(containers.DeclarativeContainer):
     erase_post_use_case = providers.Factory(
         ErasePostUseCase,
         port=erase_post_adapter,
+        user_lookup=user_lookup_adapter,
     )
 
     erase_db_post_adapter = providers.Factory(
@@ -286,6 +295,7 @@ class Container(containers.DeclarativeContainer):
     erase_db_post_use_case = providers.Factory(
         EraseDbPostUseCase,
         port=erase_db_post_adapter,
+        user_lookup=user_lookup_adapter,
     )
 
 

@@ -1,15 +1,17 @@
 # FEATURE: update_post — use case.
 from .....domain.errors import ForbiddenDomainError, NotFoundDomainError
+from ..._shared.user_lookup_port import UserLookupPort
 from .commands import UpdatePostCommand
 from .ports.update_post_port import UpdatePostPort
 
 
 class UpdatePostUseCase:
-    def __init__(self, port: UpdatePostPort) -> None:
+    def __init__(self, port: UpdatePostPort, user_lookup: UserLookupPort) -> None:
         self._port = port
+        self._user_lookup = user_lookup
 
     async def __call__(self, command: UpdatePostCommand) -> None:
-        author = await self._port.get_user_by_username(command.target_username)
+        author = await self._user_lookup.get_active_user_by_username(command.target_username)
         if author is None:
             raise NotFoundDomainError("User not found")
         if command.requester_username != author.username:

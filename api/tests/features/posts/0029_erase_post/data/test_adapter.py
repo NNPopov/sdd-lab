@@ -1,11 +1,10 @@
 # FEATURE: erase_post — adapter unit tests (real test Postgres).
 #
-# Covers: F7, F8, F9.
+# Covers: F8, F9.
 import pytest
 from httpx import AsyncClient
 from sqlalchemy import text
 
-from app.features.posts._shared.entities import PostAuthor
 from app.features.posts.erase_post.data.adapter import ErasePostAdapter
 from app.features.posts.erase_post.domain.entities import ErasePostRecord
 from app.features.posts.erase_post.domain.ports.erase_post_port import ErasePostPort
@@ -28,52 +27,6 @@ async def test_adapter_is_instance_of_port() -> None:
 
     adapter = ErasePostAdapter(session_factory=MagicMock())
     assert isinstance(adapter, ErasePostPort)
-
-
-# ── F7: get_user_by_username ──────────────────────────────────────────────────
-
-
-async def test_get_user_by_username_returns_post_author_for_active_user(
-    ep29_alice: dict,
-) -> None:
-    """F7 — active user row → PostAuthor with correct id and username."""
-    adapter = _make_adapter()
-    author = await adapter.get_user_by_username("ep29alice")
-    assert isinstance(author, PostAuthor)
-    assert author.username == "ep29alice"
-    assert author.id == ep29_alice["id"]
-
-
-async def test_get_user_by_username_returns_none_for_unknown(
-    async_client: AsyncClient,
-) -> None:
-    """F7 — unknown username → None."""
-    adapter = _make_adapter()
-    result = await adapter.get_user_by_username("no_such_user_ep29")
-    assert result is None
-
-
-async def test_get_user_by_username_returns_none_for_soft_deleted(
-    async_client: AsyncClient,
-) -> None:
-    """F7 — soft-deleted user → None."""
-    from app.adapters.db.models.user import User
-    from app.bootstrap.container import container as _di_container
-
-    async with _di_container.session_factory()() as session:
-        user = User(
-            name="EP29 Deleted",
-            username="ep29deleted_xyz",
-            email="ep29deleted_xyz@example.com",
-            hashed_password="fake",
-            is_deleted=True,
-        )
-        session.add(user)
-        await session.commit()
-
-    adapter = _make_adapter()
-    result = await adapter.get_user_by_username("ep29deleted_xyz")
-    assert result is None
 
 
 # ── F8: find_post ─────────────────────────────────────────────────────────────

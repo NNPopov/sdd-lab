@@ -8,11 +8,11 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from app.domain.errors import ForbiddenDomainError, NotFoundDomainError
-from app.features.posts._shared.entities import PostAuthor, PostItem
+from app.features.posts._shared.entities import PostItem, UserIdentity
 from app.features.posts.update_post.domain.commands import UpdatePostCommand
 from app.features.posts.update_post.domain.use_case import UpdatePostUseCase
 
-_AUTHOR = PostAuthor(id=1, username="alice")
+_AUTHOR = UserIdentity(id=1, username="alice")
 _POST = PostItem(
     id=10,
     title="Original title",
@@ -32,12 +32,17 @@ _CMD = UpdatePostCommand(
 )
 
 
-def _make_port(*, author: PostAuthor | None = _AUTHOR, post: PostItem | None = _POST) -> MagicMock:
+def _make_port(*, post: PostItem | None = _POST) -> MagicMock:
     port = MagicMock()
-    port.get_user_by_username = AsyncMock(return_value=author)
     port.get_post_by_id = AsyncMock(return_value=post)
     port.update = AsyncMock(return_value=None)
     return port
+
+
+def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
+    user_lookup = MagicMock()
+    user_lookup.get_active_user_by_username = AsyncMock(return_value=author)
+    return user_lookup
 
 
 # ── F3: user not found ────────────────────────────────────────────────────────
@@ -45,8 +50,8 @@ def _make_port(*, author: PostAuthor | None = _AUTHOR, post: PostItem | None = _
 
 @pytest.mark.asyncio
 async def test_raises_not_found_when_user_missing() -> None:
-    """F3 — get_user_by_username returns None → NotFoundDomainError('User not found')."""
-    use_case = UpdatePostUseCase(port=_make_port(author=None))  # type: ignore[arg-type]
+    """F3 — get_active_user_by_username returns None → NotFoundDomainError('User not found')."""
+    use_case = UpdatePostUseCase(port=_make_port(), user_lookup=_make_user_lookup(author=None))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)
     assert exc_info.value.message == "User not found"
@@ -65,7 +70,7 @@ async def test_raises_forbidden_when_requester_differs() -> None:
         title="Hijacked title",
     )
     port = _make_port()
-    use_case = UpdatePostUseCase(port=port)  # type: ignore[arg-type]
+    use_case = UpdatePostUseCase(port=port, user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     with pytest.raises(ForbiddenDomainError) as exc_info:
         await use_case(cmd)
     assert exc_info.value.message == "You can only update your own posts"
@@ -78,7 +83,7 @@ async def test_raises_forbidden_when_requester_differs() -> None:
 @pytest.mark.asyncio
 async def test_raises_not_found_when_post_missing() -> None:
     """F5 — get_post_by_id returns None → NotFoundDomainError('Post not found')."""
-    use_case = UpdatePostUseCase(port=_make_port(post=None))  # type: ignore[arg-type]
+    use_case = UpdatePostUseCase(port=_make_port(post=None), user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)
     assert exc_info.value.message == "Post not found"
@@ -91,6 +96,6 @@ async def test_raises_not_found_when_post_missing() -> None:
 async def test_happy_path_calls_update() -> None:
     """F6 — all checks pass → port.update called once with the command."""
     port = _make_port()
-    use_case = UpdatePostUseCase(port=port)  # type: ignore[arg-type]
+    use_case = UpdatePostUseCase(port=port, user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     await use_case(_CMD)
     port.update.assert_called_once_with(_CMD)

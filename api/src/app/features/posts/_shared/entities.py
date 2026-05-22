@@ -1,11 +1,11 @@
-# FEATURE: posts._shared — PostItem and PostPage domain entities.
+# FEATURE: posts._shared — shared domain entities.
 import uuid
 from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
 
-class PostAuthor(BaseModel):
+class UserIdentity(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

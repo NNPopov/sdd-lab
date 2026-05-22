@@ -8,12 +8,12 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from app.domain.errors import ForbiddenDomainError, NotFoundDomainError
-from app.features.posts._shared.entities import PostAuthor
+from app.features.posts._shared.entities import UserIdentity
 from app.features.posts.create_post.domain.commands import CreatePostCommand
 from app.features.posts.create_post.domain.entities import CreatedPost
 from app.features.posts.create_post.domain.use_case import CreatePostUseCase
 
-_AUTHOR = PostAuthor(id=42, username="alice")
+_AUTHOR = UserIdentity(id=42, username="alice")
 _CMD = CreatePostCommand(
     target_username="alice",
     requester_username="alice",
@@ -33,11 +33,16 @@ _CREATED_POST = CreatedPost(
 )
 
 
-def _make_port(*, author: PostAuthor | None = _AUTHOR, created: CreatedPost = _CREATED_POST) -> MagicMock:
+def _make_port(*, created: CreatedPost = _CREATED_POST) -> MagicMock:
     port = MagicMock()
-    port.get_user_by_username = AsyncMock(return_value=author)
     port.create = AsyncMock(return_value=created)
     return port
+
+
+def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
+    user_lookup = MagicMock()
+    user_lookup.get_active_user_by_username = AsyncMock(return_value=author)
+    return user_lookup
 
 
 # ── F7: user not found ────────────────────────────────────────────────────────
@@ -45,8 +50,8 @@ def _make_port(*, author: PostAuthor | None = _AUTHOR, created: CreatedPost = _C
 
 @pytest.mark.asyncio
 async def test_raises_not_found_when_user_missing() -> None:
-    """F7 — get_user_by_username returns None → NotFoundDomainError."""
-    use_case = CreatePostUseCase(port=_make_port(author=None))  # type: ignore[arg-type]
+    """F7 — get_active_user_by_username returns None → NotFoundDomainError."""
+    use_case = CreatePostUseCase(port=_make_port(), user_lookup=_make_user_lookup(author=None))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)
     assert exc_info.value.message == "User not found"
@@ -66,7 +71,7 @@ async def test_raises_forbidden_when_requester_differs() -> None:
         media_url=None,
     )
     port = _make_port()
-    use_case = CreatePostUseCase(port=port)  # type: ignore[arg-type]
+    use_case = CreatePostUseCase(port=port, user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     with pytest.raises(ForbiddenDomainError) as exc_info:
         await use_case(cmd)
     assert exc_info.value.message == "You can only post under your own username"
@@ -82,7 +87,7 @@ async def test_happy_path_calls_create_with_correct_internal_command() -> None:
     from app.features.posts.create_post.domain.commands import CreatePostInternalCommand
 
     port = _make_port()
-    use_case = CreatePostUseCase(port=port)  # type: ignore[arg-type]
+    use_case = CreatePostUseCase(port=port, user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     result = await use_case(_CMD)
 
     port.create.assert_called_once()

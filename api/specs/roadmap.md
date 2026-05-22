@@ -35,3 +35,4 @@ Global index of all slices. Owned by `/to-prd`. Other skills read; never write.
 | 0029 | posts | erase_post | Complete | `specs/features/posts/0029_erase_post/` |
 | 0030 | posts | erase_db_post | Planned | `specs/features/posts/0030_erase_db_post/` |
 | 0031 | posts | fix_erase_db_post_cascade | Planned | `specs/features/posts/0031_fix_erase_db_post_cascade/` |
+| 0032 | posts | extract_user_lookup | Planned | `specs/features/posts/0032_extract_user_lookup/` |

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from .....adapters.db.models.post import Post
 from .....adapters.db.models.user import User
-from ..._shared.entities import PostAuthor, PostItem
+from ..._shared.entities import PostItem
 from ..domain.commands import UpdatePostCommand
 from ..domain.ports.update_post_port import UpdatePostPort
 
@@ -15,14 +15,6 @@ from ..domain.ports.update_post_port import UpdatePostPort
 class UpdatePostAdapter(UpdatePostPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
-
-    async def get_user_by_username(self, username: str) -> PostAuthor | None:
-        async with self._session_factory() as session:
-            result = await session.execute(select(User).where(User.username == username, User.is_deleted.is_(False)))
-            user = result.scalar_one_or_none()
-            if user is None:
-                return None
-            return PostAuthor.model_validate(user)
 
     async def get_post_by_id(self, post_id: int) -> PostItem | None:
         async with self._session_factory() as session:

@@ -1,11 +1,11 @@
 # FEATURE: update_post — adapter unit tests (real test Postgres).
 #
-# Covers: F7, F8, F9.
+# Covers: F8, F9.
 import pytest
 from httpx import AsyncClient
 from sqlalchemy import text
 
-from app.features.posts._shared.entities import PostAuthor, PostItem
+from app.features.posts._shared.entities import PostItem
 from app.features.posts.update_post.data.adapter import UpdatePostAdapter
 
 pytestmark = pytest.mark.asyncio
@@ -15,52 +15,6 @@ def _make_adapter() -> UpdatePostAdapter:
     from app.bootstrap.container import container as _di_container
 
     return UpdatePostAdapter(session_factory=_di_container.session_factory())
-
-
-# ── F7: get_user_by_username ──────────────────────────────────────────────────
-
-
-async def test_get_user_by_username_returns_post_author_for_active_user(
-    up28_alice: dict,
-) -> None:
-    """F7 — active user row → PostAuthor with correct id and username."""
-    adapter = _make_adapter()
-    author = await adapter.get_user_by_username("up28alice")
-    assert isinstance(author, PostAuthor)
-    assert author.username == "up28alice"
-    assert author.id == up28_alice["id"]
-
-
-async def test_get_user_by_username_returns_none_for_unknown(
-    async_client: AsyncClient,
-) -> None:
-    """F7 — unknown username → None."""
-    adapter = _make_adapter()
-    result = await adapter.get_user_by_username("no_such_user_xyz")
-    assert result is None
-
-
-async def test_get_user_by_username_returns_none_for_soft_deleted(
-    async_client: AsyncClient,
-) -> None:
-    """F7 — soft-deleted user → None."""
-    from app.adapters.db.models.user import User
-    from app.bootstrap.container import container as _di_container
-
-    async with _di_container.session_factory()() as session:
-        user = User(
-            name="Deleted",
-            username="up28deleted_xyz",
-            email="up28deleted_xyz@example.com",
-            hashed_password="fake",
-            is_deleted=True,
-        )
-        session.add(user)
-        await session.commit()
-
-    adapter = _make_adapter()
-    result = await adapter.get_user_by_username("up28deleted_xyz")
-    assert result is None
 
 
 # ── F8: get_post_by_id ────────────────────────────────────────────────────────
