@@ -4,14 +4,14 @@ class PaginatedTiers {
   const PaginatedTiers({
     required this.tiers,
     required this.totalCount,
-    required this.hasMore,
     required this.page,
     required this.itemsPerPage,
   });
 
   final List<Tier> tiers;
   final int totalCount;
-  final bool hasMore;
   final int page;
   final int itemsPerPage;
+
+  bool get hasMore => page * itemsPerPage < totalCount;
 }

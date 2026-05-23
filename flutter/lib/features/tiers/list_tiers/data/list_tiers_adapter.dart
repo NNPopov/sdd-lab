@@ -25,9 +25,8 @@ class ListTiersAdapter implements ListTiersPort {
         final dto = await _api.getTiers(page: page, perPage: perPage);
         return Right(
           PaginatedTiers(
-            tiers: dto.data.map((t) => t.toDomain()).toList(),
+            tiers: dto.items.map((t) => t.toDomain()).toList(),
             totalCount: dto.totalCount,
-            hasMore: dto.hasMore,
             page: dto.page,
             itemsPerPage: dto.itemsPerPage,
           ),

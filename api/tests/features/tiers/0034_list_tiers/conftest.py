@@ -17,6 +17,25 @@ async def oit_engine():
     await engine.dispose()
 
 
+@pytest_asyncio.fixture(autouse=True)
+async def _clean_tiers(async_client: AsyncClient) -> None:
+    """Delete all tier rows before each test inside the savepoint transaction.
+
+    Pre-existing committed rows in the dev DB would otherwise cause total_count
+    assertions to fail. The outer transaction rollback in async_client teardown
+    restores the DB to its pre-test state.
+    """
+    from sqlalchemy import text
+
+    from app.bootstrap.container import container as _di_container
+
+    async with _di_container.session_factory()() as session:
+        await session.execute(text('UPDATE "user" SET tier_id = NULL WHERE tier_id IS NOT NULL'))
+        await session.execute(text('DELETE FROM "rate_limit" WHERE tier_id IS NOT NULL'))
+        await session.execute(text('DELETE FROM "tier"'))
+        await session.commit()
+
+
 @pytest_asyncio.fixture()
 async def async_client(oit_engine) -> AsyncClient:
     """HTTP client wired to the app with per-test transaction rollback via savepoints.

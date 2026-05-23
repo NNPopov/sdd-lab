@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EditTierRequestDto {
 
- String get name;
+@JsonKey(name: 'new_name') String get name;
 /// Create a copy of EditTierRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $EditTierRequestDtoCopyWith<$Res>  {
   factory $EditTierRequestDtoCopyWith(EditTierRequestDto value, $Res Function(EditTierRequestDto) _then) = _$EditTierRequestDtoCopyWithImpl;
 @useResult
 $Res call({
- String name
+@JsonKey(name: 'new_name') String name
 });
 
 
@@ -150,7 +150,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'new_name')  String name)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EditTierRequestDto() when $default != null:
 return $default(_that.name);case _:
@@ -171,7 +171,7 @@ return $default(_that.name);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'new_name')  String name)  $default,) {final _that = this;
 switch (_that) {
 case _EditTierRequestDto():
 return $default(_that.name);}
@@ -188,7 +188,7 @@ return $default(_that.name);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'new_name')  String name)?  $default,) {final _that = this;
 switch (_that) {
 case _EditTierRequestDto() when $default != null:
 return $default(_that.name);case _:
@@ -203,10 +203,10 @@ return $default(_that.name);case _:
 @JsonSerializable()
 
 class _EditTierRequestDto implements EditTierRequestDto {
-  const _EditTierRequestDto({required this.name});
+  const _EditTierRequestDto({@JsonKey(name: 'new_name') required this.name});
   factory _EditTierRequestDto.fromJson(Map<String, dynamic> json) => _$EditTierRequestDtoFromJson(json);
 
-@override final  String name;
+@override@JsonKey(name: 'new_name') final  String name;
 
 /// Create a copy of EditTierRequestDto
 /// with the given fields replaced by the non-null parameter values.
@@ -241,7 +241,7 @@ abstract mixin class _$EditTierRequestDtoCopyWith<$Res> implements $EditTierRequ
   factory _$EditTierRequestDtoCopyWith(_EditTierRequestDto value, $Res Function(_EditTierRequestDto) _then) = __$EditTierRequestDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String name
+@JsonKey(name: 'new_name') String name
 });
 
 

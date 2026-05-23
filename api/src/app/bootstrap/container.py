@@ -27,6 +27,16 @@ from ..features.posts.revise_post.data.adapter import RevisePostAdapter
 from ..features.posts.revise_post.domain.use_case import RevisePostUseCase
 from ..features.posts.update_post.data.adapter import UpdatePostAdapter
 from ..features.posts.update_post.domain.use_case import UpdatePostUseCase
+from ..features.tiers.create_tier.data.adapter import CreateTierAdapter
+from ..features.tiers.create_tier.domain.use_case import CreateTierUseCase
+from ..features.tiers.delete_tier.data.adapter import DeleteTierAdapter
+from ..features.tiers.delete_tier.domain.use_case import DeleteTierUseCase
+from ..features.tiers.get_tier.data.adapter import GetTierAdapter
+from ..features.tiers.get_tier.domain.use_case import GetTierUseCase
+from ..features.tiers.list_tiers.data.adapter import ListTiersAdapter
+from ..features.tiers.list_tiers.domain.use_case import ListTiersUseCase
+from ..features.tiers.update_tier.data.adapter import UpdateTierAdapter
+from ..features.tiers.update_tier.domain.use_case import UpdateTierUseCase
 from ..features.users.assign_moderator.data.adapter import AssignModeratorAdapter
 from ..features.users.assign_moderator.domain.use_case import AssignModeratorUseCase
 from ..features.users.create_user.data.adapter import CreateUserAdapter
@@ -75,6 +85,11 @@ class Container(containers.DeclarativeContainer):
             f"{_app_pkg}.features.posts.update_post.presentation.router",
             f"{_app_pkg}.features.posts.erase_post.presentation.router",
             f"{_app_pkg}.features.posts.erase_db_post.presentation.router",
+            f"{_app_pkg}.features.tiers.create_tier.presentation.router",
+            f"{_app_pkg}.features.tiers.list_tiers.presentation.router",
+            f"{_app_pkg}.features.tiers.get_tier.presentation.router",
+            f"{_app_pkg}.features.tiers.update_tier.presentation.router",
+            f"{_app_pkg}.features.tiers.delete_tier.presentation.router",
             f"{_app_pkg}.shared_dependencies",
         ]
     )
@@ -296,6 +311,56 @@ class Container(containers.DeclarativeContainer):
         EraseDbPostUseCase,
         port=erase_db_post_adapter,
         user_lookup=user_lookup_adapter,
+    )
+
+    create_tier_adapter = providers.Factory(
+        CreateTierAdapter,
+        session_factory=session_factory,
+    )
+
+    create_tier_use_case = providers.Factory(
+        CreateTierUseCase,
+        port=create_tier_adapter,
+    )
+
+    list_tiers_adapter = providers.Factory(
+        ListTiersAdapter,
+        session_factory=session_factory,
+    )
+
+    list_tiers_use_case = providers.Factory(
+        ListTiersUseCase,
+        port=list_tiers_adapter,
+    )
+
+    get_tier_adapter = providers.Factory(
+        GetTierAdapter,
+        session_factory=session_factory,
+    )
+
+    get_tier_use_case = providers.Factory(
+        GetTierUseCase,
+        port=get_tier_adapter,
+    )
+
+    update_tier_adapter = providers.Factory(
+        UpdateTierAdapter,
+        session_factory=session_factory,
+    )
+
+    update_tier_use_case = providers.Factory(
+        UpdateTierUseCase,
+        port=update_tier_adapter,
+    )
+
+    delete_tier_adapter = providers.Factory(
+        DeleteTierAdapter,
+        session_factory=session_factory,
+    )
+
+    delete_tier_use_case = providers.Factory(
+        DeleteTierUseCase,
+        port=delete_tier_adapter,
     )
 
 

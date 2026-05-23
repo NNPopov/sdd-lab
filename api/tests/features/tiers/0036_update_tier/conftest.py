@@ -68,11 +68,10 @@ async def _clean_test_tiers(async_client: AsyncClient) -> None:
     transaction makes them invisible during the test; the outer-transaction rollback
     at teardown restores the dev DB to its pre-test state.
     """
-    from app.bootstrap.container import container as _di_container
     from sqlalchemy import text
 
+    from app.bootstrap.container import container as _di_container
+
     async with _di_container.session_factory()() as session:
-        await session.execute(
-            text("DELETE FROM tier WHERE name IN ('silver', 'gold', 'platinum')")
-        )
+        await session.execute(text("DELETE FROM tier WHERE name IN ('silver', 'gold', 'platinum')"))
         await session.commit()

@@ -7,7 +7,7 @@ part of 'edit_tier_request_dto.dart';
 // **************************************************************************
 
 _EditTierRequestDto _$EditTierRequestDtoFromJson(Map<String, dynamic> json) =>
-    _EditTierRequestDto(name: json['name'] as String);
+    _EditTierRequestDto(name: json['new_name'] as String);
 
 Map<String, dynamic> _$EditTierRequestDtoToJson(_EditTierRequestDto instance) =>
-    <String, dynamic>{'name': instance.name};
+    <String, dynamic>{'new_name': instance.name};

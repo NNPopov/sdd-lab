@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaginatedTiersDto {
 
- List<TierDto> get data;@JsonKey(name: 'total_count') int get totalCount;@JsonKey(name: 'has_more') bool get hasMore; int get page;@JsonKey(name: 'items_per_page') int get itemsPerPage;
+ List<TierDto> get items;@JsonKey(name: 'total_count') int get totalCount; int get page;@JsonKey(name: 'items_per_page') int get itemsPerPage;
 /// Create a copy of PaginatedTiersDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PaginatedTiersDtoCopyWith<PaginatedTiersDto> get copyWith => _$PaginatedTiersDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTiersDto&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.page, page) || other.page == page)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginatedTiersDto&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.page, page) || other.page == page)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data),totalCount,hasMore,page,itemsPerPage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),totalCount,page,itemsPerPage);
 
 @override
 String toString() {
-  return 'PaginatedTiersDto(data: $data, totalCount: $totalCount, hasMore: $hasMore, page: $page, itemsPerPage: $itemsPerPage)';
+  return 'PaginatedTiersDto(items: $items, totalCount: $totalCount, page: $page, itemsPerPage: $itemsPerPage)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PaginatedTiersDtoCopyWith<$Res>  {
   factory $PaginatedTiersDtoCopyWith(PaginatedTiersDto value, $Res Function(PaginatedTiersDto) _then) = _$PaginatedTiersDtoCopyWithImpl;
 @useResult
 $Res call({
- List<TierDto> data,@JsonKey(name: 'total_count') int totalCount,@JsonKey(name: 'has_more') bool hasMore, int page,@JsonKey(name: 'items_per_page') int itemsPerPage
+ List<TierDto> items,@JsonKey(name: 'total_count') int totalCount, int page,@JsonKey(name: 'items_per_page') int itemsPerPage
 });
 
 
@@ -65,12 +65,11 @@ class _$PaginatedTiersDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTiersDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,Object? totalCount = null,Object? hasMore = null,Object? page = null,Object? itemsPerPage = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? items = null,Object? totalCount = null,Object? page = null,Object? itemsPerPage = null,}) {
   return _then(_self.copyWith(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<TierDto>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
-as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
-as bool,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,itemsPerPage: null == itemsPerPage ? _self.itemsPerPage : itemsPerPage // ignore: cast_nullable_to_non_nullable
 as int,
   ));
@@ -154,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TierDto> data, @JsonKey(name: 'total_count')  int totalCount, @JsonKey(name: 'has_more')  bool hasMore,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<TierDto> items, @JsonKey(name: 'total_count')  int totalCount,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaginatedTiersDto() when $default != null:
-return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.itemsPerPage);case _:
+return $default(_that.items,_that.totalCount,_that.page,_that.itemsPerPage);case _:
   return orElse();
 
 }
@@ -175,10 +174,10 @@ return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.items
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TierDto> data, @JsonKey(name: 'total_count')  int totalCount, @JsonKey(name: 'has_more')  bool hasMore,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<TierDto> items, @JsonKey(name: 'total_count')  int totalCount,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTiersDto():
-return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.itemsPerPage);}
+return $default(_that.items,_that.totalCount,_that.page,_that.itemsPerPage);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -192,10 +191,10 @@ return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.items
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TierDto> data, @JsonKey(name: 'total_count')  int totalCount, @JsonKey(name: 'has_more')  bool hasMore,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<TierDto> items, @JsonKey(name: 'total_count')  int totalCount,  int page, @JsonKey(name: 'items_per_page')  int itemsPerPage)?  $default,) {final _that = this;
 switch (_that) {
 case _PaginatedTiersDto() when $default != null:
-return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.itemsPerPage);case _:
+return $default(_that.items,_that.totalCount,_that.page,_that.itemsPerPage);case _:
   return null;
 
 }
@@ -207,18 +206,17 @@ return $default(_that.data,_that.totalCount,_that.hasMore,_that.page,_that.items
 @JsonSerializable()
 
 class _PaginatedTiersDto implements PaginatedTiersDto {
-  const _PaginatedTiersDto({required final  List<TierDto> data, @JsonKey(name: 'total_count') required this.totalCount, @JsonKey(name: 'has_more') required this.hasMore, required this.page, @JsonKey(name: 'items_per_page') required this.itemsPerPage}): _data = data;
+  const _PaginatedTiersDto({required final  List<TierDto> items, @JsonKey(name: 'total_count') required this.totalCount, required this.page, @JsonKey(name: 'items_per_page') required this.itemsPerPage}): _items = items;
   factory _PaginatedTiersDto.fromJson(Map<String, dynamic> json) => _$PaginatedTiersDtoFromJson(json);
 
- final  List<TierDto> _data;
-@override List<TierDto> get data {
-  if (_data is EqualUnmodifiableListView) return _data;
+ final  List<TierDto> _items;
+@override List<TierDto> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_data);
+  return EqualUnmodifiableListView(_items);
 }
 
 @override@JsonKey(name: 'total_count') final  int totalCount;
-@override@JsonKey(name: 'has_more') final  bool hasMore;
 @override final  int page;
 @override@JsonKey(name: 'items_per_page') final  int itemsPerPage;
 
@@ -235,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTiersDto&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.page, page) || other.page == page)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginatedTiersDto&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&(identical(other.page, page) || other.page == page)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data),totalCount,hasMore,page,itemsPerPage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),totalCount,page,itemsPerPage);
 
 @override
 String toString() {
-  return 'PaginatedTiersDto(data: $data, totalCount: $totalCount, hasMore: $hasMore, page: $page, itemsPerPage: $itemsPerPage)';
+  return 'PaginatedTiersDto(items: $items, totalCount: $totalCount, page: $page, itemsPerPage: $itemsPerPage)';
 }
 
 
@@ -255,7 +253,7 @@ abstract mixin class _$PaginatedTiersDtoCopyWith<$Res> implements $PaginatedTier
   factory _$PaginatedTiersDtoCopyWith(_PaginatedTiersDto value, $Res Function(_PaginatedTiersDto) _then) = __$PaginatedTiersDtoCopyWithImpl;
 @override @useResult
 $Res call({
- List<TierDto> data,@JsonKey(name: 'total_count') int totalCount,@JsonKey(name: 'has_more') bool hasMore, int page,@JsonKey(name: 'items_per_page') int itemsPerPage
+ List<TierDto> items,@JsonKey(name: 'total_count') int totalCount, int page,@JsonKey(name: 'items_per_page') int itemsPerPage
 });
 
 
@@ -272,12 +270,11 @@ class __$PaginatedTiersDtoCopyWithImpl<$Res>
 
 /// Create a copy of PaginatedTiersDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = null,Object? totalCount = null,Object? hasMore = null,Object? page = null,Object? itemsPerPage = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? items = null,Object? totalCount = null,Object? page = null,Object? itemsPerPage = null,}) {
   return _then(_PaginatedTiersDto(
-data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<TierDto>,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
-as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
-as bool,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
+as int,page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,itemsPerPage: null == itemsPerPage ? _self.itemsPerPage : itemsPerPage // ignore: cast_nullable_to_non_nullable
 as int,
   ));
