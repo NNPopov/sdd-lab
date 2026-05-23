@@ -125,7 +125,11 @@ class _EditPostScreenState extends State<EditPostScreen>
 
   String? _validateMediaUrl(String? value, Translations t) {
     if (value == null || value.isEmpty) return null;
-    if (value.trim().isEmpty) return t.posts.editPost.errors.mediaUrlEmpty;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return t.posts.editPost.errors.mediaUrlEmpty;
+    if (!RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$').hasMatch(trimmed)) {
+      return t.posts.editPost.errors.mediaUrlInvalid;
+    }
     return null;
   }
 

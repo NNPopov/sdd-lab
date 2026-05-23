@@ -622,6 +622,7 @@ class _TranslationsPostsEditPostErrorsEsEs implements TranslationsPostsEditPostE
 	@override String get titleTooShort => 'El título debe tener al menos 2 caracteres';
 	@override String get titleTooLong => 'El título no puede superar los 30 caracteres';
 	@override String get mediaUrlEmpty => 'La URL de medios no puede estar vacía si se proporciona';
+	@override String get mediaUrlInvalid => 'La URL de medios debe comenzar con http://, https:// o ftp://';
 	@override String get textTooShort => 'El texto debe tener al menos 100 caracteres';
 	@override String get textTooLong => 'El texto no puede superar los 63206 caracteres';
 	@override String get forbidden => 'Solo puede editar sus propias publicaciones';
@@ -713,6 +714,7 @@ class _TranslationsPostsCreatePostErrorsEsEs implements TranslationsPostsCreateP
 	@override String get titleTooShort => 'El título debe tener al menos 2 caracteres';
 	@override String get titleTooLong => 'El título no puede superar los 30 caracteres';
 	@override String get mediaUrlEmpty => 'La URL de medios no puede estar vacía si se proporciona';
+	@override String get mediaUrlInvalid => 'La URL de medios debe comenzar con http://, https:// o ftp://';
 	@override String get textTooShort => 'El texto debe tener al menos 100 caracteres';
 	@override String get textTooLong => 'El texto no puede superar los 63206 caracteres';
 	@override String get forbidden => 'Solo puede publicar como usted mismo';
@@ -917,6 +919,7 @@ extension on TranslationsEsEs {
 			'posts.editPost.errors.titleTooShort' => 'El título debe tener al menos 2 caracteres',
 			'posts.editPost.errors.titleTooLong' => 'El título no puede superar los 30 caracteres',
 			'posts.editPost.errors.mediaUrlEmpty' => 'La URL de medios no puede estar vacía si se proporciona',
+			'posts.editPost.errors.mediaUrlInvalid' => 'La URL de medios debe comenzar con http://, https:// o ftp://',
 			'posts.editPost.errors.textTooShort' => 'El texto debe tener al menos 100 caracteres',
 			'posts.editPost.errors.textTooLong' => 'El texto no puede superar los 63206 caracteres',
 			'posts.editPost.errors.forbidden' => 'Solo puede editar sus propias publicaciones',
@@ -983,6 +986,7 @@ extension on TranslationsEsEs {
 			'posts.createPost.errors.titleTooShort' => 'El título debe tener al menos 2 caracteres',
 			'posts.createPost.errors.titleTooLong' => 'El título no puede superar los 30 caracteres',
 			'posts.createPost.errors.mediaUrlEmpty' => 'La URL de medios no puede estar vacía si se proporciona',
+			'posts.createPost.errors.mediaUrlInvalid' => 'La URL de medios debe comenzar con http://, https:// o ftp://',
 			'posts.createPost.errors.textTooShort' => 'El texto debe tener al menos 100 caracteres',
 			'posts.createPost.errors.textTooLong' => 'El texto no puede superar los 63206 caracteres',
 			'posts.createPost.errors.forbidden' => 'Solo puede publicar como usted mismo',

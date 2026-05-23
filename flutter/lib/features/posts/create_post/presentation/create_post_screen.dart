@@ -59,7 +59,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   String? _validateMediaUrl(String? value, Translations t) {
     if (value == null || value.isEmpty) return null;
-    if (value.trim().isEmpty) return t.posts.createPost.errors.mediaUrlEmpty;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return t.posts.createPost.errors.mediaUrlEmpty;
+    if (!RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$').hasMatch(trimmed)) {
+      return t.posts.createPost.errors.mediaUrlInvalid;
+    }
     return null;
   }
 

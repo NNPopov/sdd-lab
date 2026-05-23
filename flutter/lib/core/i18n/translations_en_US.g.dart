@@ -967,6 +967,9 @@ class TranslationsPostsEditPostErrorsEnUs {
 	/// en-US: 'Media URL cannot be empty if provided'
 	String get mediaUrlEmpty => 'Media URL cannot be empty if provided';
 
+	/// en-US: 'Media URL must start with http://, https://, or ftp://'
+	String get mediaUrlInvalid => 'Media URL must start with http://, https://, or ftp://';
+
 	/// en-US: 'Text must be at least 100 characters'
 	String get textTooShort => 'Text must be at least 100 characters';
 
@@ -1110,6 +1113,9 @@ class TranslationsPostsCreatePostErrorsEnUs {
 
 	/// en-US: 'Media URL cannot be empty if provided'
 	String get mediaUrlEmpty => 'Media URL cannot be empty if provided';
+
+	/// en-US: 'Media URL must start with http://, https://, or ftp://'
+	String get mediaUrlInvalid => 'Media URL must start with http://, https://, or ftp://';
 
 	/// en-US: 'Text must be at least 100 characters'
 	String get textTooShort => 'Text must be at least 100 characters';
@@ -1392,6 +1398,7 @@ extension on Translations {
 			'posts.editPost.errors.titleTooShort' => 'Title must be at least 2 characters',
 			'posts.editPost.errors.titleTooLong' => 'Title must be at most 30 characters',
 			'posts.editPost.errors.mediaUrlEmpty' => 'Media URL cannot be empty if provided',
+			'posts.editPost.errors.mediaUrlInvalid' => 'Media URL must start with http://, https://, or ftp://',
 			'posts.editPost.errors.textTooShort' => 'Text must be at least 100 characters',
 			'posts.editPost.errors.textTooLong' => 'Text must be at most 63206 characters',
 			'posts.editPost.errors.forbidden' => 'You can only edit your own posts',
@@ -1458,6 +1465,7 @@ extension on Translations {
 			'posts.createPost.errors.titleTooShort' => 'Title must be at least 2 characters',
 			'posts.createPost.errors.titleTooLong' => 'Title must be at most 30 characters',
 			'posts.createPost.errors.mediaUrlEmpty' => 'Media URL cannot be empty if provided',
+			'posts.createPost.errors.mediaUrlInvalid' => 'Media URL must start with http://, https://, or ftp://',
 			'posts.createPost.errors.textTooShort' => 'Text must be at least 100 characters',
 			'posts.createPost.errors.textTooLong' => 'Text must be at most 63206 characters',
 			'posts.createPost.errors.forbidden' => 'You can only publish posts as yourself',

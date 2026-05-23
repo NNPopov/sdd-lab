@@ -622,6 +622,7 @@ class _TranslationsPostsEditPostErrorsRuRu implements TranslationsPostsEditPostE
 	@override String get titleTooShort => 'Заголовок должен содержать не менее 2 символов';
 	@override String get titleTooLong => 'Заголовок не должен превышать 30 символов';
 	@override String get mediaUrlEmpty => 'Ссылка на медиа не может быть пустой, если указана';
+	@override String get mediaUrlInvalid => 'Ссылка на медиа должна начинаться с http://, https:// или ftp://';
 	@override String get textTooShort => 'Текст должен содержать не менее 100 символов';
 	@override String get textTooLong => 'Текст не должен превышать 63206 символов';
 	@override String get forbidden => 'Вы можете редактировать только свои посты';
@@ -713,6 +714,7 @@ class _TranslationsPostsCreatePostErrorsRuRu implements TranslationsPostsCreateP
 	@override String get titleTooShort => 'Заголовок должен содержать не менее 2 символов';
 	@override String get titleTooLong => 'Заголовок не должен превышать 30 символов';
 	@override String get mediaUrlEmpty => 'Ссылка на медиа не может быть пустой, если указана';
+	@override String get mediaUrlInvalid => 'Ссылка на медиа должна начинаться с http://, https:// или ftp://';
 	@override String get textTooShort => 'Текст должен содержать не менее 100 символов';
 	@override String get textTooLong => 'Текст не должен превышать 63206 символов';
 	@override String get forbidden => 'Вы можете публиковать посты только от своего имени';
@@ -917,6 +919,7 @@ extension on TranslationsRuRu {
 			'posts.editPost.errors.titleTooShort' => 'Заголовок должен содержать не менее 2 символов',
 			'posts.editPost.errors.titleTooLong' => 'Заголовок не должен превышать 30 символов',
 			'posts.editPost.errors.mediaUrlEmpty' => 'Ссылка на медиа не может быть пустой, если указана',
+			'posts.editPost.errors.mediaUrlInvalid' => 'Ссылка на медиа должна начинаться с http://, https:// или ftp://',
 			'posts.editPost.errors.textTooShort' => 'Текст должен содержать не менее 100 символов',
 			'posts.editPost.errors.textTooLong' => 'Текст не должен превышать 63206 символов',
 			'posts.editPost.errors.forbidden' => 'Вы можете редактировать только свои посты',
@@ -983,6 +986,7 @@ extension on TranslationsRuRu {
 			'posts.createPost.errors.titleTooShort' => 'Заголовок должен содержать не менее 2 символов',
 			'posts.createPost.errors.titleTooLong' => 'Заголовок не должен превышать 30 символов',
 			'posts.createPost.errors.mediaUrlEmpty' => 'Ссылка на медиа не может быть пустой, если указана',
+			'posts.createPost.errors.mediaUrlInvalid' => 'Ссылка на медиа должна начинаться с http://, https:// или ftp://',
 			'posts.createPost.errors.textTooShort' => 'Текст должен содержать не менее 100 символов',
 			'posts.createPost.errors.textTooLong' => 'Текст не должен превышать 63206 символов',
 			'posts.createPost.errors.forbidden' => 'Вы можете публиковать посты только от своего имени',

@@ -622,6 +622,7 @@ class _TranslationsPostsEditPostErrorsUkUa implements TranslationsPostsEditPostE
 	@override String get titleTooShort => 'Заголовок повинен містити щонайменше 2 символи';
 	@override String get titleTooLong => 'Заголовок не може перевищувати 30 символів';
 	@override String get mediaUrlEmpty => 'URL медіа не може бути порожнім, якщо вказано';
+	@override String get mediaUrlInvalid => 'URL медіа повинен починатися з http://, https:// або ftp://';
 	@override String get textTooShort => 'Текст повинен містити щонайменше 100 символів';
 	@override String get textTooLong => 'Текст не може перевищувати 63206 символів';
 	@override String get forbidden => 'Ви можете редагувати лише свої публікації';
@@ -713,6 +714,7 @@ class _TranslationsPostsCreatePostErrorsUkUa implements TranslationsPostsCreateP
 	@override String get titleTooShort => 'Заголовок повинен містити щонайменше 2 символи';
 	@override String get titleTooLong => 'Заголовок не може перевищувати 30 символів';
 	@override String get mediaUrlEmpty => 'URL медіа не може бути порожнім, якщо вказано';
+	@override String get mediaUrlInvalid => 'URL медіа повинен починатися з http://, https:// або ftp://';
 	@override String get textTooShort => 'Текст повинен містити щонайменше 100 символів';
 	@override String get textTooLong => 'Текст не може перевищувати 63206 символів';
 	@override String get forbidden => 'Ви можете публікувати лише від свого імені';
@@ -917,6 +919,7 @@ extension on TranslationsUkUa {
 			'posts.editPost.errors.titleTooShort' => 'Заголовок повинен містити щонайменше 2 символи',
 			'posts.editPost.errors.titleTooLong' => 'Заголовок не може перевищувати 30 символів',
 			'posts.editPost.errors.mediaUrlEmpty' => 'URL медіа не може бути порожнім, якщо вказано',
+			'posts.editPost.errors.mediaUrlInvalid' => 'URL медіа повинен починатися з http://, https:// або ftp://',
 			'posts.editPost.errors.textTooShort' => 'Текст повинен містити щонайменше 100 символів',
 			'posts.editPost.errors.textTooLong' => 'Текст не може перевищувати 63206 символів',
 			'posts.editPost.errors.forbidden' => 'Ви можете редагувати лише свої публікації',
@@ -983,6 +986,7 @@ extension on TranslationsUkUa {
 			'posts.createPost.errors.titleTooShort' => 'Заголовок повинен містити щонайменше 2 символи',
 			'posts.createPost.errors.titleTooLong' => 'Заголовок не може перевищувати 30 символів',
 			'posts.createPost.errors.mediaUrlEmpty' => 'URL медіа не може бути порожнім, якщо вказано',
+			'posts.createPost.errors.mediaUrlInvalid' => 'URL медіа повинен починатися з http://, https:// або ftp://',
 			'posts.createPost.errors.textTooShort' => 'Текст повинен містити щонайменше 100 символів',
 			'posts.createPost.errors.textTooLong' => 'Текст не може перевищувати 63206 символів',
 			'posts.createPost.errors.forbidden' => 'Ви можете публікувати лише від свого імені',
