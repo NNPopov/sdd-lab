@@ -249,3 +249,9 @@ contract.
 - ❌ Reporting "test is red" without showing the failure mode. The kind of
   failure (import error vs assertion) tells the user where to start
   implementing.
+- ❌ Overriding only `container.session_factory` when the old handler uses
+  `async_get_db` directly (fat-handler migration slices). The old handler
+  bypasses the DI container, so its writes escape the test transaction and
+  commit to the real DB. Also add
+  `dependency_overrides[async_get_db] = _test_get_db` to the conftest. See
+  `agent_docs/testing.md` § Fat-handler migration slices.

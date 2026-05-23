@@ -36,3 +36,8 @@ Global index of all slices. Owned by `/to-prd`. Other skills read; never write.
 | 0030 | posts | erase_db_post | Planned | `specs/features/posts/0030_erase_db_post/` |
 | 0031 | posts | fix_erase_db_post_cascade | Planned | `specs/features/posts/0031_fix_erase_db_post_cascade/` |
 | 0032 | posts | extract_user_lookup | Planned | `specs/features/posts/0032_extract_user_lookup/` |
+| 0033 | tiers | create_tier | Planned | `specs/features/tiers/0033_create_tier/` |
+| 0034 | tiers | list_tiers | Planned | `specs/features/tiers/0034_list_tiers/` |
+| 0035 | tiers | get_tier | Planned | `specs/features/tiers/0035_get_tier/` |
+| 0036 | tiers | update_tier | Planned | `specs/features/tiers/0036_update_tier/` |
+| 0037 | tiers | delete_tier | Planned | `specs/features/tiers/0037_delete_tier/` |

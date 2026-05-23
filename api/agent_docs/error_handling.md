@@ -42,109 +42,105 @@ Defined once in `app/domain/errors.py`:
 
 class DomainError(Exception):
     """Base class for all expected domain failures."""
-    http_status: int = 500
 
-    def __init__(self, message: str = "", *, detail: dict | None = None) -> None:
-        super().__init__(message)
+    def __init__(self, message: str = "", code: str | None = None) -> None:
         self.message = message
-        self.detail = detail or {}
+        # Derive code from class name if not provided:
+        # "NotFoundDomainError" → "notfound"
+        if code is None:
+            class_name = self.__class__.__name__
+            if class_name.endswith("DomainError"):
+                self.code = class_name[:-11].lower()
+            else:
+                self.code = class_name.lower()
+        else:
+            self.code = code
+        super().__init__(message)
 
 
 class NotFoundDomainError(DomainError):
-    http_status = 404
+    """Resource not found."""
 
 
 class DuplicateValueDomainError(DomainError):
-    http_status = 409
+    """A duplicate value would be created."""
 
 
 class ForbiddenDomainError(DomainError):
-    http_status = 403
+    """Caller does not have permission."""
 
 
-class UnauthorizedDomainError(DomainError):
-    http_status = 401
-
-
-class ValidationDomainError(DomainError):
-    """Business validation that Pydantic did not catch."""
-    http_status = 422
-
-    def __init__(
-        self,
-        message: str = "",
-        *,
-        field_errors: dict[str, str] | None = None,
-        detail: dict | None = None,
-    ) -> None:
-        super().__init__(message, detail=detail)
-        self.field_errors = field_errors or {}
+class UnknownDomainError(DomainError):
+    """Adapter encountered an unexpected failure it cannot classify."""
 ```
 
 Adding a new subclass is a STABLE change (`domain/errors.py`) and requires
-explicit user approval. Most slices need only the subclasses above.
+explicit user approval. Most slices need only the first three subclasses.
 
-Note: there is **no `UnknownDomainError`** in this hierarchy. Unknown
-failures are not domain concerns; they are caught by the global handler and
-become HTTP 500. The previous version of this document recommended
-`UnknownDomainError` — that recommendation is withdrawn.
+The `code` field is derived automatically from the class name (suffix
+`DomainError` stripped, lowercased). It appears in every error response body
+(see § Global exception handler below). Pass an explicit `code=` only when
+the derived name would be misleading.
 
-## Global exception handlers (the only place that catches)
+## Global exception handler (the only place that catches)
 
-Registered once in `bootstrap/factory.py`:
+Registered once in `bootstrap/factory.py` via
+`application.add_exception_handler(DomainError, domain_error_handler)`.
+The handler lives in `adapters/http/exception_handlers.py`:
 
 ```python
-# STABLE: HTTP exception handlers.
+# STABLE: Maps domain errors to HTTP responses.
 
-import structlog
-from fastapi import FastAPI, Request
+from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from ..domain.errors import DomainError, ValidationDomainError
+from ...domain.errors import (
+    DomainError,
+    DuplicateValueDomainError,
+    ForbiddenDomainError,
+    NotFoundDomainError,
+)
 
-logger = structlog.get_logger(__name__)
+STATUS_MAP: dict[type[DomainError], int] = {
+    NotFoundDomainError: 404,
+    DuplicateValueDomainError: 409,
+    ForbiddenDomainError: 403,
+}
 
 
-def register_exception_handlers(app: FastAPI) -> None:
-
-    @app.exception_handler(ValidationDomainError)
-    async def _validation_handler(
-        request: Request, exc: ValidationDomainError
-    ) -> JSONResponse:
-        return JSONResponse(
-            status_code=exc.http_status,
-            content={"message": exc.message, "field_errors": exc.field_errors},
-        )
-
-    @app.exception_handler(DomainError)
-    async def _domain_handler(request: Request, exc: DomainError) -> JSONResponse:
-        return JSONResponse(
-            status_code=exc.http_status,
-            content={"message": exc.message or exc.__class__.__name__},
-        )
-
-    @app.exception_handler(Exception)
-    async def _catch_all(request: Request, exc: Exception) -> JSONResponse:
-        # Every unexpected exception lands here. Log with full traceback.
-        logger.error(
-            "unhandled exception",
-            path=str(request.url.path),
-            method=request.method,
-            exc_info=True,
-        )
-        return JSONResponse(status_code=500, content={"message": "Internal error"})
+async def domain_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    assert isinstance(exc, DomainError)
+    status_code = STATUS_MAP.get(type(exc), 500)
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "error": {
+                "code": exc.code,
+                "message": exc.message,
+            }
+        },
+    )
 ```
 
-Three handlers, in order of specificity:
+**Response body for every `DomainError`:**
 
-1. `ValidationDomainError` — special-cased because it carries `field_errors`.
-2. `DomainError` (any other subclass) — uses `http_status` from the class.
-3. `Exception` — catch-all, logs, returns 500.
+```json
+{
+  "error": {
+    "code": "notfound",
+    "message": "Tier not found"
+  }
+}
+```
 
-The catch-all is **not** a last-resort safety net; it is the **normal path**
-for any infrastructure failure (DB connection lost, Redis timeout, syntax
-error in a query, etc.). The whole point is that adapters do not need to
-worry about these — they propagate, and the handler logs them uniformly.
+The `code` value is the auto-derived lowercase name (e.g. `"notfound"`,
+`"duplicatevalue"`, `"forbidden"`, `"unknown"`).
+
+**Status codes come from `STATUS_MAP`**, not from an attribute on the
+exception class. Any `DomainError` subclass not in the map returns 500.
+Unknown infrastructure exceptions that are not `DomainError` subclasses are
+handled by FastAPI/Starlette's default 500 handler — they are not caught by
+`domain_error_handler`.
 
 ## Adapter: catch only when there is business meaning to translate
 
@@ -157,7 +153,7 @@ Worth catching:
 | Infrastructure exception | Domain meaning |
 |---|---|
 | `IntegrityError` (unique-constraint violation) | `DuplicateValueDomainError` |
-| `IntegrityError` (FK violation) | `ValidationDomainError("references missing entity")` |
+| `IntegrityError` (FK violation) | `DomainError("references missing entity")` (or a custom subclass if the FK violation has specific domain meaning) |
 | `NoResultFound` (only when the adapter must distinguish "missing" from "failed") | `NotFoundDomainError` |
 
 Not worth catching (let them propagate):
@@ -230,9 +226,11 @@ async def email_exists(self, email: str) -> bool:
 
 No `try/except`. If the DB is unreachable, `OperationalError` propagates up
 through the use-case (which does not catch it either), then through the
-endpoint, into the global `Exception` handler. The handler logs it and
-returns HTTP 500. That is correct: a dead DB is not a domain concept and
-should be reported as a service failure, not as a custom "domain" error.
+endpoint. Because the registered handler only catches `DomainError`,
+infrastructure exceptions propagate to FastAPI/Starlette's built-in 500
+handler, which returns HTTP 500. That is correct: a dead DB is not a domain
+concept and should be reported as a service failure, not as a custom "domain"
+error.
 
 ## Anti-pattern: the broad outer catch
 
@@ -319,44 +317,33 @@ The acting user identity is part of the command. The use-case does not read
 ## Validation in the use-case
 
 Pydantic catches shape errors at the FastAPI boundary. Validation that
-depends on state lives in the use-case:
+depends on state lives in the use-case and raises a `DomainError` subclass:
 
 ```python
 async def __call__(self, command: TransferFundsCommand) -> Transfer:
     if command.amount <= 0:
-        raise ValidationDomainError(
-            "Amount must be positive",
-            field_errors={"amount": "must be > 0"},
-        )
+        raise DomainError("Amount must be positive")
     if await self._port.balance(command.source) < command.amount:
-        raise ValidationDomainError("Insufficient funds")
+        raise DomainError("Insufficient funds")
     ...
 ```
 
 Field-level Pydantic constraints in `*Request` schemas remain the first
-line of defense. Use-case raises `ValidationDomainError` only for what
-Pydantic cannot check (state, business invariants).
+line of defense. The use-case raises `DomainError` only for what Pydantic
+cannot check (state, business invariants). If the project needs a dedicated
+`ValidationDomainError` subclass with a different HTTP status or `code`,
+add it to `domain/errors.py` with explicit user approval.
 
 ## Logging policy
 
-Logging happens in **one place**: the global `_catch_all` handler. It logs
-every unhandled exception once, with full traceback, path, and method.
-
-Adapters and use-cases do **not** log exceptions. Logging in two places
-produces duplicated log entries that confuse on-call engineers.
+Adapters and use-cases do **not** log exceptions. Infrastructure exceptions
+propagate to FastAPI/Starlette's built-in handler (HTTP 500), which logs the
+traceback via its own middleware. Logging in two places produces duplicated
+entries that confuse on-call engineers.
 
 The only exception is **observability-level logging** unrelated to errors:
 counts, durations, debug traces. Those use `logger.info` / `logger.debug`
 and have nothing to do with error handling.
-
-What the catch-all must **not** include in the log:
-
-- Passwords, tokens, API keys.
-- Raw request bodies that may contain secrets.
-- The full domain command object if it carries sensitive fields.
-
-Add structured fields explicitly chosen by you (`path`, `method`, `user_id`
-if available and safe). Never `request.body()` or `command.dict()` blindly.
 
 ## Forbidden patterns
 
@@ -376,8 +363,10 @@ if available and safe). Never `request.body()` or `command.dict()` blindly.
 - ❌ A new `DomainError` subclass added inside a feature folder. All
   subclasses live in `app/domain/errors.py` (STABLE) and need explicit
   approval.
-- ❌ `UnknownDomainError` or any similar "catch-all domain error". Unknown
-  is not a domain concern; it is infrastructure.
+- ❌ Using `UnknownDomainError` to wrap infrastructure exceptions that have
+  no domain meaning ("the DB is down"). `UnknownDomainError` exists for the
+  rare case where an adapter truly cannot classify a failure. It must not be
+  used as a catch-all wrapper that swallows infrastructure noise.
 
 ## Common mistakes
 

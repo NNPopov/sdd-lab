@@ -184,91 +184,114 @@ docker compose up test-db -d
 
 In CI, the same container starts as a service.
 
-### Fixtures (in top-level `tests/conftest.py`)
+### Fixtures (per-slice `conftest.py`)
 
-The fixture chain has four levels of scope, designed so the engine is built
-once, migrations run once, but each test gets a fresh transaction:
+The top-level `tests/conftest.py` contains only legacy synchronous fixtures
+(`TestClient`, synchronous `sessionmaker`) left over from the pre-VSA era.
+**Do not use those for new VSA slices.**
+
+Each VSA slice defines its own async fixtures in
+`tests/features/<resource>/<NNNN>_<slice>/conftest.py`. The canonical pattern
+uses **savepoint-mode rollback**: the outer transaction wraps the whole test;
+`session.commit()` inside an adapter creates a SAVEPOINT instead of a real
+commit; teardown rolls back the outer transaction, leaving the DB clean.
 
 ```python
-# tests/conftest.py — STABLE.
-
+# tests/features/tiers/0033_create_tier/conftest.py — reference pattern.
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.adapters.db.base import Base
-from app.core.config import settings
+from app.adapters.db.session import DATABASE_URL
 
 
-@pytest_asyncio.fixture(scope="session")
-async def test_engine():
-    engine = create_async_engine(settings.test_database_url, echo=False)
+@pytest_asyncio.fixture()
+async def oit_engine():
+    """Per-test async engine against the dev DB; ensures schema exists."""
+    engine = create_async_engine(DATABASE_URL, echo=False)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield engine
     await engine.dispose()
 
 
-@pytest_asyncio.fixture(scope="session")
-async def _apply_migrations(test_engine):
-    """Run Alembic migrations once for the session."""
-    # In practice: subprocess call to `alembic upgrade head` against TEST_DATABASE_URL.
-    # Or for simple test schemas: Base.metadata.create_all on the engine.
-    async with test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    yield
-
-
 @pytest_asyncio.fixture()
-async def db_session(test_engine, _apply_migrations) -> AsyncSession:
-    """Per-test transaction. Rolled back at teardown."""
-    connection = await test_engine.connect()
+async def async_client(oit_engine) -> AsyncClient:
+    """HTTP client wired to the app with per-test transaction rollback.
+
+    join_transaction_mode="create_savepoint" means every session.commit()
+    inside an adapter creates a SAVEPOINT, not a real commit. Rolling back
+    the outer transaction at teardown removes all test data.
+    """
+    from app.bootstrap.container import container as _di_container
+
+    connection = await oit_engine.connect()
     transaction = await connection.begin()
-    Session = async_sessionmaker(bind=connection, expire_on_commit=False)
-    session = Session()
+    test_factory = async_sessionmaker(
+        bind=connection,
+        expire_on_commit=False,
+        join_transaction_mode="create_savepoint",
+    )
+    _di_container.session_factory.override(test_factory)
+
+    from app.main import app as _fastapi_app
+
     try:
-        yield session
+        async with AsyncClient(
+            transport=ASGITransport(app=_fastapi_app),
+            base_url="http://test",
+        ) as client:
+            yield client
     finally:
-        await session.close()
+        _di_container.session_factory.reset_override()
         await transaction.rollback()
         await connection.close()
 ```
 
-Every test that touches the database receives `db_session` and writes through
-it. At teardown, the transaction rolls back; the database is identical to its
-pre-test state.
+Copy this pattern verbatim into every new slice's `conftest.py`. The
+`oit_engine` + `async_client` fixtures replace the legacy `client` and
+`db_session` fixtures for all VSA work.
 
-### Integration client fixture
+### Seeding data in tests
 
-For tests that go through the HTTP layer:
+Because the adapter and the test share the same overridden `session_factory`,
+rows inserted before the HTTP call are visible to the adapter without a real
+commit:
 
 ```python
-# tests/conftest.py — STABLE.
+async def test_list_tiers_happy_path(async_client: AsyncClient) -> None:
+    from app.bootstrap.container import container as _di_container
 
-import pytest_asyncio
-from httpx import AsyncClient
-from httpx import ASGITransport
+    # Seed rows inside the savepoint transaction.
+    async with _di_container.session_factory()() as session:
+        await session.execute(
+            text('INSERT INTO "tier" (name, created_at) VALUES (:name, NOW())'),
+            [{"name": "free"}, {"name": "pro"}],
+        )
+        await session.commit()  # creates SAVEPOINT, not a real commit
 
-from app.bootstrap.factory import create_app
-from app.bootstrap.container import Container
+    response = await async_client.get("/api/v1/tiers")
+    ...
+```
 
+Use raw SQL (`sqlalchemy.text`) for both seeding and DB assertions to keep
+the test black-box (no ORM model imports in the test file).
 
-@pytest_asyncio.fixture()
-async def app(db_session):
-    """App configured to use the per-test transaction."""
-    app = create_app()
-    container: Container = app.container  # type: ignore[attr-defined]
-    # Override session_factory to return the test transaction's session.
-    container.session_factory.override(lambda: db_session)
-    yield app
-    container.session_factory.reset_override()
+### DB assertions
 
+After a write endpoint, verify the side effect through a raw SQL query on the
+same session factory:
 
-@pytest_asyncio.fixture()
-async def client(app):
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as c:
-        yield c
+```python
+async with _di_container.session_factory()() as session:
+    result = await session.execute(
+        text('SELECT name FROM "tier" WHERE name = :n'),
+        {"n": "gold"},
+    )
+    row = result.first()
+    assert row is not None
+    assert row.name == "gold"
 ```
 
 ## Mocking strategy
@@ -300,9 +323,9 @@ async def test_use_case_calls_port(mocker):
   factory** with `AsyncMock`. Validate the inner-catch mapping by configuring
   the mock to raise the expected SQLAlchemy exception.
 - **In endpoint integration tests:** wire **real** adapter, use the **test
-  Postgres** via `db_session`. The HTTP client makes real requests against the
-  app, the app runs real exception handlers, the adapter writes to the test DB,
-  the transaction rolls back. Slow but honest.
+  Postgres** via `async_client` (savepoint rollback). The HTTP client makes
+  real requests against the app, the app runs real exception handlers, the
+  adapter writes to the test DB, the transaction rolls back. Slow but honest.
 - **In outside-in tests:** wire **real** everything except external system
   boundaries. The point is to verify that all layers compose correctly.
 
@@ -311,15 +334,18 @@ async def test_use_case_calls_port(mocker):
 To swap a provider in a test:
 
 ```python
-container.create_user_adapter.override(mock_adapter)
+from app.bootstrap.container import container as _di_container
+
+_di_container.create_user_adapter.override(mock_adapter)
 try:
     # ... test code
 finally:
-    container.create_user_adapter.reset_override()
+    _di_container.create_user_adapter.reset_override()
 ```
 
-For the common case, the `client` fixture above already overrides
-`session_factory`. Slice-specific overrides go in slice `conftest.py`.
+The `async_client` fixture in slice `conftest.py` already overrides
+`session_factory`. Slice-specific adapter overrides go in the same
+`conftest.py` or inline in the test function.
 
 ## Reference tests
 
@@ -335,6 +361,48 @@ the codebase; documented snippets drift over time.
 When the first slice is implemented and tested, update this section with the
 two pointers. Subsequent slices read these files instead of guessing.
 
+## Fat-handler migration slices
+
+Some slices migrate an existing fat FastAPI handler that calls `async_get_db`
+directly rather than going through the DI container. This creates a conftest
+problem: overriding `container.session_factory` is not enough, because the old
+handler bypasses the container entirely.
+
+**Symptom**: Scenario 1 unexpectedly passes in the red state (old handler writes to
+the real DB and commits; the committed row is visible to all connections, including
+the test-transaction session used for the DB assertion). Scenario 2 crashes with an
+asyncpg `_start_transaction()` error rather than an AssertionError.
+
+**Fix**: Override `async_get_db` in addition to `container.session_factory` so that
+ALL database operations — old handler and new adapter alike — go through the same
+savepoint-based test transaction:
+
+```python
+from app.adapters.db.session import async_get_db
+...
+async def _test_get_db():
+    async with test_factory() as session:
+        yield session
+
+_fastapi_app.dependency_overrides[async_get_db] = _test_get_db
+# In finally: _fastapi_app.dependency_overrides.pop(async_get_db, None)
+```
+
+**DB contamination from interrupted red-state runs**: If a previous test run was
+interrupted before teardown, old-handler writes may have been committed to the dev
+DB. Fix with an `autouse=True` fixture that deletes known test row names inside the
+test transaction at the start of each test (the deletion is rolled back at teardown,
+so the real DB is left clean).
+
+**Red-state signal for migration slices**: Because the old handler may handle the
+happy path correctly, Scenario 1 can pass in the red state. This is acceptable. The
+red signal comes from Scenario 2: the old handler raises its legacy error message,
+while the new adapter must raise a different one. Assert the new message; the
+mismatch is the red indicator.
+
+See `tests/features/tiers/0033_create_tier/conftest.py` for the complete working
+pattern (includes both overrides and the `autouse` cleanup fixture).
+
 ## Common mistakes
 
 - ❌ Forgetting `@pytest.mark.asyncio` on an async test function. The test
@@ -348,8 +416,9 @@ two pointers. Subsequent slices read these files instead of guessing.
 - ❌ Calling `session.commit()` inside a test that uses the `db_session`
   fixture. The fixture relies on the outer transaction; manual commit defeats
   the rollback.
-- ❌ Constructing a fresh `AsyncClient` without the `app` fixture. The
-  client then talks to a different app instance with no test overrides.
+- ❌ Constructing a fresh `AsyncClient` inside the test instead of using the
+  `async_client` fixture. A manually constructed client bypasses the
+  `session_factory` override and writes to the real DB without rollback.
 - ❌ Mocking `dependency_injector` providers directly with `mocker.patch`.
   Use `container.X.override(...)` and `reset_override()`.
 - ❌ Writing an integration test that bypasses the router and calls the
