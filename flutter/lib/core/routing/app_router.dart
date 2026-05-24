@@ -117,7 +117,7 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: ListTiersRoute.page, initial: true, path: ''),
             AutoRoute(
               page: TierDetailsRoute.page,
-              path: ':name',
+              path: ':id',
               guards: [
                 authGuard,
                 PermissionGuard({Permission.manageTiers}, permissionCubit),
@@ -133,7 +133,7 @@ class AppRouter extends RootStackRouter {
             ),
             AutoRoute(
               page: EditTierRoute.page,
-              path: ':name/edit',
+              path: ':id/edit',
               guards: [
                 authGuard,
                 PermissionGuard({Permission.manageTiers}, permissionCubit),

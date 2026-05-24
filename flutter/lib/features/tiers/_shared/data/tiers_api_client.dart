@@ -21,15 +21,15 @@ abstract class TiersApiClient {
   @POST('/tier')
   Future<TierDto> createTier(@Body() CreateTierRequestDto body);
 
-  @GET('/tier/{name}')
-  Future<TierDetailDto> getTier(@Path('name') String name);
+  @GET('/tier/{id}')
+  Future<TierDetailDto> getTier(@Path('id') int id);
 
-  @PATCH('/tier/{name}')
+  @PATCH('/tier/{id}')
   Future<void> patchTier(
-    @Path('name') String name,
+    @Path('id') int id,
     @Body() EditTierRequestDto body,
   );
 
-  @DELETE('/tier/{name}')
-  Future<void> deleteTier(@Path('name') String name);
+  @DELETE('/tier/{id}')
+  Future<void> deleteTier(@Path('id') int id);
 }

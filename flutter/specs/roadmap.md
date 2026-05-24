@@ -46,3 +46,6 @@
 | 0042 | core/quality | arch_violations_fix | 📋 | [specs/features/core/0042_arch_violations_fix/](features/core/0042_arch_violations_fix/) |
 | 0043 | core/quality | build_cc_decomposition | 📋 | [specs/features/core/0043_build_cc_decomposition/](features/core/0043_build_cc_decomposition/) |
 | 0044 | core/quality | create_user_screen_decomposition | 📋 | [specs/features/core/0044_create_user_screen_decomposition/](features/core/0044_create_user_screen_decomposition/) |
+| 0045 | tiers | tier_details_id_contract | 📋 | [specs/features/tiers/0045_tier_details_id_contract/](features/tiers/0045_tier_details_id_contract/) |
+| 0046 | tiers | edit_tier_id_contract | 📋 | [specs/features/tiers/0046_edit_tier_id_contract/](features/tiers/0046_edit_tier_id_contract/) |
+| 0047 | tiers | delete_tier_id_contract | 📋 | [specs/features/tiers/0047_delete_tier_id_contract/](features/tiers/0047_delete_tier_id_contract/) |

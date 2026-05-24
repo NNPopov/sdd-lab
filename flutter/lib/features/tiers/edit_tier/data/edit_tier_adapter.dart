@@ -20,8 +20,8 @@ class EditTierAdapter implements EditTierPort {
     try {
       try {
         await _api.patchTier(
-          data.tierCurrentName,
-          EditTierRequestDto(name: data.newName),
+          data.tierId,
+          EditTierRequestDto(name: data.name),
         );
         return const Right(unit);
       } on DioException catch (e) {

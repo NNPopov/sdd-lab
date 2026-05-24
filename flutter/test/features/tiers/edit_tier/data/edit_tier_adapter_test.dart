@@ -14,9 +14,9 @@ class _MockTiersApiClient extends Mock implements TiersApiClient {}
 class _MockAppLogger extends Mock implements AppLogger {}
 
 DioException _dioError(int statusCode, [Object? data]) => DioException(
-  requestOptions: RequestOptions(path: '/tier/free'),
+  requestOptions: RequestOptions(path: '/tier/1'),
   response: Response(
-    requestOptions: RequestOptions(path: '/tier/free'),
+    requestOptions: RequestOptions(path: '/tier/1'),
     statusCode: statusCode,
     data: data,
   ),
@@ -29,7 +29,7 @@ void main() {
     late _MockAppLogger logger;
     late EditTierAdapter adapter;
 
-    const data = EditTierData(tierCurrentName: 'free', newName: 'basic');
+    const data = EditTierData(tierId: 1, name: 'basic');
 
     setUpAll(() {
       registerFallbackValue(const EditTierRequestDto(name: ''));
@@ -50,6 +50,9 @@ void main() {
         (l) => fail('Expected Right, got Left($l)'),
         (r) => expect(r, unit),
       );
+      verify(
+        () => apiClient.patchTier(1, const EditTierRequestDto(name: 'basic')),
+      ).called(1);
     });
 
     test('returns Left(NotFoundFailure) on 404', () async {

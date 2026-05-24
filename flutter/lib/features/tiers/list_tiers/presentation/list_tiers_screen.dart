@@ -84,7 +84,10 @@ class _ListTiersScreenState extends State<ListTiersScreen> {
                             tier: tiers[index],
                             onTap: () async {
                               await context.router.push(
-                                TierDetailsRoute(tierName: tiers[index].name),
+                                TierDetailsRoute(
+                                  tierId: tiers[index].id,
+                                  tierName: tiers[index].name,
+                                ),
                               );
                               if (context.mounted) {
                                 unawaited(

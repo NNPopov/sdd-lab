@@ -29,7 +29,7 @@ void main() {
 
     test('returns Right([TierOption, ...]) on success', () async {
       when(() => apiClient.getTiersForSelection()).thenAnswer(
-        (_) async => const PaginatedTierOptionsDto(data: [_dto1, _dto2]),
+        (_) async => const PaginatedTierOptionsDto(items: [_dto1, _dto2]),
       );
 
       final result = await adapter();

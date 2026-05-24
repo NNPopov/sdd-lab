@@ -25,12 +25,12 @@ void main() {
     });
 
     blocTest<TierDetailsCubit, TierDetailsState>(
-      'load(name) → success → emits [loading, loaded(tier)]',
+      'load(id) → success → emits [loading, loaded(tier)]',
       build: () {
         when(() => usecase(any())).thenAnswer((_) async => Right(tier));
         return TierDetailsCubit(usecase);
       },
-      act: (cubit) => cubit.load('Free'),
+      act: (cubit) => cubit.load(1),
       expect: () => [
         const TierDetailsState.loading(),
         TierDetailsState.loaded(tier: tier),
@@ -38,14 +38,14 @@ void main() {
     );
 
     blocTest<TierDetailsCubit, TierDetailsState>(
-      'load(name) → NotFoundFailure → emits [loading, error(NotFoundFailure)]',
+      'load(id) → NotFoundFailure → emits [loading, error(NotFoundFailure)]',
       build: () {
         when(
           () => usecase(any()),
         ).thenAnswer((_) async => const Left(Failure.notFound()));
         return TierDetailsCubit(usecase);
       },
-      act: (cubit) => cubit.load('NonExistent'),
+      act: (cubit) => cubit.load(0),
       expect: () => [
         const TierDetailsState.loading(),
         const TierDetailsState.error(failure: Failure.notFound()),
@@ -53,14 +53,14 @@ void main() {
     );
 
     blocTest<TierDetailsCubit, TierDetailsState>(
-      'load(name) → PermissionDenied → emits [loading, error(PermissionDenied)]',
+      'load(id) → PermissionDenied → emits [loading, error(PermissionDenied)]',
       build: () {
         when(
           () => usecase(any()),
         ).thenAnswer((_) async => const Left(Failure.permissionDenied()));
         return TierDetailsCubit(usecase);
       },
-      act: (cubit) => cubit.load('Free'),
+      act: (cubit) => cubit.load(1),
       expect: () => [
         const TierDetailsState.loading(),
         const TierDetailsState.error(failure: Failure.permissionDenied()),
@@ -68,14 +68,14 @@ void main() {
     );
 
     blocTest<TierDetailsCubit, TierDetailsState>(
-      'load(name) → UnknownFailure → emits [loading, error(UnknownFailure)]',
+      'load(id) → UnknownFailure → emits [loading, error(UnknownFailure)]',
       build: () {
         when(
           () => usecase(any()),
         ).thenAnswer((_) async => const Left(Failure.unknown()));
         return TierDetailsCubit(usecase);
       },
-      act: (cubit) => cubit.load('Free'),
+      act: (cubit) => cubit.load(1),
       expect: () => [
         const TierDetailsState.loading(),
         const TierDetailsState.error(failure: Failure.unknown()),
@@ -83,12 +83,12 @@ void main() {
     );
 
     blocTest<TierDetailsCubit, TierDetailsState>(
-      'retry(name) → success → emits [loading, loaded(tier)]',
+      'retry(id) → success → emits [loading, loaded(tier)]',
       build: () {
         when(() => usecase(any())).thenAnswer((_) async => Right(tier));
         return TierDetailsCubit(usecase);
       },
-      act: (cubit) => cubit.retry('Free'),
+      act: (cubit) => cubit.retry(1),
       expect: () => [
         const TierDetailsState.loading(),
         TierDetailsState.loaded(tier: tier),

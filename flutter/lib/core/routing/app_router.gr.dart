@@ -172,13 +172,15 @@ class EditPostRouteArgs {
 /// [EditTierPage]
 class EditTierRoute extends PageRouteInfo<EditTierRouteArgs> {
   EditTierRoute({
-    required String tierName,
+    required int tierId,
+    String tierName = '',
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          EditTierRoute.name,
-         args: EditTierRouteArgs(tierName: tierName, key: key),
-         rawPathParams: {'name': tierName},
+         args: EditTierRouteArgs(tierId: tierId, tierName: tierName, key: key),
+         rawPathParams: {'id': tierId},
+         rawQueryParams: {'name': tierName},
          initialChildren: children,
        );
 
@@ -188,16 +190,26 @@ class EditTierRoute extends PageRouteInfo<EditTierRouteArgs> {
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
+      final queryParams = data.queryParams;
       final args = data.argsAs<EditTierRouteArgs>(
-        orElse: () => EditTierRouteArgs(tierName: pathParams.getString('name')),
+        orElse: () => EditTierRouteArgs(
+          tierId: pathParams.getInt('id'),
+          tierName: queryParams.getString('name', ''),
+        ),
       );
-      return EditTierPage(tierName: args.tierName, key: args.key);
+      return EditTierPage(
+        tierId: args.tierId,
+        tierName: args.tierName,
+        key: args.key,
+      );
     },
   );
 }
 
 class EditTierRouteArgs {
-  const EditTierRouteArgs({required this.tierName, this.key});
+  const EditTierRouteArgs({required this.tierId, this.tierName = '', this.key});
+
+  final int tierId;
 
   final String tierName;
 
@@ -205,18 +217,20 @@ class EditTierRouteArgs {
 
   @override
   String toString() {
-    return 'EditTierRouteArgs{tierName: $tierName, key: $key}';
+    return 'EditTierRouteArgs{tierId: $tierId, tierName: $tierName, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! EditTierRouteArgs) return false;
-    return tierName == other.tierName && key == other.key;
+    return tierId == other.tierId &&
+        tierName == other.tierName &&
+        key == other.key;
   }
 
   @override
-  int get hashCode => tierName.hashCode ^ key.hashCode;
+  int get hashCode => tierId.hashCode ^ tierName.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -528,13 +542,19 @@ class PostsTabRoute extends PageRouteInfo<void> {
 /// [TierDetailsPage]
 class TierDetailsRoute extends PageRouteInfo<TierDetailsRouteArgs> {
   TierDetailsRoute({
-    required String tierName,
+    required int tierId,
+    String tierName = '',
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          TierDetailsRoute.name,
-         args: TierDetailsRouteArgs(tierName: tierName, key: key),
-         rawPathParams: {'name': tierName},
+         args: TierDetailsRouteArgs(
+           tierId: tierId,
+           tierName: tierName,
+           key: key,
+         ),
+         rawPathParams: {'id': tierId},
+         rawQueryParams: {'name': tierName},
          initialChildren: children,
        );
 
@@ -544,17 +564,30 @@ class TierDetailsRoute extends PageRouteInfo<TierDetailsRouteArgs> {
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
+      final queryParams = data.queryParams;
       final args = data.argsAs<TierDetailsRouteArgs>(
-        orElse: () =>
-            TierDetailsRouteArgs(tierName: pathParams.getString('name')),
+        orElse: () => TierDetailsRouteArgs(
+          tierId: pathParams.getInt('id'),
+          tierName: queryParams.getString('name', ''),
+        ),
       );
-      return TierDetailsPage(tierName: args.tierName, key: args.key);
+      return TierDetailsPage(
+        tierId: args.tierId,
+        tierName: args.tierName,
+        key: args.key,
+      );
     },
   );
 }
 
 class TierDetailsRouteArgs {
-  const TierDetailsRouteArgs({required this.tierName, this.key});
+  const TierDetailsRouteArgs({
+    required this.tierId,
+    this.tierName = '',
+    this.key,
+  });
+
+  final int tierId;
 
   final String tierName;
 
@@ -562,18 +595,20 @@ class TierDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'TierDetailsRouteArgs{tierName: $tierName, key: $key}';
+    return 'TierDetailsRouteArgs{tierId: $tierId, tierName: $tierName, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! TierDetailsRouteArgs) return false;
-    return tierName == other.tierName && key == other.key;
+    return tierId == other.tierId &&
+        tierName == other.tierName &&
+        key == other.key;
   }
 
   @override
-  int get hashCode => tierName.hashCode ^ key.hashCode;
+  int get hashCode => tierId.hashCode ^ tierName.hashCode ^ key.hashCode;
 }
 
 /// generated route for

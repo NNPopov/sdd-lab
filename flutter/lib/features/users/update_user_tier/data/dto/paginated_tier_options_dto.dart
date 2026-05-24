@@ -7,7 +7,7 @@ part 'paginated_tier_options_dto.g.dart';
 @freezed
 sealed class PaginatedTierOptionsDto with _$PaginatedTierOptionsDto {
   const factory PaginatedTierOptionsDto({
-    @Default([]) List<TierOptionDto> data,
+    @JsonKey(name: 'items') @Default([]) List<TierOptionDto> items,
     @JsonKey(name: 'total_count') @Default(0) int totalCount,
     @JsonKey(name: 'has_more') @Default(false) bool hasMore,
   }) = _PaginatedTierOptionsDto;

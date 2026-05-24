@@ -1,6 +1,6 @@
 class EditTierData {
-  const EditTierData({required this.tierCurrentName, required this.newName});
+  const EditTierData({required this.tierId, required this.name});
 
-  final String tierCurrentName;
-  final String newName;
+  final int tierId;
+  final String name;
 }

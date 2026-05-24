@@ -50,7 +50,7 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             appBar: AppBar(
-              actions: const [DeleteTierButton(tierName: 'gold')],
+              actions: const [DeleteTierButton(tierId: 1, tierName: 'gold')],
             ),
           ),
         ),

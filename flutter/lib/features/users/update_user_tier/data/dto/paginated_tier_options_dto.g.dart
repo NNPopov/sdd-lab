@@ -9,8 +9,8 @@ part of 'paginated_tier_options_dto.dart';
 _PaginatedTierOptionsDto _$PaginatedTierOptionsDtoFromJson(
   Map<String, dynamic> json,
 ) => _PaginatedTierOptionsDto(
-  data:
-      (json['data'] as List<dynamic>?)
+  items:
+      (json['items'] as List<dynamic>?)
           ?.map((e) => TierOptionDto.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
@@ -21,7 +21,7 @@ _PaginatedTierOptionsDto _$PaginatedTierOptionsDtoFromJson(
 Map<String, dynamic> _$PaginatedTierOptionsDtoToJson(
   _PaginatedTierOptionsDto instance,
 ) => <String, dynamic>{
-  'data': instance.data,
+  'items': instance.items,
   'total_count': instance.totalCount,
   'has_more': instance.hasMore,
 };

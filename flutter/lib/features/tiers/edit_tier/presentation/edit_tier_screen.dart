@@ -12,8 +12,13 @@ import 'package:flutter_application_1/features/tiers/edit_tier/domain/entities/e
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditTierScreen extends StatefulWidget {
-  const EditTierScreen({required this.tierName, super.key});
+  const EditTierScreen({
+    required this.tierId,
+    required this.tierName,
+    super.key,
+  });
 
+  final int tierId;
   final String tierName;
 
   @override
@@ -41,8 +46,8 @@ class _EditTierScreenState extends State<EditTierScreen> {
     unawaited(
       context.read<EditTierCubit>().submit(
         data: EditTierData(
-          tierCurrentName: widget.tierName,
-          newName: _nameController.text.trim(),
+          tierId: widget.tierId,
+          name: _nameController.text.trim(),
         ),
         isSuperuser: isSuperuser,
       ),
@@ -52,6 +57,7 @@ class _EditTierScreenState extends State<EditTierScreen> {
   String _errorMessage(Failure failure, Translations t) => switch (failure) {
     NotFoundFailure() => t.tiers.editTier.errors.notFound,
     PermissionDenied() => t.tiers.editTier.errors.permissionDenied,
+    ForbiddenFailure() => t.tiers.editTier.errors.permissionDenied,
     _ => t.tiers.editTier.errors.generic,
   };
 

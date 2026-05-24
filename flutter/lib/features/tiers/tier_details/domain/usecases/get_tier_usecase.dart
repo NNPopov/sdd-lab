@@ -13,10 +13,10 @@ class GetTierUsecase {
   final GetTierPort _port;
   final PermissionCubit _permissions;
 
-  Future<Either<Failure, TierDetail>> call(String name) {
+  Future<Either<Failure, TierDetail>> call(int id) {
     if (!_permissions.has(Permission.manageTiers)) {
       return Future.value(const Left(Failure.permissionDenied()));
     }
-    return _port(name);
+    return _port(id);
   }
 }

@@ -68,13 +68,13 @@ void main() {
         build: () {
           when(
             () => deleteTier(
-              name: any(named: 'name'),
+              id: any(named: 'id'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer((_) async => const Right(unit));
           return build();
         },
-        act: (c) => c.confirmAndDelete('Free'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteTierState.deleting(),
           const DeleteTierState.success(),
@@ -86,13 +86,13 @@ void main() {
         build: () {
           when(
             () => deleteTier(
-              name: any(named: 'name'),
+              id: any(named: 'id'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer((_) async => const Left(Failure.notFound()));
           return build();
         },
-        act: (c) => c.confirmAndDelete('Free'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteTierState.deleting(),
           const DeleteTierState.notFound(),
@@ -104,7 +104,7 @@ void main() {
         build: () {
           when(
             () => deleteTier(
-              name: any(named: 'name'),
+              id: any(named: 'id'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
@@ -112,7 +112,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('Free'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteTierState.deleting(),
           const DeleteTierState.failure(
@@ -126,13 +126,13 @@ void main() {
         build: () {
           when(
             () => deleteTier(
-              name: any(named: 'name'),
+              id: any(named: 'id'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer((_) async => const Left(Failure.unknown()));
           return build();
         },
-        act: (c) => c.confirmAndDelete('Free'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteTierState.deleting(),
           const DeleteTierState.failure(Failure.unknown()),
@@ -153,15 +153,15 @@ void main() {
           );
           when(
             () => deleteTier(
-              name: any(named: 'name'),
-              isSuperuser: false,
+              id: any(named: 'id'),
+              isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
             (_) async => const Left(Failure.permissionDenied()),
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('Free'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteTierState.deleting(),
           const DeleteTierState.failure(Failure.permissionDenied()),

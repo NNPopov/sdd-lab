@@ -385,7 +385,9 @@ void main() {
         final tiersInnerRouter = tabsRouter.innerRouterOf<StackRouter>(
           TiersTabRoute.name,
         );
-        await tiersInnerRouter?.navigate(TierDetailsRoute(tierName: 'gold'));
+        await tiersInnerRouter?.navigate(
+          TierDetailsRoute(tierId: 1, tierName: 'gold'),
+        );
         await tester.pumpAndSettle();
 
         expect(find.text('gold'), findsOneWidget);

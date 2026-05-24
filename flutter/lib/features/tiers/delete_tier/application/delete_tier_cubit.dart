@@ -21,10 +21,10 @@ class DeleteTierCubit extends Cubit<DeleteTierState> {
     }
   }
 
-  Future<void> confirmAndDelete(String tierName) async {
+  Future<void> confirmAndDelete(int tierId) async {
     emit(const DeleteTierState.deleting());
     final isSuperuser = _authCubit.currentUser?.isSuperuser ?? false;
-    final result = await _deleteTier(name: tierName, isSuperuser: isSuperuser);
+    final result = await _deleteTier(id: tierId, isSuperuser: isSuperuser);
     result.fold(
       (failure) => failure is NotFoundFailure
           ? emit(const DeleteTierState.notFound())

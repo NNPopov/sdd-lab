@@ -12,9 +12,9 @@ class _MockTiersApiClient extends Mock implements TiersApiClient {}
 class _MockAppLogger extends Mock implements AppLogger {}
 
 DioException _dioError(int statusCode) => DioException(
-  requestOptions: RequestOptions(path: '/tier/Free'),
+  requestOptions: RequestOptions(path: '/tier/1'),
   response: Response(
-    requestOptions: RequestOptions(path: '/tier/Free'),
+    requestOptions: RequestOptions(path: '/tier/1'),
     statusCode: statusCode,
   ),
   type: DioExceptionType.badResponse,
@@ -41,7 +41,7 @@ void main() {
         ),
       );
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       result.fold(
         (l) => fail('Expected Right, got Left($l)'),
@@ -55,7 +55,7 @@ void main() {
     test('returns Left(UnauthorizedFailure) on 401', () async {
       when(() => apiClient.getTier(any())).thenThrow(_dioError(401));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       result.fold(
         (l) => expect(l, isA<UnauthorizedFailure>()),
@@ -66,7 +66,7 @@ void main() {
     test('returns Left(ForbiddenFailure) on 403', () async {
       when(() => apiClient.getTier(any())).thenThrow(_dioError(403));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       result.fold(
         (l) => expect(l, isA<ForbiddenFailure>()),
@@ -77,7 +77,7 @@ void main() {
     test('returns Left(NotFoundFailure) on 404', () async {
       when(() => apiClient.getTier(any())).thenThrow(_dioError(404));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       result.fold(
         (l) => expect(l, isA<NotFoundFailure>()),
@@ -88,7 +88,7 @@ void main() {
     test('returns Left(ServerFailure) on 500', () async {
       when(() => apiClient.getTier(any())).thenThrow(_dioError(500));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       result.fold(
         (l) => expect(l, isA<ServerFailure>()),
@@ -108,7 +108,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter('Free');
+        final result = await adapter(1);
 
         result.fold(
           (l) => expect(l, isA<UnknownFailure>()),

@@ -12,9 +12,9 @@ class _MockTiersApiClient extends Mock implements TiersApiClient {}
 class _MockAppLogger extends Mock implements AppLogger {}
 
 DioException _dioError(int statusCode) => DioException(
-  requestOptions: RequestOptions(path: '/tier/Free'),
+  requestOptions: RequestOptions(path: '/tier/1'),
   response: Response(
-    requestOptions: RequestOptions(path: '/tier/Free'),
+    requestOptions: RequestOptions(path: '/tier/1'),
     statusCode: statusCode,
   ),
   type: DioExceptionType.badResponse,
@@ -35,7 +35,7 @@ void main() {
     test('returns Right(unit) on success', () async {
       when(() => apiClient.deleteTier(any())).thenAnswer((_) async {});
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       expect(result, const Right<Failure, Unit>(unit));
     });
@@ -43,7 +43,7 @@ void main() {
     test('returns Left(UnauthorizedFailure) on 401', () async {
       when(() => apiClient.deleteTier(any())).thenThrow(_dioError(401));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -55,7 +55,7 @@ void main() {
     test('returns Left(ForbiddenFailure) on 403', () async {
       when(() => apiClient.deleteTier(any())).thenThrow(_dioError(403));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -67,7 +67,7 @@ void main() {
     test('returns Left(NotFoundFailure) on 404', () async {
       when(() => apiClient.deleteTier(any())).thenThrow(_dioError(404));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -79,7 +79,7 @@ void main() {
     test('returns Left(ServerFailure) on 500', () async {
       when(() => apiClient.deleteTier(any())).thenThrow(_dioError(500));
 
-      final result = await adapter('Free');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -100,7 +100,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter('Free');
+        final result = await adapter(1);
 
         expect(result.isLeft(), isTrue);
         result.fold(

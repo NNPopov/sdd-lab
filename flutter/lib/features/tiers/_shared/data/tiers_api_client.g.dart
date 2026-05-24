@@ -80,7 +80,7 @@ class _TiersApiClient implements TiersApiClient {
   }
 
   @override
-  Future<TierDetailDto> getTier(String name) async {
+  Future<TierDetailDto> getTier(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -89,7 +89,7 @@ class _TiersApiClient implements TiersApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/tier/${name}',
+            '/tier/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -107,7 +107,7 @@ class _TiersApiClient implements TiersApiClient {
   }
 
   @override
-  Future<void> patchTier(String name, EditTierRequestDto body) async {
+  Future<void> patchTier(int id, EditTierRequestDto body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -116,7 +116,7 @@ class _TiersApiClient implements TiersApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/tier/${name}',
+            '/tier/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -126,7 +126,7 @@ class _TiersApiClient implements TiersApiClient {
   }
 
   @override
-  Future<void> deleteTier(String name) async {
+  Future<void> deleteTier(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -135,7 +135,7 @@ class _TiersApiClient implements TiersApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/tier/${name}',
+            '/tier/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

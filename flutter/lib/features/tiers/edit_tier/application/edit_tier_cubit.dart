@@ -18,7 +18,7 @@ class EditTierCubit extends Cubit<EditTierState> {
     final result = await _useCase(data: data, isSuperuser: isSuperuser);
     result.fold(
       (failure) => emit(EditTierState.failure(failure)),
-      (_) => emit(EditTierState.success(newName: data.newName)),
+      (_) => emit(EditTierState.success(newName: data.name)),
     );
   }
 }

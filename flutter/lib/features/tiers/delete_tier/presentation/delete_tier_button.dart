@@ -11,22 +11,28 @@ import 'package:flutter_application_1/features/tiers/delete_tier/presentation/wi
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeleteTierButton extends StatelessWidget {
-  const DeleteTierButton({required this.tierName, super.key});
+  const DeleteTierButton({
+    required this.tierId,
+    required this.tierName,
+    super.key,
+  });
 
+  final int tierId;
   final String tierName;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<DeleteTierCubit>(),
-      child: _DeleteTierButtonInner(tierName: tierName),
+      child: _DeleteTierButtonInner(tierId: tierId, tierName: tierName),
     );
   }
 }
 
 class _DeleteTierButtonInner extends StatelessWidget {
-  const _DeleteTierButtonInner({required this.tierName});
+  const _DeleteTierButtonInner({required this.tierId, required this.tierName});
 
+  final int tierId;
   final String tierName;
 
   @override
@@ -42,7 +48,7 @@ class _DeleteTierButtonInner extends StatelessWidget {
             if (!context.mounted) return;
             if (confirmed == true) {
               unawaited(
-                context.read<DeleteTierCubit>().confirmAndDelete(tierName),
+                context.read<DeleteTierCubit>().confirmAndDelete(tierId),
               );
             } else {
               context.read<DeleteTierCubit>().cancel();

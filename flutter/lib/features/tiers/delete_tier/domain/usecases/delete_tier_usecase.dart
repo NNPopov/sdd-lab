@@ -10,12 +10,12 @@ class DeleteTierUseCase {
   final DeleteTierPort _port;
 
   Future<Either<Failure, Unit>> call({
-    required String name,
+    required int id,
     required bool isSuperuser,
   }) {
     if (!isSuperuser) {
       return Future.value(const Left(Failure.permissionDenied()));
     }
-    return _port(name);
+    return _port(id);
   }
 }

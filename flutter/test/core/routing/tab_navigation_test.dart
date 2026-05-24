@@ -369,7 +369,9 @@ void main() {
           TiersTabRoute.name,
         );
         // navigate (not push) — push returns a Future that completes on POP.
-        await tiersInnerRouter?.navigate(TierDetailsRoute(tierName: 'gold'));
+        await tiersInnerRouter?.navigate(
+          TierDetailsRoute(tierId: 1, tierName: 'gold'),
+        );
         await tester.pumpAndSettle();
 
         // Shell tab bar and AppBar still in widget tree

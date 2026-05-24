@@ -14,10 +14,10 @@ class DeleteTierAdapter implements DeleteTierPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, Unit>> call(String name) async {
+  Future<Either<Failure, Unit>> call(int id) async {
     try {
       try {
-        await _api.deleteTier(name);
+        await _api.deleteTier(id);
         return const Right(unit);
       } on DioException catch (e) {
         return Left(_mapHttp(e));

@@ -9,14 +9,14 @@ class TierDetailsCubit extends Cubit<TierDetailsState> {
 
   final GetTierUsecase _usecase;
 
-  Future<void> load(String name) async {
+  Future<void> load(int id) async {
     emit(const TierDetailsState.loading());
-    final result = await _usecase(name);
+    final result = await _usecase(id);
     result.fold(
       (f) => emit(TierDetailsState.error(failure: f)),
       (tier) => emit(TierDetailsState.loaded(tier: tier)),
     );
   }
 
-  Future<void> retry(String name) => load(name);
+  Future<void> retry(int id) => load(id);
 }

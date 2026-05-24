@@ -13,7 +13,7 @@ void main() {
     late _MockEditTierPort port;
     late EditTierUseCase useCase;
 
-    const data = EditTierData(tierCurrentName: 'free', newName: 'basic');
+    const data = EditTierData(tierId: 1, name: 'basic');
 
     setUpAll(() {
       registerFallbackValue(data);

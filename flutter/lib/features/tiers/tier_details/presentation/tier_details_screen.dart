@@ -14,8 +14,13 @@ import 'package:flutter_application_1/features/tiers/tier_details/domain/entitie
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TierDetailsScreen extends StatefulWidget {
-  const TierDetailsScreen({required this.tierName, super.key});
+  const TierDetailsScreen({
+    required this.tierId,
+    required this.tierName,
+    super.key,
+  });
 
+  final int tierId;
   final String tierName;
 
   @override
@@ -26,7 +31,7 @@ class _TierDetailsScreenState extends State<TierDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<TierDetailsCubit>().load(widget.tierName));
+    unawaited(context.read<TierDetailsCubit>().load(widget.tierId));
   }
 
   @override
@@ -34,7 +39,12 @@ class _TierDetailsScreenState extends State<TierDetailsScreen> {
     final t = context.t;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tierName),
+        title: BlocBuilder<TierDetailsCubit, TierDetailsState>(
+          builder: (context, state) => switch (state) {
+            TierDetailsLoaded(:final tier) => Text(tier.name),
+            _ => Text(widget.tierName),
+          },
+        ),
         actions: [
           BlocBuilder<AuthCubit, AuthState>(
             builder: (context, authState) {
@@ -47,17 +57,26 @@ class _TierDetailsScreenState extends State<TierDetailsScreen> {
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DeleteTierButton(tierName: widget.tierName),
+                  DeleteTierButton(
+                    tierId: widget.tierId,
+                    tierName: widget.tierName,
+                  ),
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () async {
                       final newName = await context.router.push<String>(
-                        EditTierRoute(tierName: widget.tierName),
+                        EditTierRoute(
+                          tierId: widget.tierId,
+                          tierName: widget.tierName,
+                        ),
                       );
                       if (!context.mounted || newName == null) return;
                       unawaited(
                         context.router.replace(
-                          TierDetailsRoute(tierName: newName),
+                          TierDetailsRoute(
+                            tierId: widget.tierId,
+                            tierName: newName,
+                          ),
                         ),
                       );
                     },
@@ -89,7 +108,7 @@ class _TierDetailsScreenState extends State<TierDetailsScreen> {
                   const SizedBox(height: 8),
                   FilledButton(
                     onPressed: () =>
-                        context.read<TierDetailsCubit>().retry(widget.tierName),
+                        context.read<TierDetailsCubit>().retry(widget.tierId),
                     child: Text(t.common.retry),
                   ),
                 ],

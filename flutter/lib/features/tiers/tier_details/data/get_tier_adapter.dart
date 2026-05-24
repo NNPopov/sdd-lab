@@ -16,10 +16,10 @@ class GetTierAdapter implements GetTierPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, TierDetail>> call(String name) async {
+  Future<Either<Failure, TierDetail>> call(int id) async {
     try {
       try {
-        final dto = await _api.getTier(name);
+        final dto = await _api.getTier(id);
         return Right(dto.toDomain());
       } on DioException catch (e) {
         return Left(_mapHttp(e));

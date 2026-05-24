@@ -8,17 +8,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @RoutePage()
 class EditTierPage extends StatelessWidget {
   const EditTierPage({
-    @PathParam('name') required this.tierName,
+    @PathParam('id') required this.tierId,
+    @QueryParam('name') this.tierName = '',
     super.key,
   });
 
+  final int tierId;
   final String tierName;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EditTierCubit>(),
-      child: EditTierScreen(tierName: tierName),
+      child: EditTierScreen(tierId: tierId, tierName: tierName),
     );
   }
 }

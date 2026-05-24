@@ -20,7 +20,7 @@ class FetchTiersAdapter implements FetchTiersPort {
     try {
       try {
         final dto = await _api.getTiersForSelection();
-        return Right(dto.data.map((d) => d.toDomain()).toList());
+        return Right(dto.items.map((d) => d.toDomain()).toList());
       } on DioException catch (e) {
         return Left(_mapHttp(e));
       }

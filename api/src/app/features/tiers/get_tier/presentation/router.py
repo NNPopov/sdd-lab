@@ -13,18 +13,18 @@ router = APIRouter(tags=["tiers"])
 
 
 @router.get(
-    "/tier/{tier_id}",
+    "/tier/{id}",
     response_model=GetTierResponse,
     status_code=status.HTTP_200_OK,
 )
 @inject
 async def get_tier_endpoint(
-    tier_id: int,
+    id: int,
     use_case: Annotated[
         GetTierUseCase,
         Depends(Provide[Container.get_tier_use_case]),
     ],
 ) -> GetTierResponse:
-    query = GetTierQuery(id=tier_id)
+    query = GetTierQuery(id=id)
     tier_item = await use_case(query)
     return GetTierResponse.model_validate(tier_item)
