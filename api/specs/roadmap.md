@@ -44,3 +44,13 @@ Global index of all slices. Owned by `/to-prd`. Other skills read; never write.
 | 0038 | tiers | get_tier_by_id | Planned | `specs/features/tiers/0038_get_tier_by_id/` |
 | 0039 | tiers | update_tier_by_id | Planned | `specs/features/tiers/0039_update_tier_by_id/` |
 | 0040 | tiers | delete_tier_by_id | Planned | `specs/features/tiers/0040_delete_tier_by_id/` |
+| 0041 | users | get_user_by_id | Planned | `specs/features/users/0041_get_user_by_id/` |
+| 0042 | posts | migrate_list_posts_route_username_to_user_id | Planned | `specs/features/posts/0042_migrate_list_posts_route_username_to_user_id/` |
+| 0043 | users | update_user_route_to_user_id | Planned | `specs/features/users/0043_update_user_route_to_user_id/` |
+| 0044 | users | delete_user_route_to_user_id | Planned | `specs/features/users/0044_delete_user_route_to_user_id/` |
+| 0045 | users | delete_db_user_route_to_user_id | Planned | `specs/features/users/0045_delete_db_user_route_to_user_id/` |
+| 0046 | users | assign_moderator_route_to_user_id | Planned | `specs/features/users/0046_assign_moderator_route_to_user_id/` |
+| 0047 | users | revoke_moderator_route_to_user_id | Planned | `specs/features/users/0047_revoke_moderator_route_to_user_id/` |
+| 0048 | users | get_user_tier_route_to_user_id | Planned | `specs/features/users/0048_get_user_tier_route_to_user_id/` |
+| 0049 | users | rate_limits_route_to_user_id | Planned | `specs/features/users/0049_rate_limits_route_to_user_id/` |
+| 0050 | users | update_user_tier_route_to_user_id | Planned | `specs/features/users/0050_update_user_tier_route_to_user_id/` |
