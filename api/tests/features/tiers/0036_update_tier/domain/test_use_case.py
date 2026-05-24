@@ -14,7 +14,7 @@ from app.features.tiers.update_tier.domain.use_case import UpdateTierUseCase
 pytestmark = pytest.mark.asyncio
 
 _TIER_ITEM = TierItem(id=1, name="silver", created_at=datetime(2025, 1, 1, tzinfo=UTC))
-_CMD = UpdateTierCommand(name="silver", new_name="gold")
+_CMD = UpdateTierCommand(id=1, name="gold")
 
 
 def _make_port(
@@ -52,7 +52,7 @@ async def test_happy_path_calls_port_update_and_returns_none() -> None:
     port = _make_port()
     use_case = UpdateTierUseCase(port=port)  # type: ignore[arg-type]
     result = await use_case(_CMD)
-    port.update.assert_called_once_with("silver", "gold")
+    port.update.assert_called_once_with(1, "gold")
     assert result is None
 
 

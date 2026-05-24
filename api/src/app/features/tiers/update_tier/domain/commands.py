@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 
 class UpdateTierCommand(BaseModel):
+    id: int
     name: str
-    new_name: str

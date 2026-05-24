@@ -14,20 +14,20 @@ router = APIRouter(tags=["tiers"])
 
 
 @router.patch(
-    "/tier/{name}",
+    "/tier/{id}",
     response_model=UpdateTierResponse,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_current_superuser)],
 )
 @inject
 async def update_tier_endpoint(
-    name: str,
+    id: int,
     body: UpdateTierRequest,
     use_case: Annotated[
         UpdateTierUseCase,
         Depends(Provide[Container.update_tier_use_case]),
     ],
 ) -> UpdateTierResponse:
-    command = UpdateTierCommand(name=name, new_name=body.new_name)
+    command = UpdateTierCommand(id=id, name=body.name)
     await use_case(command)
     return UpdateTierResponse()
