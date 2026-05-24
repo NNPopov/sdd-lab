@@ -1,16 +1,17 @@
 # FEATURE: expose_moderator_flag — adapter unit tests.
 #
 # Covers: F1, F2, F12 (see requirements.md).
+# Updated to reference get_user_by_id after get_user_by_username was retired (slice 0041).
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from app.features.users.get_user_by_username.data.adapter import GetUserByUsernameAdapter
-from app.features.users.get_user_by_username.domain.commands import GetUserByUsernameQuery
-from app.features.users.get_user_by_username.domain.entities import FoundUser
-from app.features.users.get_user_by_username.domain.ports.get_user_by_username_port import GetUserByUsernamePort
+from app.features.users.get_user_by_id.data.adapter import GetUserByIdAdapter
+from app.features.users.get_user_by_id.domain.commands import GetUserByIdQuery
+from app.features.users.get_user_by_id.domain.entities import FoundUser
+from app.features.users.get_user_by_id.domain.ports.get_user_by_id_port import GetUserByIdPort
 
-_QUERY = GetUserByUsernameQuery(username="alicetester")
+_QUERY = GetUserByIdQuery(user_id=1)
 
 
 def _make_row(*, is_moderator: bool) -> MagicMock:
@@ -25,7 +26,7 @@ def _make_row(*, is_moderator: bool) -> MagicMock:
     return row
 
 
-def _make_adapter(row: MagicMock | None) -> GetUserByUsernameAdapter:
+def _make_adapter(row: MagicMock | None) -> GetUserByIdAdapter:
     result_mock = MagicMock()
     result_mock.scalar_one_or_none.return_value = row
 
@@ -36,13 +37,13 @@ def _make_adapter(row: MagicMock | None) -> GetUserByUsernameAdapter:
     factory.return_value.__aenter__ = AsyncMock(return_value=session)
     factory.return_value.__aexit__ = AsyncMock(return_value=False)
 
-    return GetUserByUsernameAdapter(session_factory=factory)
+    return GetUserByIdAdapter(session_factory=factory)
 
 
 def test_adapter_is_instance_of_port() -> None:
     """F1: adapter satisfies the port Protocol."""
-    adapter = GetUserByUsernameAdapter(session_factory=MagicMock())
-    assert isinstance(adapter, GetUserByUsernamePort)
+    adapter = GetUserByIdAdapter(session_factory=MagicMock())
+    assert isinstance(adapter, GetUserByIdPort)
 
 
 @pytest.mark.asyncio
@@ -69,7 +70,7 @@ async def test_moderator_row_maps_is_moderator_true() -> None:
 
 @pytest.mark.asyncio
 async def test_missing_user_returns_none() -> None:
-    """Adapter returns None when no row matches the username."""
+    """Adapter returns None when no row matches."""
     adapter = _make_adapter(None)
 
     result = await adapter.get(_QUERY)

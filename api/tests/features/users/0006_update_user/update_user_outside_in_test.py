@@ -12,7 +12,7 @@ from httpx import AsyncClient
 pytestmark = pytest.mark.asyncio
 
 _PATCH_ENDPOINT = "/api/v1/user/{user_id}"
-_GET_ENDPOINT = "/api/v1/user/{username}"
+_GET_ENDPOINT = "/api/v1/user/{user_id}"
 
 
 async def test_update_user_happy_path(
@@ -27,6 +27,7 @@ async def test_update_user_happy_path(
     try:
         response = await async_client.patch(
             _PATCH_ENDPOINT.format(user_id=seeded_alice["id"]),
+            _PATCH_ENDPOINT.format(username="alice"),
             json={"name": "Alice Updated"},
         )
     finally:
@@ -37,6 +38,7 @@ async def test_update_user_happy_path(
 
     # DB state: verify name was persisted by reading back through the GET endpoint.
     verify = await async_client.get(_GET_ENDPOINT.format(username="alice"))
+    verify = await async_client.get(_GET_ENDPOINT.format(user_id=seeded_alice["id"]))
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Updated"
 
@@ -54,6 +56,7 @@ async def test_update_user_forbidden_wrong_owner(
     try:
         response = await async_client.patch(
             _PATCH_ENDPOINT.format(user_id=seeded_alice["id"]),
+            _PATCH_ENDPOINT.format(username="alice"),
             json={"name": "Hacked"},
         )
     finally:
@@ -64,5 +67,6 @@ async def test_update_user_forbidden_wrong_owner(
 
     # DB state: alice's name must be unchanged.
     verify = await async_client.get(_GET_ENDPOINT.format(username="alice"))
+    verify = await async_client.get(_GET_ENDPOINT.format(user_id=seeded_alice["id"]))
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Tester"

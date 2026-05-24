@@ -11,7 +11,7 @@ from sqlalchemy import update as sa_update
 pytestmark = pytest.mark.asyncio
 
 _ASSIGN_ENDPOINT = "/api/v1/user/{username}/assign-moderator"
-_GET_BY_USERNAME = "/api/v1/user/{username}"
+_GET_BY_ID = "/api/v1/user/{user_id}"
 _TARGET_USERNAME = "targetmod"
 
 
@@ -59,8 +59,8 @@ async def test_assign_moderator_happy_path(
         assert row.is_moderator is True
         assert row.moderator_granted_by_user_id == seeded_superuser["id"]
 
-    # Read-path confirmation: GET /user/{username} reflects the new state.
-    read_response = await async_client.get(_GET_BY_USERNAME.format(username=_TARGET_USERNAME))
+    # Read-path confirmation: GET /user/{id} reflects the new state.
+    read_response = await async_client.get(_GET_BY_ID.format(user_id=seeded_target_user["id"]))
     assert read_response.status_code == 200, read_response.text
     assert read_response.json()["is_moderator"] is True
 

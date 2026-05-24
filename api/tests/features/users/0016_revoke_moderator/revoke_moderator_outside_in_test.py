@@ -11,7 +11,7 @@ from sqlalchemy import text
 pytestmark = pytest.mark.asyncio
 
 _REVOKE_ENDPOINT = "/api/v1/users/{username}/revoke-moderator"
-_GET_BY_USERNAME = "/api/v1/user/{username}"
+_GET_BY_ID = "/api/v1/user/{user_id}"
 _TARGET_MOD_USERNAME = "revoketargetmod"
 _REGULAR_USERNAME = "revokeregular"
 
@@ -58,8 +58,8 @@ async def test_revoke_moderator_happy_path(
         assert row.is_moderator is False
         assert row.moderator_granted_by_user_id is None
 
-    # Read-path confirmation: GET /user/{username} reflects the revoked state.
-    read_response = await async_client.get(_GET_BY_USERNAME.format(username=_TARGET_MOD_USERNAME))
+    # Read-path confirmation: GET /user/{id} reflects the revoked state.
+    read_response = await async_client.get(_GET_BY_ID.format(user_id=seeded_moderator_user["id"]))
     assert read_response.status_code == 200, read_response.text
     assert read_response.json()["is_moderator"] is False
 

@@ -45,8 +45,8 @@ from ..features.users.delete_db_user.data.adapter import DeleteDbUserAdapter
 from ..features.users.delete_db_user.domain.use_case import DeleteDbUserUseCase
 from ..features.users.delete_user.data.adapter import DeleteUserAdapter
 from ..features.users.delete_user.domain.use_case import DeleteUserUseCase
-from ..features.users.get_user_by_username.data.adapter import GetUserByUsernameAdapter
-from ..features.users.get_user_by_username.domain.use_case import GetUserByUsernameUseCase
+from ..features.users.get_user_by_id.data.adapter import GetUserByIdAdapter
+from ..features.users.get_user_by_id.domain.use_case import GetUserByIdUseCase
 from ..features.users.get_user_tier.data.adapter import GetUserTierAdapter
 from ..features.users.get_user_tier.domain.use_case import GetUserTierUseCase
 from ..features.users.list_users.data.adapter import ListUsersAdapter
@@ -67,7 +67,7 @@ class Container(containers.DeclarativeContainer):
         modules=[
             f"{_app_pkg}.features.users.create_user.presentation.router",
             f"{_app_pkg}.features.users.list_users.presentation.router",
-            f"{_app_pkg}.features.users.get_user_by_username.presentation.router",
+            f"{_app_pkg}.features.users.get_user_by_id.presentation.router",
             f"{_app_pkg}.features.users.get_user_tier.presentation.router",
             f"{_app_pkg}.features.users.update_user.presentation.router",
             f"{_app_pkg}.features.users.delete_user.presentation.router",
@@ -119,14 +119,14 @@ class Container(containers.DeclarativeContainer):
         port=list_users_adapter,
     )
 
-    get_user_by_username_adapter = providers.Factory(
-        GetUserByUsernameAdapter,
+    get_user_by_id_adapter = providers.Factory(
+        GetUserByIdAdapter,
         session_factory=session_factory,
     )
 
-    get_user_by_username_use_case = providers.Factory(
-        GetUserByUsernameUseCase,
-        port=get_user_by_username_adapter,
+    get_user_by_id_use_case = providers.Factory(
+        GetUserByIdUseCase,
+        port=get_user_by_id_adapter,
     )
 
     get_user_tier_adapter = providers.Factory(

@@ -1,4 +1,4 @@
-# FEATURE: get_user_by_username — domain entity.
+# FEATURE: get_user_by_id — domain entity.
 from pydantic import BaseModel
 
 
