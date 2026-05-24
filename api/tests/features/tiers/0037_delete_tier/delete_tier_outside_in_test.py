@@ -1,18 +1,13 @@
 # FEATURE: delete_tier — outside-in acceptance test.
 #
-# Covers: F1, F3, F7, F8 (Scenario 1); F2, F4 (Scenario 2).
+# Covers: F1, F3, F5, F9, F10 (Scenario 1); F4, F6 (Scenario 2).
 #
-# Red-state note: this is a fat-handler migration slice. The old erase_tier
-# handler in tiers/router.py already returns {"message": "Tier deleted"} and
-# raises NotFoundDomainError("Tier not found") — the same responses the new
-# DeleteTierUseCase will produce. Because the conftest overrides async_get_db
-# (routing the old handler through the test transaction), both scenarios may
-# pass against the old handler.
-#
-# The genuine red signal appears only if the old handler is removed before the
-# new one is wired in — at that point DELETE /api/v1/tier/{name} returns 405.
-# Implementors: remove erase_tier and add the new sub-router atomically so the
-# test never sees 405 in the green phase.
+# Red-state note (slice 0040): the implementation still routes DELETE /tier/{name}
+# (string parameter). When this test calls DELETE /tier/{tier_id} (an integer),
+# the old adapter looks up Tier.name == str(tier_id) and finds no row, returning
+# 404. Scenario 1 therefore fails (expected 200, got 404) — the red signal.
+# Scenario 2 passes in the red state because the old handler also returns 404
+# for any name that does not exist in the table.
 import pytest
 from httpx import AsyncClient
 from sqlalchemy import text
@@ -23,21 +18,22 @@ _ENDPOINT = "/api/v1/tier"
 
 
 async def test_delete_tier_happy_path(async_client: AsyncClient) -> None:
-    """Scenario 1 — superuser deletes an existing tier; 200 with confirmation, DB row gone."""
+    """Scenario 1 — superuser deletes an existing tier by id; 200 with confirmation, DB row gone."""
     from app.bootstrap.container import container as _di_container
     from app.main import app as _fastapi_app
     from app.shared_dependencies import get_current_superuser
 
     async with _di_container.session_factory()() as session:
-        await session.execute(
-            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW())"),
+        result = await session.execute(
+            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW()) RETURNING id"),
             {"name": "silver"},
         )
+        tier_id = result.scalar_one()
         await session.commit()
 
     _fastapi_app.dependency_overrides[get_current_superuser] = lambda: None
     try:
-        response = await async_client.delete(f"{_ENDPOINT}/silver")
+        response = await async_client.delete(f"{_ENDPOINT}/{tier_id}")
     finally:
         del _fastapi_app.dependency_overrides[get_current_superuser]
 
@@ -45,21 +41,21 @@ async def test_delete_tier_happy_path(async_client: AsyncClient) -> None:
     assert response.json() == {"message": "Tier deleted"}
 
     async with _di_container.session_factory()() as session:
-        result = await session.execute(
-            text("SELECT id FROM tier WHERE name = :n"),
-            {"n": "silver"},
+        check = await session.execute(
+            text("SELECT id FROM tier WHERE id = :id"),
+            {"id": tier_id},
         )
-        assert result.first() is None, "tier 'silver' still exists after deletion"
+        assert check.first() is None, f"tier id={tier_id} still exists after deletion"
 
 
 async def test_delete_tier_not_found(async_client: AsyncClient) -> None:
-    """Scenario 2 — tier does not exist; 404 with domain error body."""
+    """Scenario 2 — no tier with given id exists; 404 with domain error body."""
     from app.main import app as _fastapi_app
     from app.shared_dependencies import get_current_superuser
 
     _fastapi_app.dependency_overrides[get_current_superuser] = lambda: None
     try:
-        response = await async_client.delete(f"{_ENDPOINT}/nonexistent")
+        response = await async_client.delete(f"{_ENDPOINT}/999999")
     finally:
         del _fastapi_app.dependency_overrides[get_current_superuser]
 

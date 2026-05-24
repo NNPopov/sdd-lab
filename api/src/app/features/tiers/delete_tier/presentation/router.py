@@ -14,19 +14,19 @@ router = APIRouter(tags=["tiers"])
 
 
 @router.delete(
-    "/tier/{name}",
+    "/tier/{id}",
     response_model=DeleteTierResponse,
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(get_current_superuser)],
 )
 @inject
 async def delete_tier_endpoint(
-    name: str,
+    id: int,
     use_case: Annotated[
         DeleteTierUseCase,
         Depends(Provide[Container.delete_tier_use_case]),
     ],
 ) -> DeleteTierResponse:
-    command = DeleteTierCommand(name=name)
+    command = DeleteTierCommand(id=id)
     await use_case(command)
     return DeleteTierResponse()

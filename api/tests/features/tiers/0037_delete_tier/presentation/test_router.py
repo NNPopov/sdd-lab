@@ -1,12 +1,13 @@
 # FEATURE: delete_tier — endpoint integration tests.
 #
-# Covers: F1, F4, F5, F6.
+# Covers: F1, F6, F7, F8.
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/tier/{name}"
+_ENDPOINT = "/api/v1/tier/{id}"
 
 
 # ── F1: happy path → 200 ──────────────────────────────────────────────────────
@@ -14,22 +15,21 @@ _ENDPOINT = "/api/v1/tier/{name}"
 
 async def test_delete_tier_returns_200_on_success(async_client: AsyncClient) -> None:
     """F1 — superuser + existing tier → 200 with confirmation message."""
-    from sqlalchemy import text
-
     from app.bootstrap.container import container as _di_container
     from app.main import app as _fastapi_app
     from app.shared_dependencies import get_current_superuser
 
     async with _di_container.session_factory()() as session:
-        await session.execute(
-            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW())"),
+        result = await session.execute(
+            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW()) RETURNING id"),
             {"name": "router_del_silver"},
         )
+        tier_id = result.scalar_one()
         await session.commit()
 
     _fastapi_app.dependency_overrides[get_current_superuser] = lambda: None
     try:
-        response = await async_client.delete(_ENDPOINT.format(name="router_del_silver"))
+        response = await async_client.delete(_ENDPOINT.format(id=tier_id))
     finally:
         del _fastapi_app.dependency_overrides[get_current_superuser]
 
@@ -37,17 +37,17 @@ async def test_delete_tier_returns_200_on_success(async_client: AsyncClient) -> 
     assert response.json() == {"message": "Tier deleted"}
 
 
-# ── F4: not found → 404 ───────────────────────────────────────────────────────
+# ── F6: not found → 404 ───────────────────────────────────────────────────────
 
 
-async def test_delete_tier_returns_404_for_unknown_name(async_client: AsyncClient) -> None:
-    """F4 — path name does not match any tier → 404."""
+async def test_delete_tier_returns_404_for_unknown_id(async_client: AsyncClient) -> None:
+    """F6 — path id does not match any tier → 404."""
     from app.main import app as _fastapi_app
     from app.shared_dependencies import get_current_superuser
 
     _fastapi_app.dependency_overrides[get_current_superuser] = lambda: None
     try:
-        response = await async_client.delete(_ENDPOINT.format(name="nonexistent_xyz_99"))
+        response = await async_client.delete(_ENDPOINT.format(id=999999999))
     finally:
         del _fastapi_app.dependency_overrides[get_current_superuser]
 
@@ -57,11 +57,28 @@ async def test_delete_tier_returns_404_for_unknown_name(async_client: AsyncClien
     assert body["error"]["message"] == "Tier not found"
 
 
-# ── F5: non-superuser → 403 ───────────────────────────────────────────────────
+# ── F2: non-integer id → 422 ─────────────────────────────────────────────────
+
+
+async def test_delete_tier_returns_422_for_non_integer_id(async_client: AsyncClient) -> None:
+    """F2 — non-integer path segment → FastAPI returns 422 before reaching use-case."""
+    from app.main import app as _fastapi_app
+    from app.shared_dependencies import get_current_superuser
+
+    _fastapi_app.dependency_overrides[get_current_superuser] = lambda: None
+    try:
+        response = await async_client.delete("/api/v1/tier/not-an-int")
+    finally:
+        del _fastapi_app.dependency_overrides[get_current_superuser]
+
+    assert response.status_code == 422
+
+
+# ── F7: non-superuser → 403 ───────────────────────────────────────────────────
 
 
 async def test_delete_tier_non_superuser_returns_403(async_client: AsyncClient) -> None:
-    """F5 — authenticated non-superuser → 403."""
+    """F7 — authenticated non-superuser → 403."""
     from fastcrud.exceptions.http_exceptions import ForbiddenException
 
     from app.main import app as _fastapi_app
@@ -72,17 +89,17 @@ async def test_delete_tier_non_superuser_returns_403(async_client: AsyncClient) 
 
     _fastapi_app.dependency_overrides[get_current_superuser] = _raise_forbidden
     try:
-        response = await async_client.delete(_ENDPOINT.format(name="any"))
+        response = await async_client.delete(_ENDPOINT.format(id=1))
     finally:
         del _fastapi_app.dependency_overrides[get_current_superuser]
 
     assert response.status_code == 403
 
 
-# ── F6: unauthenticated → 401 ─────────────────────────────────────────────────
+# ── F8: unauthenticated → 401 ─────────────────────────────────────────────────
 
 
 async def test_delete_tier_unauthenticated_returns_401(async_client: AsyncClient) -> None:
-    """F6 — no bearer token → 401."""
-    response = await async_client.delete(_ENDPOINT.format(name="any"))
+    """F8 — no bearer token → 401."""
+    response = await async_client.delete(_ENDPOINT.format(id=1))
     assert response.status_code == 401

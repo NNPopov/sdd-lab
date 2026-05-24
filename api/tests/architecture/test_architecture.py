@@ -349,7 +349,7 @@ def test_use_case_class_has_async_call(filepath: Path) -> None:
     assert use_case_classes, f"{filepath.relative_to(_APP)}: no class defined in use_case.py"
 
     for cls in use_case_classes:
-        method_names = {n.name for n in ast.walk(cls) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        method_names = {n.name for n in ast.walk(cls) if isinstance(n, ast.FunctionDef | ast.AsyncFunctionDef)}
         assert "__call__" in method_names, (
             f"{filepath.relative_to(_APP)}: class {cls.name!r} has no __call__ method.\n"
             f"  Use-cases must be callable classes."

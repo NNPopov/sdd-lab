@@ -9,7 +9,7 @@ class DeleteTierUseCase:
         self._port = port
 
     async def __call__(self, command: DeleteTierCommand) -> None:
-        result = await self._port.get(command.name)
+        result = await self._port.get(command.id)
         if result is None:
             raise NotFoundDomainError("Tier not found")
-        await self._port.delete(command.name)
+        await self._port.delete(command.id)
