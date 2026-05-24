@@ -149,12 +149,16 @@ Output to the user, in this exact order:
 
 The next session — implementation — is a separate conversation. To save the
 user from re-typing the same prompt every slice, output a ready-to-copy
-block at the end of the report. The user copies the text between the
-separator lines, clears context, opens a new chat, and pastes.
+block at the end of the report and **also write it as a file**.
 
-Output the block **verbatim** in this shape, replacing `<feature>`,
-`<NNNN>`, `<slice>` with concrete values for the slice you just produced
-the test for:
+**File to write:** `specs/features/<feature>/<NNNN>_<slice>/implement.md`
+Write only the prompt text (no separator lines, no Markdown headers). The file
+content is the plain text between the separator lines — the same text the user
+would paste into the next chat.
+
+Then output the block **verbatim** in this shape in the chat, replacing
+`<feature>`, `<NNNN>`, `<slice>` with concrete values for the slice you just
+produced the test for:
 
 ```
 ─────────────────────────────────────────────────────────────────
@@ -202,14 +206,16 @@ Rules for the block:
 - **One copy of the block per run.** Do not output it twice. Do not
   output it partially.
 - **English wording** throughout the block.
+- **Write `implement.md` before outputting the block in the chat.** If the
+  file write fails, report the error but still output the block.
 - The block goes **last** in your reply. Nothing after it.
 
 If for any reason the test is **not** in a verified red state (passing, or
 failing on a fixture/environment error), do **not** output the
-implementation prompt block. The block presupposes a valid red state;
-emitting it on a broken test would mislead the user into starting
-implementation against a test that does not actually represent the
-contract.
+implementation prompt block and do **not** write `implement.md`. The block
+presupposes a valid red state; emitting it on a broken test would mislead
+the user into starting implementation against a test that does not actually
+represent the contract.
 
 ## Style rules
 
