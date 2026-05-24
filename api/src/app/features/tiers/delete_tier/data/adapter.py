@@ -11,15 +11,15 @@ class DeleteTierAdapter(DeleteTierPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def get(self, name: str) -> TierItem | None:
+    async def get(self, tier_id: int) -> TierItem | None:
         async with self._session_factory() as session:
-            result = await session.execute(select(Tier).where(Tier.name == name))
+            result = await session.execute(select(Tier).where(Tier.id == tier_id))
             row = result.scalar_one_or_none()
             if row is None:
                 return None
             return TierItem.model_validate(row)
 
-    async def delete(self, name: str) -> None:
+    async def delete(self, tier_id: int) -> None:
         async with self._session_factory() as session:
-            await session.execute(delete(Tier).where(Tier.name == name))
+            await session.execute(delete(Tier).where(Tier.id == tier_id))
             await session.commit()

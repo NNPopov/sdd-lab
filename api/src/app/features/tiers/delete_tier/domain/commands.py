@@ -3,4 +3,4 @@ from pydantic import BaseModel
 
 
 class DeleteTierCommand(BaseModel):
-    name: str
+    id: int
