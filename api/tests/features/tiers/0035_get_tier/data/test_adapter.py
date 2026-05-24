@@ -58,7 +58,7 @@ async def test_get_returns_tier_item_when_row_exists() -> None:
     orm_row = _make_orm_row(id=42, name=_TIER_NAME, created_at=_CREATED_AT)
     adapter = _make_adapter(row=orm_row)
 
-    result = await adapter.get(GetTierQuery(name=_TIER_NAME))
+    result = await adapter.get(GetTierQuery(id=42))
 
     assert isinstance(result, TierItem)
     assert result.id == 42
@@ -74,7 +74,7 @@ async def test_get_returns_none_when_row_absent() -> None:
     """F8 — scalar_one_or_none returns None; adapter returns None."""
     adapter = _make_adapter(row=None)
 
-    result = await adapter.get(GetTierQuery(name="nonexistent"))
+    result = await adapter.get(GetTierQuery(id=999))
 
     assert result is None
 
@@ -95,4 +95,4 @@ async def test_infrastructure_exception_propagates_unchanged() -> None:
     adapter = GetTierAdapter(session_factory=session_factory)
 
     with pytest.raises(RuntimeError, match="db boom"):
-        await adapter.get(GetTierQuery(name="any"))
+        await adapter.get(GetTierQuery(id=1))

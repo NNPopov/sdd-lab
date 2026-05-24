@@ -3,4 +3,4 @@ from pydantic import BaseModel
 
 
 class GetTierQuery(BaseModel):
-    name: str
+    id: int

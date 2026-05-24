@@ -45,7 +45,7 @@ async def test_get_tier_happy_path(async_client: AsyncClient) -> None:
         row = result.first()
     assert row is not None, "seeded tier row not found in test transaction"
 
-    response = await async_client.get(f"{_ENDPOINT}/{_TIER_NAME}")
+    response = await async_client.get(f"{_ENDPOINT}/{row.id}")
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -55,8 +55,8 @@ async def test_get_tier_happy_path(async_client: AsyncClient) -> None:
 
 
 async def test_get_tier_not_found_returns_404(async_client: AsyncClient) -> None:
-    """Scenario 2 — unknown name; GET /tier/{name} returns 404 with domain error body."""
-    response = await async_client.get(f"{_ENDPOINT}/nonexistent_tier_xyz")
+    """Scenario 2 — non-existent id; GET /tier/999999 returns 404 with domain error body."""
+    response = await async_client.get(f"{_ENDPOINT}/999999")
 
     assert response.status_code == 404, response.text
     assert response.json() == {

@@ -3,10 +3,10 @@
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+from users import erase_user, patch_user, read_user, read_users, write_user
 
 from src.app.core.exceptions.http_exceptions import DuplicateValueException, ForbiddenException, NotFoundException
 from src.app.schemas___.user import UserCreate, UserRead, UserUpdate
-from users import erase_user, patch_user, read_user, read_users, write_user
 
 
 class TestWriteUser:

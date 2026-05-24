@@ -13,7 +13,7 @@ from app.features.tiers.get_tier.domain.use_case import GetTierUseCase
 
 pytestmark = pytest.mark.asyncio
 
-_QUERY = GetTierQuery(name="gold")
+_QUERY = GetTierQuery(id=1)
 _TIER_ITEM = TierItem(id=1, name="gold", created_at=datetime(2025, 1, 1, tzinfo=UTC))
 
 

@@ -31,7 +31,7 @@ async def test_get_tier_returns_200_with_correct_schema(async_client: AsyncClien
         ).first()
 
     assert row is not None
-    response = await async_client.get(f"{_ENDPOINT}/{_TIER_NAME}")
+    response = await async_client.get(f"{_ENDPOINT}/{row.id}")
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -41,8 +41,8 @@ async def test_get_tier_returns_200_with_correct_schema(async_client: AsyncClien
 
 
 async def test_get_tier_not_found_returns_404(async_client: AsyncClient) -> None:
-    """F3 — unknown name; GET /tier/{name} returns 404 with domain error body."""
-    response = await async_client.get(f"{_ENDPOINT}/__nonexistent_name__")
+    """F2 — non-existent id; GET /tier/999999 returns 404 with domain error body."""
+    response = await async_client.get(f"{_ENDPOINT}/999999")
 
     assert response.status_code == 404, response.text
     assert response.json() == {
@@ -64,6 +64,13 @@ async def test_get_tier_unauthenticated_returns_200_for_existing_tier(async_clie
             {"name": unique_name},
         )
         await session.commit()
+        row = (
+            await session.execute(
+                text('SELECT id FROM "tier" WHERE name = :name'),
+                {"name": unique_name},
+            )
+        ).first()
 
-    response = await async_client.get(f"{_ENDPOINT}/{unique_name}")
+    assert row is not None
+    response = await async_client.get(f"{_ENDPOINT}/{row.id}")
     assert response.status_code == 200, response.text

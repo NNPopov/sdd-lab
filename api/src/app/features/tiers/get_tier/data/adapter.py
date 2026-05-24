@@ -14,7 +14,7 @@ class GetTierAdapter(GetTierPort):
 
     async def get(self, query: GetTierQuery) -> TierItem | None:
         async with self._session_factory() as session:
-            result = await session.execute(select(Tier).where(Tier.name == query.name))
+            result = await session.execute(select(Tier).where(Tier.id == query.id))
             row = result.scalar_one_or_none()
             if row is None:
                 return None
