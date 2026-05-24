@@ -60,7 +60,6 @@ async def test_forbidden_raised_when_requester_is_not_owner() -> None:
         target_username="alice",
         requester_user_id=2,
         target_user_id=1,
-        requester_user_id=2,
         name="Hacked",
     )
     port = _make_port()
@@ -80,7 +79,6 @@ async def test_duplicate_email_raises_when_email_taken() -> None:
         target_username="alice",
         requester_user_id=1,
         target_user_id=1,
-        requester_user_id=1,
         email="taken@example.com",
     )
     use_case = _make_use_case(email_exists=True)
@@ -99,7 +97,6 @@ async def test_duplicate_username_raises_when_username_taken() -> None:
         target_username="alice",
         requester_user_id=1,
         target_user_id=1,
-        requester_user_id=1,
         username="bob",
     )
     use_case = _make_use_case(username_exists=True)
@@ -116,7 +113,6 @@ async def test_email_exists_not_called_when_email_is_none() -> None:
     """F11a — email=None → email_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
-    await use_case(UpdateUserCommand(target_username="alice", requester_user_id=1))
     await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
     port.email_exists.assert_not_called()
 
@@ -130,7 +126,6 @@ async def test_email_exists_not_called_when_email_unchanged() -> None:
         target_username="alice",
         requester_user_id=1,
         target_user_id=1,
-        requester_user_id=1,
         email="alice@example.com",  # same as _EXISTING.email
     )
     await use_case(cmd)
@@ -145,7 +140,6 @@ async def test_username_exists_not_called_when_username_is_none() -> None:
     """F12a — username=None → username_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
-    await use_case(UpdateUserCommand(target_username="alice", requester_user_id=1))
     await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
     port.username_exists.assert_not_called()
 
@@ -159,7 +153,6 @@ async def test_username_exists_not_called_when_username_unchanged() -> None:
         target_username="alice",
         requester_user_id=1,
         target_user_id=1,
-        requester_user_id=1,
         username="alice",  # same as _EXISTING.username
     )
     await use_case(cmd)

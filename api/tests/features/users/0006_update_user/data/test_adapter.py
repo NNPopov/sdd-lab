@@ -39,7 +39,6 @@ async def test_get_by_id_returns_existing_user_when_found() -> None:
 
     row = MagicMock(spec=User)
     row.id = 42
-    row.id = 1
     row.username = "alice"
     row.email = "alice@example.com"
 
@@ -53,7 +52,6 @@ async def test_get_by_id_returns_existing_user_when_found() -> None:
 
     assert isinstance(user, ExistingUser)
     assert user.id == 42
-    assert user.id == 1
     assert user.username == "alice"
     assert user.email == "alice@example.com"
 
@@ -193,7 +191,6 @@ async def test_update_writes_only_non_none_fields() -> None:
         target_username="alice",
         requester_user_id=1,
         target_user_id=1,
-        requester_user_id=1,
         name="New Name",
         email=None,
         username=None,

@@ -27,7 +27,6 @@ async def test_update_user_happy_path(
     try:
         response = await async_client.patch(
             _PATCH_ENDPOINT.format(user_id=seeded_alice["id"]),
-            _PATCH_ENDPOINT.format(username="alice"),
             json={"name": "Alice Updated"},
         )
     finally:
@@ -37,7 +36,6 @@ async def test_update_user_happy_path(
     assert response.json() == {"message": "User updated"}
 
     # DB state: verify name was persisted by reading back through the GET endpoint.
-    verify = await async_client.get(_GET_ENDPOINT.format(username="alice"))
     verify = await async_client.get(_GET_ENDPOINT.format(user_id=seeded_alice["id"]))
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Updated"
@@ -56,7 +54,6 @@ async def test_update_user_forbidden_wrong_owner(
     try:
         response = await async_client.patch(
             _PATCH_ENDPOINT.format(user_id=seeded_alice["id"]),
-            _PATCH_ENDPOINT.format(username="alice"),
             json={"name": "Hacked"},
         )
     finally:
@@ -66,7 +63,6 @@ async def test_update_user_forbidden_wrong_owner(
     assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
     # DB state: alice's name must be unchanged.
-    verify = await async_client.get(_GET_ENDPOINT.format(username="alice"))
     verify = await async_client.get(_GET_ENDPOINT.format(user_id=seeded_alice["id"]))
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Tester"

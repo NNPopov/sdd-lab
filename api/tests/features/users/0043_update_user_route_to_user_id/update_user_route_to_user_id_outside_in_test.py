@@ -33,8 +33,8 @@ async def test_update_user_happy_path(
     assert response.status_code == 200, response.text
     assert response.json() == {"message": "User updated"}
 
-    # DB state: verify name was persisted via the existing GET /user/{username} endpoint.
-    verify = await async_client.get("/api/v1/user/alice")
+    # DB state: verify name was persisted via GET /user/{user_id}.
+    verify = await async_client.get(f"/api/v1/user/{seeded_alice['id']}")
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Updated"
 
@@ -61,6 +61,6 @@ async def test_update_user_forbidden_wrong_owner(
     assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
     # DB state: alice's name must be unchanged.
-    verify = await async_client.get("/api/v1/user/alice")
+    verify = await async_client.get(f"/api/v1/user/{seeded_alice['id']}")
     assert verify.status_code == 200, verify.text
     assert verify.json()["name"] == "Alice Tester"

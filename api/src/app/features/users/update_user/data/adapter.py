@@ -40,7 +40,6 @@ class UpdateUserAdapter(UpdateUserPort):
         update_values: dict[str, object] = {
             k: v
             for k, v in command.model_dump().items()
-            if k not in ("target_username", "requester_user_id") and v is not None
             if k not in ("target_user_id", "requester_user_id") and v is not None
         }
         update_values["updated_at"] = datetime.now(UTC)
