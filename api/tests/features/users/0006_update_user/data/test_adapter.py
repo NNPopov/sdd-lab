@@ -14,7 +14,7 @@ from app.features.users.update_user.domain.entities import ExistingUser
 
 _UPDATE_CMD = UpdateUserCommand(
     target_username="alice",
-    requester_username="alice",
+    requester_user_id=1,
     name="Alice Updated",
     email=None,
     username=None,
@@ -38,6 +38,7 @@ async def test_get_by_username_returns_existing_user_when_found() -> None:
     from app.adapters.db.models.user import User
 
     row = MagicMock(spec=User)
+    row.id = 42
     row.username = "alice"
     row.email = "alice@example.com"
 
@@ -50,6 +51,7 @@ async def test_get_by_username_returns_existing_user_when_found() -> None:
     user = await adapter.get_by_username("alice")
 
     assert isinstance(user, ExistingUser)
+    assert user.id == 42
     assert user.username == "alice"
     assert user.email == "alice@example.com"
 
@@ -187,7 +189,7 @@ async def test_update_writes_only_non_none_fields() -> None:
     """F22 — only non-None command fields (minus routing fields) reach the SQL payload."""
     cmd = UpdateUserCommand(
         target_username="alice",
-        requester_username="alice",
+        requester_user_id=1,
         name="New Name",
         email=None,
         username=None,
@@ -231,4 +233,4 @@ async def test_update_writes_only_non_none_fields() -> None:
     assert "username" not in keys
     assert "profile_image_url" not in keys
     assert "target_username" not in keys
-    assert "requester_username" not in keys
+    assert "requester_user_id" not in keys

@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class UpdateUserCommand(BaseModel):
     target_username: str
-    requester_username: str
+    requester_user_id: int
     name: str | None = None
     username: str | None = None
     email: str | None = None

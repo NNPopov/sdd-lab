@@ -15,18 +15,18 @@ from .schemas import DeleteUserResponse
 router = APIRouter()
 
 
-@router.delete("/user/{username}", response_model=DeleteUserResponse, status_code=200)
+@router.delete("/user/{user_id}", response_model=DeleteUserResponse, status_code=200)
 @inject
 async def delete_user_endpoint(
-    username: str,
+    user_id: int,
     current_user: Annotated[dict, Depends(get_current_user)],
     token: Annotated[str, Depends(oauth2_scheme)],
     use_case: Annotated[DeleteUserUseCase, Depends(Provide[Container.delete_user_use_case])],
     blacklist: Annotated[TokenBlacklistPort, Depends(Provide[Container.token_blacklist_adapter])],
 ) -> DeleteUserResponse:
     command = DeleteUserCommand(
-        target_username=username,
-        requester_username=current_user["username"],
+        target_user_id=user_id,
+        requester_user_id=current_user["id"],
     )
     await use_case(command)
     await blacklist_token(token, blacklist)

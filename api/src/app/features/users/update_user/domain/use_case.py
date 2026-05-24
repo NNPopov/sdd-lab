@@ -15,7 +15,7 @@ class UpdateUserUseCase:
         if existing is None:
             raise NotFoundDomainError("User not found")
 
-        check_owner(command.requester_username, existing.username)
+        check_owner(command.requester_user_id, existing.id)
 
         if command.email is not None and command.email != existing.email:
             if await self._port.email_exists(command.email):

@@ -2,6 +2,6 @@
 from ....domain.errors import ForbiddenDomainError
 
 
-def check_owner(requester_username: str, owner_username: str) -> None:
-    if requester_username != owner_username:
+def check_owner(requester_id: int, owner_id: int) -> None:
+    if requester_id != owner_id:
         raise ForbiddenDomainError()

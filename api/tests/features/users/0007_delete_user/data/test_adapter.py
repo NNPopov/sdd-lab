@@ -1,6 +1,6 @@
 # FEATURE: delete_user — adapter unit tests.
 #
-# Covers: F5, F6.
+# Covers: F9, F10, F11.
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -17,16 +17,16 @@ def _make_adapter(session_mock: MagicMock) -> DeleteUserAdapter:
     return DeleteUserAdapter(session_factory=factory)
 
 
-# ── get_by_username ───────────────────────────────────────────────────────────
+# ── get_by_id ─────────────────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_target_when_active_row_found() -> None:
-    """F5a — active row found → DeleteUserTarget returned."""
+async def test_get_by_id_returns_target_when_active_row_found() -> None:
+    """F9, F10a — active row found → DeleteUserTarget(id=...) returned."""
     from app.adapters.db.models.user import User
 
     row = MagicMock(spec=User)
-    row.username = "alice"
+    row.id = 42
 
     session = MagicMock()
     result = MagicMock()
@@ -34,21 +34,21 @@ async def test_get_by_username_returns_target_when_active_row_found() -> None:
     session.execute = AsyncMock(return_value=result)
 
     adapter = _make_adapter(session)
-    target = await adapter.get_by_username("alice")
+    target = await adapter.get_by_id(42)
 
     assert isinstance(target, DeleteUserTarget)
-    assert target.username == "alice"
+    assert target.id == 42
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_none_when_row_missing() -> None:
-    """F5b — no matching active row → None."""
+async def test_get_by_id_returns_none_when_row_missing() -> None:
+    """F10b — no matching active row → None."""
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result)
 
-    assert await _make_adapter(session).get_by_username("ghost") is None
+    assert await _make_adapter(session).get_by_id(999) is None
 
 
 # ── soft_delete ───────────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ async def test_get_by_username_returns_none_when_row_missing() -> None:
 
 @pytest.mark.asyncio
 async def test_soft_delete_sets_is_deleted_and_deleted_at() -> None:
-    """F6 — soft_delete issues UPDATE setting is_deleted=True and non-null deleted_at."""
+    """F11 — soft_delete issues UPDATE setting is_deleted=True and non-null deleted_at."""
     captured: dict = {}
 
     session = MagicMock()
@@ -87,7 +87,7 @@ async def test_soft_delete_sets_is_deleted_and_deleted_at() -> None:
 
     before = datetime.now(UTC)
     with patch.object(adapter_module, "update", side_effect=capturing_update):
-        await adapter.soft_delete("alice")
+        await adapter.soft_delete(42)
     after = datetime.now(UTC)
 
     assert captured["values"]["is_deleted"] is True
@@ -105,4 +105,4 @@ async def test_soft_delete_propagates_db_error() -> None:
 
     adapter = _make_adapter(session)
     with pytest.raises(RuntimeError, match="db failure"):
-        await adapter.soft_delete("alice")
+        await adapter.soft_delete(42)

@@ -24,7 +24,7 @@ class UpdateUserAdapter(UpdateUserPort):
             row = result.scalar_one_or_none()
             if row is None:
                 return None
-            return ExistingUser(username=row.username, email=row.email)
+            return ExistingUser(id=row.id, username=row.username, email=row.email)
 
     async def email_exists(self, email: str) -> bool:
         async with self._session_factory() as session:
@@ -40,7 +40,7 @@ class UpdateUserAdapter(UpdateUserPort):
         update_values: dict[str, object] = {
             k: v
             for k, v in command.model_dump().items()
-            if k not in ("target_username", "requester_username") and v is not None
+            if k not in ("target_username", "requester_user_id") and v is not None
         }
         update_values["updated_at"] = datetime.now(UTC)
 

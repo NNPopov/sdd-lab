@@ -23,7 +23,7 @@ async def update_user(
 ) -> UpdateUserResponse:
     command = UpdateUserCommand(
         target_username=username,
-        requester_username=current_user["username"],
+        requester_user_id=current_user["id"],
         **request.model_dump(),
     )
     result = await use_case(command)

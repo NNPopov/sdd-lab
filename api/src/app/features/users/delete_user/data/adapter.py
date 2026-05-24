@@ -13,19 +13,19 @@ class DeleteUserAdapter(DeleteUserPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def get_by_username(self, username: str) -> DeleteUserTarget | None:
+    async def get_by_id(self, user_id: int) -> DeleteUserTarget | None:
         async with self._session_factory() as session:
             result = await session.execute(
-                select(User).where(User.username == username, User.is_deleted == False)  # noqa: E712
+                select(User).where(User.id == user_id, User.is_deleted == False)  # noqa: E712
             )
             row = result.scalar_one_or_none()
             if row is None:
                 return None
-            return DeleteUserTarget(username=row.username)
+            return DeleteUserTarget(id=row.id)
 
-    async def soft_delete(self, username: str) -> None:
+    async def soft_delete(self, target_user_id: int) -> None:
         async with self._session_factory() as session:
             await session.execute(
-                update(User).where(User.username == username).values(is_deleted=True, deleted_at=datetime.now(UTC))
+                update(User).where(User.id == target_user_id).values(is_deleted=True, deleted_at=datetime.now(UTC))
             )
             await session.commit()

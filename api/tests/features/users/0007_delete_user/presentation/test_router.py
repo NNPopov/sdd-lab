@@ -1,15 +1,15 @@
 # FEATURE: delete_user — endpoint integration tests.
 #
-# Covers: F1, F7, F8, F9, F10.
+# Covers: F1, F2, F3, F13, F14.
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/user/{username}"
+_ENDPOINT = "/api/v1/user/{user_id}"
 
 
-# ── F1, F7: happy path → 200, row soft-deleted ───────────────────────────────
+# ── F1: happy path → 200 ──────────────────────────────────────────────────────
 
 
 async def test_delete_user_returns_200_on_success(
@@ -17,14 +17,14 @@ async def test_delete_user_returns_200_on_success(
     seeded_alice: dict,
     alice_token: str,
 ) -> None:
-    """F1, F7 — owner deletes own account; 200 and confirmation message."""
+    """F1 — owner deletes own account by integer ID; 200 and confirmation message."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             headers={"Authorization": f"Bearer {alice_token}"},
         )
     finally:
@@ -34,22 +34,22 @@ async def test_delete_user_returns_200_on_success(
     assert response.json() == {"message": "User deleted"}
 
 
-# ── F10: not found → 404 ──────────────────────────────────────────────────────
+# ── F13: not found → 404 ─────────────────────────────────────────────────────
 
 
-async def test_delete_user_returns_404_for_unknown_username(
+async def test_delete_user_returns_404_for_unknown_id(
     async_client: AsyncClient,
     seeded_alice: dict,
     alice_token: str,
 ) -> None:
-    """F10 — target username does not exist; 404 returned."""
+    """F13 — target user_id does not exist; 404 returned."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="ghost_xyz_99"),
+            _ENDPOINT.format(user_id=999999),
             headers={"Authorization": f"Bearer {alice_token}"},
         )
     finally:
@@ -61,7 +61,7 @@ async def test_delete_user_returns_404_for_unknown_username(
     assert body["error"]["message"] == "User not found"
 
 
-# ── F9: forbidden — wrong owner → 403 ────────────────────────────────────────
+# ── F14: forbidden — wrong owner → 403 ───────────────────────────────────────
 
 
 async def test_delete_user_returns_403_when_not_owner(
@@ -70,14 +70,14 @@ async def test_delete_user_returns_403_when_not_owner(
     seeded_bob: dict,
     alice_token: str,
 ) -> None:
-    """F9 — alice attempts to delete bob's account; 403 returned."""
+    """F14 — alice attempts to delete bob's account; 403 returned."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="bob"),
+            _ENDPOINT.format(user_id=seeded_bob["id"]),
             headers={"Authorization": f"Bearer {alice_token}"},
         )
     finally:
@@ -87,12 +87,37 @@ async def test_delete_user_returns_403_when_not_owner(
     assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
 
-# ── F8: missing token → 401 ───────────────────────────────────────────────────
+# ── F3: missing token → 401 ───────────────────────────────────────────────────
 
 
 async def test_delete_user_returns_401_without_token(
     async_client: AsyncClient,
+    seeded_alice: dict,
 ) -> None:
-    """F8 — no Authorization header; 401 returned."""
-    response = await async_client.delete(_ENDPOINT.format(username="alice"))
+    """F3 — no Authorization header; 401 returned."""
+    response = await async_client.delete(_ENDPOINT.format(user_id=seeded_alice["id"]))
     assert response.status_code == 401
+
+
+# ── F2: non-integer path param → 422 ─────────────────────────────────────────
+
+
+async def test_delete_user_returns_422_for_non_integer_user_id(
+    async_client: AsyncClient,
+    seeded_alice: dict,
+    alice_token: str,
+) -> None:
+    """F2 — non-integer user_id path param rejected by FastAPI with 422."""
+    from app.features.users.dependencies import get_current_user
+    from app.main import app as _fastapi_app
+
+    _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
+    try:
+        response = await async_client.delete(
+            "/api/v1/user/abc",
+            headers={"Authorization": f"Bearer {alice_token}"},
+        )
+    finally:
+        del _fastapi_app.dependency_overrides[get_current_user]
+
+    assert response.status_code == 422
