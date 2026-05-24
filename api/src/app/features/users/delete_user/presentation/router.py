@@ -26,7 +26,7 @@ async def delete_user_endpoint(
 ) -> DeleteUserResponse:
     command = DeleteUserCommand(
         target_username=username,
-        requester_username=current_user["username"],
+        requester_user_id=current_user["id"],
     )
     await use_case(command)
     await blacklist_token(token, blacklist)

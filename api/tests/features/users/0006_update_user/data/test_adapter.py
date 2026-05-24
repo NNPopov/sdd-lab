@@ -13,8 +13,8 @@ from app.features.users.update_user.domain.commands import UpdateUserCommand
 from app.features.users.update_user.domain.entities import ExistingUser
 
 _UPDATE_CMD = UpdateUserCommand(
-    target_username="alice",
-    requester_username="alice",
+    target_user_id=1,
+    requester_user_id=1,
     name="Alice Updated",
     email=None,
     username=None,
@@ -29,15 +29,16 @@ def _make_adapter(session_mock: MagicMock) -> UpdateUserAdapter:
     return UpdateUserAdapter(session_factory=factory)
 
 
-# ── get_by_username ───────────────────────────────────────────────────────────
+# ── get_by_id ─────────────────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_existing_user_when_found() -> None:
+async def test_get_by_id_returns_existing_user_when_found() -> None:
     """F16 — active row found → ExistingUser returned."""
     from app.adapters.db.models.user import User
 
     row = MagicMock(spec=User)
+    row.id = 1
     row.username = "alice"
     row.email = "alice@example.com"
 
@@ -47,15 +48,16 @@ async def test_get_by_username_returns_existing_user_when_found() -> None:
     session.execute = AsyncMock(return_value=result)
 
     adapter = _make_adapter(session)
-    user = await adapter.get_by_username("alice")
+    user = await adapter.get_by_id(1)
 
     assert isinstance(user, ExistingUser)
+    assert user.id == 1
     assert user.username == "alice"
     assert user.email == "alice@example.com"
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_none_when_not_found() -> None:
+async def test_get_by_id_returns_none_when_not_found() -> None:
     """F17 — no matching row → None."""
     session = MagicMock()
     result = MagicMock()
@@ -63,7 +65,7 @@ async def test_get_by_username_returns_none_when_not_found() -> None:
     session.execute = AsyncMock(return_value=result)
 
     adapter = _make_adapter(session)
-    assert await adapter.get_by_username("ghost") is None
+    assert await adapter.get_by_id(999) is None
 
 
 # ── email_exists ──────────────────────────────────────────────────────────────
@@ -186,8 +188,8 @@ async def test_update_sets_updated_at_in_payload() -> None:
 async def test_update_writes_only_non_none_fields() -> None:
     """F22 — only non-None command fields (minus routing fields) reach the SQL payload."""
     cmd = UpdateUserCommand(
-        target_username="alice",
-        requester_username="alice",
+        target_user_id=1,
+        requester_user_id=1,
         name="New Name",
         email=None,
         username=None,
@@ -230,5 +232,5 @@ async def test_update_writes_only_non_none_fields() -> None:
     assert "email" not in keys
     assert "username" not in keys
     assert "profile_image_url" not in keys
-    assert "target_username" not in keys
-    assert "requester_username" not in keys
+    assert "target_user_id" not in keys
+    assert "requester_user_id" not in keys

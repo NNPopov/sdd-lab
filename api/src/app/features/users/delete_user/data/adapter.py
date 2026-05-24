@@ -21,7 +21,7 @@ class DeleteUserAdapter(DeleteUserPort):
             row = result.scalar_one_or_none()
             if row is None:
                 return None
-            return DeleteUserTarget(username=row.username)
+            return DeleteUserTarget(id=row.id, username=row.username)
 
     async def soft_delete(self, username: str) -> None:
         async with self._session_factory() as session:

@@ -11,11 +11,11 @@ class UpdateUserUseCase:
         self._port = port
 
     async def __call__(self, command: UpdateUserCommand) -> UpdatedUserResult:
-        existing = await self._port.get_by_username(command.target_username)
+        existing = await self._port.get_by_id(command.target_user_id)
         if existing is None:
             raise NotFoundDomainError("User not found")
 
-        check_owner(command.requester_username, existing.username)
+        check_owner(command.requester_user_id, existing.id)
 
         if command.email is not None and command.email != existing.email:
             if await self._port.email_exists(command.email):
