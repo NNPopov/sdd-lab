@@ -10,6 +10,10 @@ The repo contains two companion projects sharing the same domain:
 | REST API | Python · FastAPI · PostgreSQL · Redis | [`api/`](api/) |
 | Cross-platform client | Flutter · Dart | [`flutter/`](flutter/) |
 
+## Research context
+
+This monorepo is an active investigation into applying Spec-Driven Development to a *grey-box* legacy migration. The API began as [benavlabs/fastapi-boilerplate](https://github.com/benavlabs/fastapi-boilerplate) — an existing codebase — and is being fully re-architected through the spec chain: every structural change enters as a slice, not as a direct edit. The Flutter client was written against the original API contract and evolves in step with each backend refactor, making the pair a natural end-to-end test of how well the spec workflow handles living, changing systems rather than greenfield code.
+
 ## What is Spec-Driven Development?
 
 Every feature starts as a specification, not as code.
