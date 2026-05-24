@@ -9,12 +9,12 @@ from sqlalchemy import update as sa_update
 
 pytestmark = pytest.mark.asyncio
 
-_GET_BY_USERNAME = "/api/v1/user/{username}"
+_GET_BY_ID = "/api/v1/user/{user_id}"
 _GET_ME = "/api/v1/user/me/"
 _USERNAME = "alicetester"
 
 
-# ── GET /user/{username} ──────────────────────────────────────────────────────
+# ── GET /user/{user_id} ───────────────────────────────────────────────────────
 
 
 async def test_get_by_username_non_moderator_returns_false(
@@ -22,7 +22,7 @@ async def test_get_by_username_non_moderator_returns_false(
     seeded_alice: dict,
 ) -> None:
     """F5, F7, F12: public endpoint returns is_moderator=false for default user."""
-    response = await async_client.get(_GET_BY_USERNAME.format(username=_USERNAME))
+    response = await async_client.get(_GET_BY_ID.format(user_id=seeded_alice["id"]))
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -42,7 +42,7 @@ async def test_get_by_username_moderator_returns_true(
         await session.execute(sa_update(User).where(User.username == _USERNAME).values(is_moderator=True))
         await session.commit()
 
-    response = await async_client.get(_GET_BY_USERNAME.format(username=_USERNAME))
+    response = await async_client.get(_GET_BY_ID.format(user_id=seeded_alice["id"]))
 
     assert response.status_code == 200, response.text
     body = response.json()

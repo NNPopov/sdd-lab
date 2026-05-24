@@ -89,7 +89,7 @@ ignore_imports =
     app.features.users.create_user.presentation.router -> app.bootstrap.container
     app.features.users.delete_db_user.presentation.router -> app.bootstrap.container
     app.features.users.delete_user.presentation.router -> app.bootstrap.container
-    app.features.users.get_user_by_username.presentation.router -> app.bootstrap.container
+    app.features.users.get_user_by_id.presentation.router -> app.bootstrap.container
     app.features.users.get_user_tier.presentation.router -> app.bootstrap.container
     app.features.users.list_users.presentation.router -> app.bootstrap.container
     app.features.users.revoke_moderator.presentation.router -> app.bootstrap.container

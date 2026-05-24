@@ -7,7 +7,7 @@ from .assign_moderator.presentation.router import router as assign_moderator_rou
 from .create_user.presentation.router import router as create_user_router
 from .delete_db_user.presentation.router import router as delete_db_user_router
 from .delete_user.presentation.router import router as delete_user_router
-from .get_user_by_username.presentation.router import router as get_user_by_username_router
+from .get_user_by_id.presentation.router import router as get_user_by_id_router
 from .get_user_tier.presentation.router import router as get_user_tier_router
 from .list_users.presentation.router import router as list_users_router
 from .revoke_moderator.presentation.router import router as revoke_moderator_router
@@ -20,7 +20,7 @@ router = APIRouter(tags=["users"])
 
 router.include_router(create_user_router)
 router.include_router(list_users_router)
-router.include_router(get_user_by_username_router)
+router.include_router(get_user_by_id_router)
 router.include_router(get_user_tier_router)
 router.include_router(update_user_router)
 router.include_router(delete_user_router)

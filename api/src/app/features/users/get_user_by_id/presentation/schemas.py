@@ -1,8 +1,8 @@
-# FEATURE: get_user_by_username — request/response schemas.
+# FEATURE: get_user_by_id — request/response schemas.
 from pydantic import BaseModel, ConfigDict
 
 
-class GetUserByUsernameResponse(BaseModel):
+class GetUserByIdResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

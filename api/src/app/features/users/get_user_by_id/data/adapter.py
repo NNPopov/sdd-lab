@@ -1,22 +1,22 @@
-# FEATURE: get_user_by_username — data adapter.
+# FEATURE: get_user_by_id — data adapter.
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from .....adapters.db.models.user import User
-from ..domain.commands import GetUserByUsernameQuery
+from ..domain.commands import GetUserByIdQuery
 from ..domain.entities import FoundUser
-from ..domain.ports.get_user_by_username_port import GetUserByUsernamePort
+from ..domain.ports.get_user_by_id_port import GetUserByIdPort
 
 
-class GetUserByUsernameAdapter(GetUserByUsernamePort):
+class GetUserByIdAdapter(GetUserByIdPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def get(self, query: GetUserByUsernameQuery) -> FoundUser | None:
+    async def get(self, query: GetUserByIdQuery) -> FoundUser | None:
         async with self._session_factory() as session:
             result = await session.execute(
                 select(User).where(
-                    User.username == query.username,
+                    User.id == query.user_id,
                     User.is_deleted == False,  # noqa: E712
                 )
             )

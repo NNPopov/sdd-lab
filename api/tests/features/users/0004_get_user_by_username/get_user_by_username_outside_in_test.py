@@ -1,23 +1,21 @@
 # FEATURE: get_user_by_username — outside-in acceptance test.
 #
-# Covers: F1, F2, F3, F4, F5, F6, F8, F9, F10 (see requirements.md).
-# Red-state trigger: the new slice (GetUserByUsernameUseCase / GetUserByUsernameAdapter)
-# does not yet exist.  The container cannot resolve get_user_by_username_use_case,
-# so the endpoint raises an AttributeError / ImportError before serving the request.
+# Updated after slice 0041 (get_user_by_id) retired the username-based route.
+# The GET /user/{username} endpoint was replaced by GET /user/{user_id}.
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/user/{username}"
+_ENDPOINT = "/api/v1/user/{user_id}"
 
 
 async def test_get_user_by_username_happy_path(
     async_client: AsyncClient,
     seeded_user,
 ) -> None:
-    """Scenario 1 — existing active user returns 200 with all six contracted fields."""
-    response = await async_client.get(_ENDPOINT.format(username="alicetester"))
+    """Existing active user returns 200 with all seven contracted fields."""
+    response = await async_client.get(_ENDPOINT.format(user_id=seeded_user.id))
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -38,8 +36,8 @@ async def test_get_user_by_username_happy_path(
 async def test_get_user_by_username_not_found(
     async_client: AsyncClient,
 ) -> None:
-    """Scenario 2 — username with no matching row returns 404."""
-    response = await async_client.get(_ENDPOINT.format(username="ghost"))
+    """Non-existent integer id returns 404."""
+    response = await async_client.get(_ENDPOINT.format(user_id=999_999))
 
     assert response.status_code == 404, response.text
     assert response.json() == {"error": {"code": "notfound", "message": "User not found"}}
