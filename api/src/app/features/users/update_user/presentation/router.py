@@ -13,17 +13,17 @@ from .schemas import UpdateUserRequest, UpdateUserResponse
 router = APIRouter()
 
 
-@router.patch("/user/{username}", response_model=UpdateUserResponse, status_code=200)
+@router.patch("/user/{user_id}", response_model=UpdateUserResponse, status_code=200)
 @inject
 async def update_user(
-    username: str,
+    user_id: int,
     request: UpdateUserRequest,
     current_user: Annotated[dict, Depends(get_current_user)],
     use_case: Annotated[UpdateUserUseCase, Depends(Provide[Container.update_user_use_case])],
 ) -> UpdateUserResponse:
     command = UpdateUserCommand(
-        target_username=username,
-        requester_username=current_user["username"],
+        target_user_id=user_id,
+        requester_user_id=current_user["id"],
         **request.model_dump(),
     )
     result = await use_case(command)

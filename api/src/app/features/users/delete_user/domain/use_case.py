@@ -15,7 +15,7 @@ class DeleteUserUseCase:
         if target is None:
             raise NotFoundDomainError("User not found")
 
-        check_owner(command.requester_username, target.username)
+        check_owner(command.requester_user_id, target.id)
 
         await self._port.soft_delete(command.target_username)
         return DeleteUserResult()

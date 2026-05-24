@@ -10,8 +10,8 @@ from app.features.users.delete_user.domain.commands import DeleteUserCommand
 from app.features.users.delete_user.domain.entities import DeleteUserResult, DeleteUserTarget
 from app.features.users.delete_user.domain.use_case import DeleteUserUseCase
 
-_TARGET = DeleteUserTarget(username="alice")
-_CMD = DeleteUserCommand(target_username="alice", requester_username="alice")
+_TARGET = DeleteUserTarget(id=1, username="alice")
+_CMD = DeleteUserCommand(target_username="alice", requester_user_id=1)
 
 
 def _make_port(*, target: DeleteUserTarget | None = _TARGET) -> MagicMock:
@@ -42,8 +42,8 @@ async def test_not_found_raises_when_port_returns_none() -> None:
 
 @pytest.mark.asyncio
 async def test_forbidden_raised_when_requester_is_not_owner() -> None:
-    """F3 — requester_username != target.username → ForbiddenDomainError; soft_delete not called."""
-    cmd = DeleteUserCommand(target_username="alice", requester_username="bob")
+    """F3 — requester_user_id != target.id → ForbiddenDomainError; soft_delete not called."""
+    cmd = DeleteUserCommand(target_username="alice", requester_user_id=2)
     port = _make_port()
     use_case = DeleteUserUseCase(port=port)
     with pytest.raises(ForbiddenDomainError):

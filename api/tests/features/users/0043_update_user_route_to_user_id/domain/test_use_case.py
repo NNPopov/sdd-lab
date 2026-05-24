@@ -1,6 +1,6 @@
-# FEATURE: update_user — use-case unit tests.
+# FEATURE: update_user_route_to_user_id — use-case unit tests.
 #
-# Covers: F7–F13.
+# Covers: F4, F5, F6, F7, F8, F9.
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -37,24 +37,24 @@ def _make_use_case(**kwargs: object) -> UpdateUserUseCase:
     return UpdateUserUseCase(port=_make_port(**kwargs))  # type: ignore[arg-type]
 
 
-# ── F7: user not found ────────────────────────────────────────────────────────
+# ── F4: user not found ────────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_not_found_raises_when_user_missing() -> None:
-    """F7 — port returns None → NotFoundDomainError."""
+async def test_not_found_raises_when_get_by_id_returns_none() -> None:
+    """F4 — get_by_id returns None → NotFoundDomainError."""
     use_case = _make_use_case(existing=None)
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)
     assert exc_info.value.message == "User not found"
 
 
-# ── F8: forbidden — wrong owner ───────────────────────────────────────────────
+# ── F5: forbidden — wrong owner ───────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_forbidden_raised_when_requester_is_not_owner() -> None:
-    """F8 — requester_user_id != existing.id → ForbiddenDomainError."""
+async def test_forbidden_raised_when_requester_id_differs_from_existing_id() -> None:
+    """F5 — requester_user_id != existing.id → ForbiddenDomainError; update not called."""
     cmd = UpdateUserCommand(
         target_user_id=1,
         requester_user_id=2,
@@ -67,12 +67,12 @@ async def test_forbidden_raised_when_requester_is_not_owner() -> None:
     port.update.assert_not_called()
 
 
-# ── F9: duplicate email ───────────────────────────────────────────────────────
+# ── F6: duplicate email ───────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_duplicate_email_raises_when_email_taken() -> None:
-    """F9 — new email and email_exists True → DuplicateValueDomainError."""
+    """F6 — new email and email_exists True → DuplicateValueDomainError."""
     cmd = UpdateUserCommand(
         target_user_id=1,
         requester_user_id=1,
@@ -84,12 +84,12 @@ async def test_duplicate_email_raises_when_email_taken() -> None:
     assert exc_info.value.message == "Email is already registered"
 
 
-# ── F10: duplicate username ───────────────────────────────────────────────────
+# ── F8: duplicate username ────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_duplicate_username_raises_when_username_taken() -> None:
-    """F10 — new username and username_exists True → DuplicateValueDomainError."""
+    """F8 — new username and username_exists True → DuplicateValueDomainError."""
     cmd = UpdateUserCommand(
         target_user_id=1,
         requester_user_id=1,
@@ -101,21 +101,12 @@ async def test_duplicate_username_raises_when_username_taken() -> None:
     assert exc_info.value.message == "Username not available"
 
 
-# ── F11: skip email_exists when email is None or unchanged ────────────────────
-
-
-@pytest.mark.asyncio
-async def test_email_exists_not_called_when_email_is_none() -> None:
-    """F11a — email=None → email_exists not called."""
-    port = _make_port()
-    use_case = UpdateUserUseCase(port=port)
-    await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
-    port.email_exists.assert_not_called()
+# ── F7: email unchanged — skip email_exists ───────────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_email_exists_not_called_when_email_unchanged() -> None:
-    """F11b — email same as existing → email_exists not called."""
+    """F7 — email same as existing.email → email_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     cmd = UpdateUserCommand(
@@ -127,21 +118,21 @@ async def test_email_exists_not_called_when_email_unchanged() -> None:
     port.email_exists.assert_not_called()
 
 
-# ── F12: skip username_exists when username is None or unchanged ──────────────
-
-
 @pytest.mark.asyncio
-async def test_username_exists_not_called_when_username_is_none() -> None:
-    """F12a — username=None → username_exists not called."""
+async def test_email_exists_not_called_when_email_is_none() -> None:
+    """F7 — email=None → email_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
-    port.username_exists.assert_not_called()
+    port.email_exists.assert_not_called()
+
+
+# ── F9: username unchanged — skip username_exists ─────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_username_exists_not_called_when_username_unchanged() -> None:
-    """F12b — username same as existing → username_exists not called."""
+    """F9 — username same as existing.username → username_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     cmd = UpdateUserCommand(
@@ -153,12 +144,21 @@ async def test_username_exists_not_called_when_username_unchanged() -> None:
     port.username_exists.assert_not_called()
 
 
-# ── F13: happy path ───────────────────────────────────────────────────────────
+@pytest.mark.asyncio
+async def test_username_exists_not_called_when_username_is_none() -> None:
+    """F9 — username=None → username_exists not called."""
+    port = _make_port()
+    use_case = UpdateUserUseCase(port=port)
+    await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
+    port.username_exists.assert_not_called()
+
+
+# ── happy path ────────────────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_happy_path_calls_update_and_returns_result() -> None:
-    """F13 — all checks pass → port.update called; UpdatedUserResult returned."""
+    """All checks pass → port.update called; UpdatedUserResult returned."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     result = await use_case(_CMD)

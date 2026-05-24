@@ -26,6 +26,7 @@ async def test_get_by_username_returns_target_when_active_row_found() -> None:
     from app.adapters.db.models.user import User
 
     row = MagicMock(spec=User)
+    row.id = 1
     row.username = "alice"
 
     session = MagicMock()
@@ -37,6 +38,7 @@ async def test_get_by_username_returns_target_when_active_row_found() -> None:
     target = await adapter.get_by_username("alice")
 
     assert isinstance(target, DeleteUserTarget)
+    assert target.id == 1
     assert target.username == "alice"
 
 

@@ -16,15 +16,15 @@ class UpdateUserAdapter(UpdateUserPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def get_by_username(self, username: str) -> ExistingUser | None:
+    async def get_by_id(self, user_id: int) -> ExistingUser | None:
         async with self._session_factory() as session:
             result = await session.execute(
-                select(User).where(User.username == username, User.is_deleted == False)  # noqa: E712
+                select(User).where(User.id == user_id, User.is_deleted == False)  # noqa: E712
             )
             row = result.scalar_one_or_none()
             if row is None:
                 return None
-            return ExistingUser(username=row.username, email=row.email)
+            return ExistingUser(id=row.id, username=row.username, email=row.email)
 
     async def email_exists(self, email: str) -> bool:
         async with self._session_factory() as session:
@@ -40,12 +40,12 @@ class UpdateUserAdapter(UpdateUserPort):
         update_values: dict[str, object] = {
             k: v
             for k, v in command.model_dump().items()
-            if k not in ("target_username", "requester_username") and v is not None
+            if k not in ("target_user_id", "requester_user_id") and v is not None
         }
         update_values["updated_at"] = datetime.now(UTC)
 
         async with self._session_factory() as session:
-            await session.execute(update(User).where(User.username == command.target_username).values(**update_values))
+            await session.execute(update(User).where(User.id == command.target_user_id).values(**update_values))
             try:
                 await session.commit()
             except IntegrityError as exc:
