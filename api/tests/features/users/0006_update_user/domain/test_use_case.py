@@ -55,7 +55,10 @@ async def test_not_found_raises_when_user_missing() -> None:
 @pytest.mark.asyncio
 async def test_forbidden_raised_when_requester_is_not_owner() -> None:
     """F8 — requester_user_id != existing.id → ForbiddenDomainError."""
+    """F8 — requester_user_id != existing.id → ForbiddenDomainError."""
     cmd = UpdateUserCommand(
+        target_username="alice",
+        requester_user_id=2,
         target_user_id=1,
         requester_user_id=2,
         name="Hacked",
@@ -74,6 +77,8 @@ async def test_forbidden_raised_when_requester_is_not_owner() -> None:
 async def test_duplicate_email_raises_when_email_taken() -> None:
     """F9 — new email and email_exists True → DuplicateValueDomainError."""
     cmd = UpdateUserCommand(
+        target_username="alice",
+        requester_user_id=1,
         target_user_id=1,
         requester_user_id=1,
         email="taken@example.com",
@@ -91,6 +96,8 @@ async def test_duplicate_email_raises_when_email_taken() -> None:
 async def test_duplicate_username_raises_when_username_taken() -> None:
     """F10 — new username and username_exists True → DuplicateValueDomainError."""
     cmd = UpdateUserCommand(
+        target_username="alice",
+        requester_user_id=1,
         target_user_id=1,
         requester_user_id=1,
         username="bob",
@@ -109,6 +116,7 @@ async def test_email_exists_not_called_when_email_is_none() -> None:
     """F11a — email=None → email_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
+    await use_case(UpdateUserCommand(target_username="alice", requester_user_id=1))
     await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
     port.email_exists.assert_not_called()
 
@@ -119,6 +127,8 @@ async def test_email_exists_not_called_when_email_unchanged() -> None:
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     cmd = UpdateUserCommand(
+        target_username="alice",
+        requester_user_id=1,
         target_user_id=1,
         requester_user_id=1,
         email="alice@example.com",  # same as _EXISTING.email
@@ -135,6 +145,7 @@ async def test_username_exists_not_called_when_username_is_none() -> None:
     """F12a — username=None → username_exists not called."""
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
+    await use_case(UpdateUserCommand(target_username="alice", requester_user_id=1))
     await use_case(UpdateUserCommand(target_user_id=1, requester_user_id=1))
     port.username_exists.assert_not_called()
 
@@ -145,6 +156,8 @@ async def test_username_exists_not_called_when_username_unchanged() -> None:
     port = _make_port()
     use_case = UpdateUserUseCase(port=port)
     cmd = UpdateUserCommand(
+        target_username="alice",
+        requester_user_id=1,
         target_user_id=1,
         requester_user_id=1,
         username="alice",  # same as _EXISTING.username

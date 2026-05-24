@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 class DeleteUserTarget(BaseModel):
     id: int
-    username: str
 
 
 class DeleteUserResult(BaseModel):

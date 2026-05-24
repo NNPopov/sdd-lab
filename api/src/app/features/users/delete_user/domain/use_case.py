@@ -11,11 +11,11 @@ class DeleteUserUseCase:
         self._port = port
 
     async def __call__(self, command: DeleteUserCommand) -> DeleteUserResult:
-        target = await self._port.get_by_username(command.target_username)
+        target = await self._port.get_by_id(command.target_user_id)
         if target is None:
             raise NotFoundDomainError("User not found")
 
         check_owner(command.requester_user_id, target.id)
 
-        await self._port.soft_delete(command.target_username)
+        await self._port.soft_delete(command.target_user_id)
         return DeleteUserResult()

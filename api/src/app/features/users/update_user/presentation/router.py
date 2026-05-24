@@ -22,7 +22,6 @@ async def update_user(
     use_case: Annotated[UpdateUserUseCase, Depends(Provide[Container.update_user_use_case])],
 ) -> UpdateUserResponse:
     command = UpdateUserCommand(
-        target_user_id=user_id,
         requester_user_id=current_user["id"],
         **request.model_dump(),
     )
