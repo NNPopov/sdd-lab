@@ -9,7 +9,7 @@ class UpdateTierUseCase:
         self._port = port
 
     async def __call__(self, command: UpdateTierCommand) -> None:
-        result = await self._port.get(command.name)
+        result = await self._port.get(command.id)
         if result is None:
             raise NotFoundDomainError("Tier not found")
-        await self._port.update(command.name, command.new_name)
+        await self._port.update(command.id, command.name)

@@ -19,15 +19,16 @@ def _make_adapter() -> UpdateTierAdapter:
     return UpdateTierAdapter(session_factory=_di_container.session_factory())
 
 
-async def _seed_tier(name: str) -> None:
+async def _seed_tier(name: str) -> int:
     from app.bootstrap.container import container as _di_container
 
     async with _di_container.session_factory()() as session:
-        await session.execute(
-            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW())"),
+        result = await session.execute(
+            text("INSERT INTO tier (name, created_at) VALUES (:name, NOW()) RETURNING id"),
             {"name": name},
         )
         await session.commit()
+        return result.scalar_one()
 
 
 async def _cleanup(*names: str) -> None:
@@ -44,13 +45,13 @@ async def _cleanup(*names: str) -> None:
 
 async def test_get_returns_tier_item_when_found() -> None:
     """F12 — existing tier → TierItem with correct id, name, created_at."""
-    await _seed_tier("adapter_silver_get")
+    tier_id = await _seed_tier("adapter_silver_get")
     try:
         adapter = _make_adapter()
-        result = await adapter.get("adapter_silver_get")
+        result = await adapter.get(tier_id)
         assert isinstance(result, TierItem)
+        assert result.id == tier_id
         assert result.name == "adapter_silver_get"
-        assert isinstance(result.id, int) and result.id > 0
         assert isinstance(result.created_at, datetime)
     finally:
         await _cleanup("adapter_silver_get")
@@ -60,9 +61,9 @@ async def test_get_returns_tier_item_when_found() -> None:
 
 
 async def test_get_returns_none_when_tier_absent() -> None:
-    """F13 — no row with that name → None."""
+    """F13 — no row with that id → None."""
     adapter = _make_adapter()
-    result = await adapter.get("nonexistent_tier_xyz_99")
+    result = await adapter.get(99999)
     assert result is None
 
 
@@ -70,11 +71,11 @@ async def test_get_returns_none_when_tier_absent() -> None:
 
 
 async def test_update_renames_tier_and_sets_updated_at() -> None:
-    """F14 — update('silver', 'gold') → row has name='gold' and non-null updated_at."""
-    await _seed_tier("adapter_silver_upd")
+    """F14 — update(tier_id, 'gold') → row has name='gold' and non-null updated_at."""
+    tier_id = await _seed_tier("adapter_silver_upd")
     try:
         adapter = _make_adapter()
-        await adapter.update("adapter_silver_upd", "adapter_gold_upd")
+        await adapter.update(tier_id, "adapter_gold_upd")
 
         from app.bootstrap.container import container as _di_container
 
@@ -98,12 +99,12 @@ async def test_update_duplicate_name_raises_duplicate_value_domain_error() -> No
     """F15 — rename to an already-taken name → DuplicateValueDomainError."""
     from app.domain.errors import DuplicateValueDomainError
 
-    await _seed_tier("adapter_silver_dup")
+    silver_id = await _seed_tier("adapter_silver_dup")
     await _seed_tier("adapter_gold_dup")
     try:
         adapter = _make_adapter()
         with pytest.raises(DuplicateValueDomainError) as exc_info:
-            await adapter.update("adapter_silver_dup", "adapter_gold_dup")
+            await adapter.update(silver_id, "adapter_gold_dup")
         assert exc_info.value.message == "Tier name already exists"
     finally:
         await _cleanup("adapter_silver_dup", "adapter_gold_dup")
@@ -125,4 +126,4 @@ async def test_update_non_integrity_error_propagates_unchanged() -> None:
     adapter._session_factory = MagicMock(return_value=mock_session)
 
     with pytest.raises(OperationalError):
-        await adapter.update("silver", "gold")
+        await adapter.update(1, "gold")
