@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class DbDeleteUserTarget(BaseModel):
-    username: str
+    id: int
 
 
 class DeleteDbUserResult(BaseModel):

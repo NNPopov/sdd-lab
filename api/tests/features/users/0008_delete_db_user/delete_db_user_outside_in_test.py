@@ -1,18 +1,19 @@
 # FEATURE: delete_db_user — outside-in acceptance test.
 #
-# Covers: F1, F3, F5 (happy path) + F6, F10 (FK violation → 409).
-# Red-state trigger: the old erase_db_user implementation uses async_get_db
-# directly (bypasses the container session_factory override) and therefore
-# cannot see users seeded in the test transaction → returns 404 instead of
-# the expected 200 / 409. Once the new DeleteDbUserUseCase / DeleteDbUserAdapter
-# slice replaces it, the container-scoped session sees the seeded data and
-# the tests turn green.
+# Slice 0045 migration: DELETE /db_user/{username} → /db_user/{user_id}.
+# Covers tests.md Scenario 1 (F1, F5, F6, F7, F8, F9, F10) and Scenario 2
+# (F11, F13).
+# Red-state trigger: the current route is still /db_user/{username} with a
+# string path param, so a call to /db_user/{int id} is matched as a username
+# lookup for the stringified id, finds no user, and returns 404 instead of the
+# expected 200 / 409. Once the route is migrated to /db_user/{user_id} (int)
+# and the adapter looks up by User.id, both scenarios turn green.
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/db_user/{username}"
+_ENDPOINT = "/api/v1/db_user/{user_id}"
 
 # Superuser identity injected via dependency_overrides on get_current_user.
 _SUPERUSER = {
@@ -38,7 +39,7 @@ async def test_delete_db_user_happy_path(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -71,7 +72,7 @@ async def test_delete_db_user_fk_violation(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice_with_post["id"]),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
