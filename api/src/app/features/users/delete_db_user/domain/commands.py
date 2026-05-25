@@ -3,4 +3,4 @@ from pydantic import BaseModel
 
 
 class DeleteDbUserCommand(BaseModel):
-    target_username: str
+    target_user_id: int

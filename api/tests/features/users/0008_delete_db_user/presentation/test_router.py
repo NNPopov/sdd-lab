@@ -1,12 +1,12 @@
 # FEATURE: delete_db_user — endpoint integration tests.
 #
-# Covers: F1, F7, F8, F9, F10.
+# Covers: F1 (200), F2 (422), F3 (401), F4 (403), F12 (404), F13 (409).
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/db_user/{username}"
+_ENDPOINT = "/api/v1/db_user/{user_id}"
 
 _SUPERUSER = {
     "id": 9999,
@@ -32,14 +32,14 @@ async def test_delete_db_user_returns_200_on_success(
     async_client: AsyncClient,
     seeded_alice: dict,
 ) -> None:
-    """F1 — superuser hard-deletes alice; 200 and confirmation message."""
+    """F1 — superuser hard-deletes alice by id; 200 and confirmation message."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -55,7 +55,7 @@ async def test_delete_db_user_returns_200_on_success(
 async def test_delete_db_user_returns_200_for_soft_deleted_user(
     async_client: AsyncClient,
 ) -> None:
-    """F1, F4 — superuser hard-deletes a soft-deleted alice; 200 returned."""
+    """F1 — superuser hard-deletes a soft-deleted alice by id; 200 returned."""
     from app.adapters.db.models.user import User
     from app.bootstrap.container import container as _di_container
     from app.features.users.dependencies import get_current_user
@@ -72,11 +72,13 @@ async def test_delete_db_user_returns_200_for_soft_deleted_user(
         )
         session.add(user)
         await session.commit()
+        await session.refresh(user)
+        user_id = user.id
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=user_id),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -86,20 +88,20 @@ async def test_delete_db_user_returns_200_for_soft_deleted_user(
     assert response.json() == {"message": "User deleted from the database"}
 
 
-# ── F9: not found → 404 ───────────────────────────────────────────────────────
+# ── F12: not found → 404 ──────────────────────────────────────────────────────
 
 
-async def test_delete_db_user_returns_404_for_unknown_username(
+async def test_delete_db_user_returns_404_for_unknown_user_id(
     async_client: AsyncClient,
 ) -> None:
-    """F9 — target username does not exist; 404 returned."""
+    """F12 — target user_id does not exist; 404 returned."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="ghost_xyz_99"),
+            _ENDPOINT.format(user_id=999999),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -111,21 +113,43 @@ async def test_delete_db_user_returns_404_for_unknown_username(
     assert body["error"]["message"] == "User not found"
 
 
-# ── F10: FK violation → 409 ───────────────────────────────────────────────────
+# ── F2: non-integer path param → 422 ──────────────────────────────────────────
 
 
-async def test_delete_db_user_returns_409_when_user_has_dependent_records(
+async def test_delete_db_user_returns_422_for_non_integer_user_id(
     async_client: AsyncClient,
-    seeded_alice_with_post: dict,
 ) -> None:
-    """F10 — alice has a dependent post; 409 returned."""
+    """F2 — non-integer user_id is rejected by FastAPI path coercion; 422 returned."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id="abc"),
+            headers={"Authorization": "Bearer fake-token"},
+        )
+    finally:
+        del _fastapi_app.dependency_overrides[get_current_user]
+
+    assert response.status_code == 422
+
+
+# ── F13: FK violation → 409 ───────────────────────────────────────────────────
+
+
+async def test_delete_db_user_returns_409_when_user_has_dependent_records(
+    async_client: AsyncClient,
+    seeded_alice_with_post: dict,
+) -> None:
+    """F13 — alice has a dependent post; 409 returned."""
+    from app.features.users.dependencies import get_current_user
+    from app.main import app as _fastapi_app
+
+    _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
+    try:
+        response = await async_client.delete(
+            _ENDPOINT.format(user_id=seeded_alice_with_post["id"]),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -137,21 +161,21 @@ async def test_delete_db_user_returns_409_when_user_has_dependent_records(
     assert "dependent" in body["error"]["message"].lower()
 
 
-# ── F8: non-superuser → 403 ───────────────────────────────────────────────────
+# ── F4: non-superuser → 403 ───────────────────────────────────────────────────
 
 
 async def test_delete_db_user_returns_403_for_regular_user(
     async_client: AsyncClient,
     seeded_alice: dict,
 ) -> None:
-    """F8 — regular (non-superuser) user; 403 returned."""
+    """F4 — regular (non-superuser) user; 403 returned."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _REGULAR_USER
     try:
         response = await async_client.delete(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             headers={"Authorization": "Bearer fake-token"},
         )
     finally:
@@ -160,12 +184,12 @@ async def test_delete_db_user_returns_403_for_regular_user(
     assert response.status_code == 403
 
 
-# ── F7: missing token → 401 ───────────────────────────────────────────────────
+# ── F3: missing token → 401 ───────────────────────────────────────────────────
 
 
 async def test_delete_db_user_returns_401_without_token(
     async_client: AsyncClient,
 ) -> None:
-    """F7 — no Authorization header; 401 returned."""
-    response = await async_client.delete(_ENDPOINT.format(username="alice"))
+    """F3 — no Authorization header; 401 returned."""
+    response = await async_client.delete(_ENDPOINT.format(user_id=1))
     assert response.status_code == 401

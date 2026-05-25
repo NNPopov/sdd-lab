@@ -13,13 +13,13 @@ from .schemas import DeleteDbUserResponse
 router = APIRouter()
 
 
-@router.delete("/db_user/{username}", response_model=DeleteDbUserResponse, status_code=200)
+@router.delete("/db_user/{user_id}", response_model=DeleteDbUserResponse, status_code=200)
 @inject
 async def delete_db_user_endpoint(
-    username: str,
+    user_id: int,
     use_case: Annotated[DeleteDbUserUseCase, Depends(Provide[Container.delete_db_user_use_case])],
     _: Annotated[dict, Depends(get_current_superuser)],
 ) -> DeleteDbUserResponse:
-    command = DeleteDbUserCommand(target_username=username)
+    command = DeleteDbUserCommand(target_user_id=user_id)
     result = await use_case(command)
     return DeleteDbUserResponse(message=result.message)
