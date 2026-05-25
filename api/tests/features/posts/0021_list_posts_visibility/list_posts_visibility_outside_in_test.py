@@ -14,8 +14,7 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/posts"
-_ALICE_USERNAME = "oit21alice"
+_ENDPOINT = "/api/v1/{user_id}/posts"
 _EXPECTED_ITEM_FIELDS = {
     "id",
     "title",
@@ -38,7 +37,7 @@ async def test_unauthenticated_caller_sees_only_approved_post(
     alice has 3 posts: one approved, two pending_review. An unauthenticated
     caller must receive exactly the approved one.
     """
-    response = await async_client.get(_ENDPOINT.format(username=_ALICE_USERNAME))
+    response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -67,7 +66,7 @@ async def test_author_sees_all_posts_regardless_of_status(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: alice_user
     try:
-        response = await async_client.get(_ENDPOINT.format(username=_ALICE_USERNAME))
+        response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -101,7 +100,7 @@ async def test_different_user_sees_only_approved_post(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: bob_user
     try:
-        response = await async_client.get(_ENDPOINT.format(username=_ALICE_USERNAME))
+        response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 

@@ -12,11 +12,11 @@ class RevokeModeratorAdapter(RevokeModeratorPort):
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self._session_factory = session_factory
 
-    async def get_by_username(self, username: str) -> RevokedUser | None:
+    async def get_by_id(self, user_id: int) -> RevokedUser | None:
         async with self._session_factory() as session:
             result = await session.execute(
                 select(User).where(
-                    User.username == username,
+                    User.id == user_id,
                     User.is_deleted == False,  # noqa: E712
                 )
             )
@@ -33,15 +33,15 @@ class RevokeModeratorAdapter(RevokeModeratorPort):
             is_moderator=row.is_moderator,
         )
 
-    async def revoke(self, target_username: str) -> RevokedUser:
+    async def revoke(self, target_user_id: int) -> RevokedUser:
         async with self._session_factory() as session:
             await session.execute(
                 sa_update(User)
-                .where(User.username == target_username)
+                .where(User.id == target_user_id)
                 .values(is_moderator=False, moderator_granted_by_user_id=None)
             )
             await session.commit()
-            result = await session.execute(select(User).where(User.username == target_username))
+            result = await session.execute(select(User).where(User.id == target_user_id))
             row = result.scalar_one()
         return RevokedUser(
             id=row.id,

@@ -13,9 +13,9 @@ from ..schemas import UserRead, UserTierUpdate
 
 
 async def patch_user_tier(
-    request: Request, username: str, values: UserTierUpdate, db: Annotated[AsyncSession, Depends(async_get_db)]
+    request: Request, user_id: int, values: UserTierUpdate, db: Annotated[AsyncSession, Depends(async_get_db)]
 ) -> dict[str, str]:
-    db_user = await crud_users.get(db=db, username=username, schema_to_select=UserRead)
+    db_user = await crud_users.get(db=db, id=user_id, schema_to_select=UserRead)
     if db_user is None:
         raise NotFoundDomainError("User not found")
 
@@ -23,5 +23,5 @@ async def patch_user_tier(
     if db_tier is None:
         raise NotFoundDomainError("Tier not found")
 
-    await crud_users.update(db=db, object=values.model_dump(), username=username)
+    await crud_users.update(db=db, object=values.model_dump(), id=user_id)
     return {"message": f"User {db_user['name']} Tier updated"}

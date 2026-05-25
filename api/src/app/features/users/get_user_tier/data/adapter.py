@@ -17,7 +17,7 @@ class GetUserTierAdapter(GetUserTierPort):
         async with self._session_factory() as session:
             result = await session.execute(
                 select(User).where(
-                    User.username == query.username,
+                    User.id == query.user_id,
                     User.is_deleted == False,  # noqa: E712
                 )
             )

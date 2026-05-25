@@ -19,7 +19,7 @@ from sqlalchemy import text
 pytestmark = pytest.mark.asyncio
 
 _CREATE_POST_PATH = "/api/v1/{username}/post"
-_LIST_POSTS_PATH = "/api/v1/{username}/posts"
+_LIST_POSTS_PATH = "/api/v1/{user_id}/posts"
 _LIST_ALL_POSTS_PATH = "/api/v1/posts"
 _READ_POST_PATH = "/api/v1/{username}/post/{id}"
 
@@ -64,8 +64,8 @@ async def test_post_uuid_present_and_consistent(
             )
             await session.commit()
 
-        # 3. GET /api/v1/{username}/posts — verifies F1.
-        list_posts_resp = await async_client.get(_LIST_POSTS_PATH.format(username=username))
+        # 3. GET /api/v1/{user_id}/posts — verifies F1.
+        list_posts_resp = await async_client.get(_LIST_POSTS_PATH.format(user_id=seeded_alice["id"]))
         assert list_posts_resp.status_code == 200, list_posts_resp.text
         list_posts_body = list_posts_resp.json()
         assert list_posts_body["total_count"] >= 1

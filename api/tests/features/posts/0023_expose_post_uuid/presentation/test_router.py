@@ -15,7 +15,7 @@ from sqlalchemy import text
 pytestmark = pytest.mark.asyncio
 
 _CREATE = "/api/v1/{username}/post"
-_LIST = "/api/v1/{username}/posts"
+_LIST = "/api/v1/{user_id}/posts"
 _LIST_ALL = "/api/v1/posts"
 _READ = "/api/v1/{username}/post/{id}"
 
@@ -61,7 +61,7 @@ async def test_all_four_endpoints_return_valid_and_consistent_post_uuid(
             )
             await session.commit()
 
-        list_resp = await async_client.get(_LIST.format(username=username))
+        list_resp = await async_client.get(_LIST.format(user_id=seeded_alice["id"]))
         assert list_resp.status_code == 200, list_resp.text
         list_body = list_resp.json()
         assert list_body["total_count"] >= 1

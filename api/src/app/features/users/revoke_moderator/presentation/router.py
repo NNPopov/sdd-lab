@@ -14,18 +14,18 @@ router = APIRouter()
 
 
 @router.patch(
-    "/users/{username}/revoke-moderator",
+    "/users/{user_id}/revoke-moderator",
     response_model=RevokeModeratorResponse,
     status_code=200,
 )
 @inject
 async def revoke_moderator_endpoint(
-    username: str,
+    user_id: int,
     use_case: Annotated[RevokeModeratorUseCase, Depends(Provide[Container.revoke_moderator_use_case])],
     current_superuser: Annotated[dict, Depends(get_current_superuser)],
 ) -> RevokeModeratorResponse:
     command = RevokeModeratorCommand(
-        target_username=username,
+        target_user_id=user_id,
         requester_is_superuser=current_superuser["is_superuser"],
     )
     entity = await use_case(command)

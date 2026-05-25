@@ -12,9 +12,9 @@ class RevokeModeratorUseCase:
     async def __call__(self, command: RevokeModeratorCommand) -> RevokedUser:
         if not command.requester_is_superuser:
             raise ForbiddenDomainError("Superuser privilege required")
-        target = await self._port.get_by_username(command.target_username)
+        target = await self._port.get_by_id(command.target_user_id)
         if target is None:
             raise NotFoundDomainError("User not found")
         if not target.is_moderator:
             raise DuplicateValueDomainError("User is not a moderator")
-        return await self._port.revoke(command.target_username)
+        return await self._port.revoke(command.target_user_id)

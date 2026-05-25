@@ -10,7 +10,7 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/posts"
+_ENDPOINT = "/api/v1/{user_id}/posts"
 
 
 async def test_unauthenticated_sees_only_approved_post(
@@ -19,7 +19,7 @@ async def test_unauthenticated_sees_only_approved_post(
     alice_posts: list,
 ) -> None:
     """F1: no Authorization header → HTTP 200, only the approved post returned."""
-    response = await async_client.get(_ENDPOINT.format(username=alice_user["username"]))
+    response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
 
     assert response.status_code == 200
     body = response.json()
@@ -40,7 +40,7 @@ async def test_different_authenticated_user_sees_only_approved_post(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: bob_user
     try:
-        response = await async_client.get(_ENDPOINT.format(username=alice_user["username"]))
+        response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -62,7 +62,7 @@ async def test_author_sees_all_posts_regardless_of_status(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: alice_user
     try:
-        response = await async_client.get(_ENDPOINT.format(username=alice_user["username"]))
+        response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -92,7 +92,7 @@ async def test_zero_approved_posts_returns_empty_for_non_author(
         session.add(post)
         await session.commit()
 
-    response = await async_client.get(_ENDPOINT.format(username=alice_user["username"]))
+    response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
 
     assert response.status_code == 200
     body = response.json()
@@ -111,7 +111,7 @@ async def test_status_field_present_in_every_response_item(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: alice_user
     try:
-        response = await async_client.get(_ENDPOINT.format(username=alice_user["username"]))
+        response = await async_client.get(_ENDPOINT.format(user_id=alice_user["id"]))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 

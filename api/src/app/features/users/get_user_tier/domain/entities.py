@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class UserNotFound:
-    """Adapter signals: no active user row for the given username."""
+    """Adapter signals: no active user row for the given user_id."""
 
 
 class TierNotFound:

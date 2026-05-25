@@ -13,16 +13,16 @@ router = APIRouter()
 
 
 @router.get(
-    "/user/{username}/tier",
+    "/user/{user_id}/tier",
     response_model=GetUserTierResponse | None,
     status_code=200,
 )
 @inject
 async def get_user_tier(
-    username: str,
+    user_id: int,
     use_case: Annotated[GetUserTierUseCase, Depends(Provide[Container.get_user_tier_use_case])],
 ) -> GetUserTierResponse | None:
-    query = GetUserTierQuery(username=username)
+    query = GetUserTierQuery(user_id=user_id)
     entity = await use_case(query)
     if entity is None:
         return None

@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 
 class RevokeModeratorCommand(BaseModel):
-    target_username: str
+    target_user_id: int
     requester_is_superuser: bool

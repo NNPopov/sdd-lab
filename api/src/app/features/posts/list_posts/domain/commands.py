@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class ListPostsQuery(BaseModel):
-    username: str
+    user_id: int
     page: int = 1
     items_per_page: int = 10
-    requester_username: str | None = None
+    requester_user_id: int | None = None

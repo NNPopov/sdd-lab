@@ -1,26 +1,28 @@
 # FEATURE: get_user_tier — outside-in acceptance test.
 #
-# Covers: F1, F2, F3, F4, F6, F17 (see requirements.md).
-# Red-state trigger: the new slice (GetUserTierUseCase / GetUserTierAdapter)
-# does not yet exist. The old free function reads through async_get_db which
-# bypasses the container session_factory override, so seeded data is invisible
-# to it and scenario 1 fails with 404 instead of the expected 200.
+# Covers: F1, F4, F5, F8, F9 (see
+# specs/features/users/0048_get_user_tier_route_to_user_id/requirements.md).
+# Red-state trigger (slice 0048): the route still matches `{username}`, so a
+# request to /api/v1/user/{int}/tier binds username="<int>". The adapter then
+# looks up User.username == "<int>", which does not match the seeded user
+# "tieruser", and scenario 1 returns 404 instead of the expected 200. The test
+# turns green once the route, query, and adapter look up by integer User.id.
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/user/{username}/tier"
+_ENDPOINT = "/api/v1/user/{user_id}/tier"
 
 
 async def test_get_user_tier_happy_path(
     async_client: AsyncClient,
     seeded_user_with_tier,
 ) -> None:
-    """Scenario 1 — user with tier returns 200 with all three contracted fields."""
-    tier, _user = seeded_user_with_tier
+    """Scenario 1 — user resolved by integer id returns 200 with the tier body."""
+    tier, user = seeded_user_with_tier
 
-    response = await async_client.get(_ENDPOINT.format(username="tieruser"))
+    response = await async_client.get(_ENDPOINT.format(user_id=user.id))
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -38,8 +40,8 @@ async def test_get_user_tier_happy_path(
 async def test_get_user_tier_user_not_found(
     async_client: AsyncClient,
 ) -> None:
-    """Scenario 2 — non-existent username returns 404."""
-    response = await async_client.get(_ENDPOINT.format(username="ghost_xyz"))
+    """Scenario 2 — unknown user_id returns 404."""
+    response = await async_client.get(_ENDPOINT.format(user_id=999999))
 
     assert response.status_code == 404, response.text
     body = response.json()

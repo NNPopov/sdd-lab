@@ -14,13 +14,13 @@ class ListPostsAdapter(ListPostsPort):
         self._session_factory = session_factory
 
     async def list(self, query: ListPostsQuery) -> PostPage:
-        is_author = query.requester_username == query.username
+        is_author = query.requester_user_id == query.user_id
         async with self._session_factory() as session:
             count_stmt = (
                 select(func.count())
                 .select_from(Post)
                 .join(User, Post.created_by_user_id == User.id)
-                .where(User.username == query.username)
+                .where(Post.created_by_user_id == query.user_id)
                 .where(User.is_deleted == False)  # noqa: E712
                 .where(Post.is_deleted == False)  # noqa: E712
             )
@@ -32,7 +32,7 @@ class ListPostsAdapter(ListPostsPort):
             rows_stmt = (
                 select(Post, User.username)
                 .join(User, Post.created_by_user_id == User.id)
-                .where(User.username == query.username)
+                .where(Post.created_by_user_id == query.user_id)
                 .where(User.is_deleted == False)  # noqa: E712
                 .where(Post.is_deleted == False)  # noqa: E712
                 .offset(offset)

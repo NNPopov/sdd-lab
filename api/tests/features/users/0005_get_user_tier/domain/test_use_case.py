@@ -16,7 +16,7 @@ from app.features.users.get_user_tier.domain.entities import (
 )
 from app.features.users.get_user_tier.domain.use_case import GetUserTierUseCase
 
-_QUERY = GetUserTierQuery(username="testuser")
+_QUERY = GetUserTierQuery(user_id=42)
 
 _FOUND_TIER = FoundUserTier(
     tier_id=7,

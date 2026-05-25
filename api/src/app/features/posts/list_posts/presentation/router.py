@@ -15,35 +15,35 @@ router = APIRouter(tags=["posts"])
 
 
 async def _get_view(
-    username: str,
+    user_id: int,
     optional_user: Annotated[dict | None, Depends(get_optional_user)],
 ) -> str:
-    if optional_user and optional_user.get("username") == username:
+    if optional_user and optional_user.get("id") == user_id:
         return "author"
     return "public"
 
 
-@router.get("/{username}/posts", response_model=ListPostsResponse, status_code=200)
+@router.get("/{user_id}/posts", response_model=ListPostsResponse, status_code=200)
 @cache(
-    key_prefix="{username}_posts:{view}:page_{page}:items_per_page:{items_per_page}",
-    resource_id_name="username",
+    key_prefix="{user_id}_posts:{view}:page_{page}:items_per_page:{items_per_page}",
+    resource_id_name="user_id",
     expiration=60,
 )
 @inject
 async def list_posts_endpoint(
     request: Request,
-    username: str,
+    user_id: int,
     use_case: Annotated[ListPostsUseCase, Depends(Provide[Container.list_posts_use_case])],
     view: Annotated[str, Depends(_get_view)],
     page: int = Query(default=1, ge=1),
     items_per_page: int = Query(default=10, ge=1, le=100),
 ) -> ListPostsResponse:
-    requester_username = username if view == "author" else None
+    requester_user_id = user_id if view == "author" else None
     query = ListPostsQuery(
-        username=username,
+        user_id=user_id,
         page=page,
         items_per_page=items_per_page,
-        requester_username=requester_username,
+        requester_user_id=requester_user_id,
     )
     result = await use_case(query)
     return ListPostsResponse(

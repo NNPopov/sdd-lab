@@ -20,7 +20,7 @@ from app.features.users.get_user_tier.domain.ports.get_user_tier_port import (
     GetUserTierPort,
 )
 
-_QUERY = GetUserTierQuery(username="testuser")
+_QUERY = GetUserTierQuery(user_id=42)
 
 
 def _make_scalar_result(value: object) -> MagicMock:
@@ -74,6 +74,22 @@ async def test_returns_user_not_found_when_user_row_absent() -> None:
 
     assert isinstance(result, UserNotFound)
     session.execute.assert_called_once()
+
+
+# ── F8: lookup filters by integer User.id, not username ──────────────────────
+
+
+@pytest.mark.asyncio
+async def test_user_lookup_filters_by_user_id() -> None:
+    adapter, session = _make_adapter(_make_scalar_result(None))
+
+    await adapter.get(_QUERY)
+
+    statement = session.execute.call_args.args[0]
+    where_sql = str(statement.whereclause.compile(compile_kwargs={"literal_binds": True}))
+    assert '"user".id = 42' in where_sql
+    assert "username" not in where_sql
+    assert '"user".is_deleted = false' in where_sql
 
 
 # ── F11: user found, tier_id None → None ─────────────────────────────────────

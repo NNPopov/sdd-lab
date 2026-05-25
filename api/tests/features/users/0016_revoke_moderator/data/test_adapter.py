@@ -1,7 +1,7 @@
 # FEATURE: revoke_moderator — adapter unit tests.
 #
-# Covers: F9 (get_by_username not found), F10, F11 (get_by_username found, soft-deleted excluded),
-#         F7, F8 (revoke happy path).
+# Covers: F10 (get_by_id not found / soft-deleted excluded, active row found),
+#         F11 (revoke happy path: UPDATE by User.id, refreshed entity).
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -32,25 +32,25 @@ def _make_user_row(**kwargs: object) -> MagicMock:
     return row
 
 
-# ── F9: get_by_username — not found ──────────────────────────────────────────
+# ── F10: get_by_id — not found ───────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_none_when_no_row() -> None:
-    """F9 — no active row matching username → None."""
+async def test_get_by_id_returns_none_when_no_row() -> None:
+    """F10 — no active row matching id → None."""
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result)
 
-    assert await _make_adapter(session).get_by_username("ghost") is None
+    assert await _make_adapter(session).get_by_id(999) is None
 
 
-# ── F10, F11: get_by_username — active row found / soft-deleted excluded ──────
+# ── F10: get_by_id — active row found / soft-deleted excluded ────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_entity_for_active_row() -> None:
+async def test_get_by_id_returns_entity_for_active_row() -> None:
     """F10 — active row found → RevokedUser with all fields populated."""
     row = _make_user_row(id=7, name="Bob", username="bob", email="bob@example.com", tier_id=2, is_moderator=True)
     session = MagicMock()
@@ -58,7 +58,7 @@ async def test_get_by_username_returns_entity_for_active_row() -> None:
     result.scalar_one_or_none.return_value = row
     session.execute = AsyncMock(return_value=result)
 
-    entity = await _make_adapter(session).get_by_username("bob")
+    entity = await _make_adapter(session).get_by_id(7)
 
     assert isinstance(entity, RevokedUser)
     assert entity.id == 7
@@ -70,22 +70,22 @@ async def test_get_by_username_returns_entity_for_active_row() -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_excludes_soft_deleted_row() -> None:
-    """F11 — soft-deleted row filtered by WHERE is_deleted=False at query level → None."""
+async def test_get_by_id_excludes_soft_deleted_row() -> None:
+    """F10 — soft-deleted row filtered by WHERE is_deleted=False at query level → None."""
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result)
 
-    assert await _make_adapter(session).get_by_username("deleted_user") is None
+    assert await _make_adapter(session).get_by_id(123) is None
 
 
-# ── F7, F8: revoke happy path ─────────────────────────────────────────────────
+# ── F11: revoke happy path ────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
 async def test_revoke_returns_updated_entity() -> None:
-    """F7, F8 — revoke writes is_moderator=False and returns the updated RevokedUser."""
+    """F11 — revoke writes is_moderator=False and returns the updated RevokedUser."""
     updated_row = _make_user_row(id=5, username="alice", is_moderator=False)
 
     execute_results = [MagicMock(), MagicMock()]
@@ -95,7 +95,7 @@ async def test_revoke_returns_updated_entity() -> None:
     session.execute = AsyncMock(side_effect=execute_results)
     session.commit = AsyncMock()
 
-    entity = await _make_adapter(session).revoke("alice")
+    entity = await _make_adapter(session).revoke(5)
 
     assert isinstance(entity, RevokedUser)
     assert entity.is_moderator is False

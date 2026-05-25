@@ -2,18 +2,16 @@
 #
 # Covers: F1, F2, F3, F4, F5, F9, F10, F15 (see requirements.md).
 #
-# Red-state trigger: the current read_posts handler injects its DB session via
-# async_get_db (not the DI container's overridden session_factory), so the
-# user and posts seeded through the test fixture are invisible to it.
-# The handler raises NotFoundDomainError -> HTTP 404, failing the 200 assertion.
-# After the new list_posts slice is implemented (adapter uses the DI container's
-# session_factory), the test turns green.
+# Route migrated by slice 0042 (migrate_list_posts_route_username_to_user_id):
+# the endpoint is now GET /api/v1/{user_id}/posts, keyed on the author's integer
+# primary key. This test exercises the integer-keyed route; the username-keyed
+# route no longer exists.
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/posts"
+_ENDPOINT = "/api/v1/{user_id}/posts"
 
 
 async def test_list_posts_happy_path(
@@ -22,7 +20,7 @@ async def test_list_posts_happy_path(
     seeded_posts,
 ) -> None:
     """Scenario 1 — user with two posts returns 200 with items including username from JOIN."""
-    response = await async_client.get(_ENDPOINT.format(username="alicepost"))
+    response = await async_client.get(_ENDPOINT.format(user_id=seeded_user.id))
 
     assert response.status_code == 200, response.text
     body = response.json()
@@ -53,11 +51,11 @@ async def test_list_posts_happy_path(
         assert item["created_by_user_id"] == seeded_user.id
 
 
-async def test_list_posts_unknown_username_returns_empty(
+async def test_list_posts_unknown_user_id_returns_empty(
     async_client: AsyncClient,
 ) -> None:
-    """Scenario 2 — non-existent username returns 200 with an empty paginated response."""
-    response = await async_client.get(_ENDPOINT.format(username="ghost"))
+    """Scenario 2 — non-existent user_id returns 200 with an empty paginated response."""
+    response = await async_client.get(_ENDPOINT.format(user_id=999999))
 
     assert response.status_code == 200, response.text
     body = response.json()

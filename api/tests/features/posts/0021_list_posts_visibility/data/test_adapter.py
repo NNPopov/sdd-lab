@@ -20,15 +20,15 @@ async def test_author_receives_all_posts_regardless_of_status(
     alice_posts: list,
     async_client,
 ) -> None:
-    """F9: requester_username == username → all posts returned regardless of status."""
+    """F9: requester_user_id == user_id → all posts returned regardless of status."""
     from app.bootstrap.container import container as _di_container
 
     adapter = ListPostsAdapter(session_factory=_di_container.session_factory())
     query = ListPostsQuery(
-        username=alice_user["username"],
+        user_id=alice_user["id"],
         page=1,
         items_per_page=10,
-        requester_username=alice_user["username"],
+        requester_user_id=alice_user["id"],
     )
     result = await adapter.list(query)
 
@@ -45,15 +45,15 @@ async def test_non_author_receives_only_approved_posts(
     alice_posts: list,
     async_client,
 ) -> None:
-    """F8: requester_username != username → only approved posts returned."""
+    """F8: requester_user_id != user_id → only approved posts returned."""
     from app.bootstrap.container import container as _di_container
 
     adapter = ListPostsAdapter(session_factory=_di_container.session_factory())
     query = ListPostsQuery(
-        username=alice_user["username"],
+        user_id=alice_user["id"],
         page=1,
         items_per_page=10,
-        requester_username=bob_user["username"],
+        requester_user_id=bob_user["id"],
     )
     result = await adapter.list(query)
 
@@ -67,15 +67,15 @@ async def test_unauthenticated_receives_only_approved_posts(
     alice_posts: list,
     async_client,
 ) -> None:
-    """F8: requester_username is None → only approved posts returned."""
+    """F8: requester_user_id is None → only approved posts returned."""
     from app.bootstrap.container import container as _di_container
 
     adapter = ListPostsAdapter(session_factory=_di_container.session_factory())
     query = ListPostsQuery(
-        username=alice_user["username"],
+        user_id=alice_user["id"],
         page=1,
         items_per_page=10,
-        requester_username=None,
+        requester_user_id=None,
     )
     result = await adapter.list(query)
 
@@ -94,10 +94,10 @@ async def test_status_field_populated_on_all_returned_items(
 
     adapter = ListPostsAdapter(session_factory=_di_container.session_factory())
     query = ListPostsQuery(
-        username=alice_user["username"],
+        user_id=alice_user["id"],
         page=1,
         items_per_page=10,
-        requester_username=alice_user["username"],  # author — all posts returned
+        requester_user_id=alice_user["id"],  # author — all posts returned
     )
     result = await adapter.list(query)
 
@@ -125,10 +125,10 @@ async def test_empty_postpage_when_no_approved_posts_for_non_author(
 
     adapter = ListPostsAdapter(session_factory=_di_container.session_factory())
     query = ListPostsQuery(
-        username=alice_user["username"],
+        user_id=alice_user["id"],
         page=1,
         items_per_page=10,
-        requester_username=None,
+        requester_user_id=None,
     )
     result = await adapter.list(query)
 

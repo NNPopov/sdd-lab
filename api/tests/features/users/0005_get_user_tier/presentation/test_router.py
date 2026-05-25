@@ -1,7 +1,7 @@
 # FEATURE: get_user_tier — endpoint integration tests.
 #
-# Covers: F1, F2 (200 with tier body), F3 (200 null body),
-#         F4 (404 User not found), F5 (404 Tier not found).
+# Covers: F1 (200 with tier body), F2 (200 null body), F3 (422 non-integer
+#         user_id), F5/F8/F9 (404 User not found), F6/F8/F9 (404 Tier not found).
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
@@ -9,10 +9,10 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/user/{username}/tier"
+_ENDPOINT = "/api/v1/user/{user_id}/tier"
 
 
-# ── F1, F2: user with tier → 200 with all three fields ───────────────────────
+# ── F1: user with tier → 200 with all three fields ───────────────────────────
 
 
 async def test_get_user_tier_returns_200_with_tier_body(
@@ -21,7 +21,7 @@ async def test_get_user_tier_returns_200_with_tier_body(
 ) -> None:
     tier, user = seeded_user_with_tier
 
-    response = await async_client.get(_ENDPOINT.format(username=user.username))
+    response = await async_client.get(_ENDPOINT.format(user_id=user.id))
 
     assert response.status_code == 200
     body = response.json()
@@ -32,7 +32,7 @@ async def test_get_user_tier_returns_200_with_tier_body(
     assert set(body.keys()) == {"tier_id", "tier_name", "tier_created_at"}
 
 
-# ── F3: user found, no tier → 200 null ───────────────────────────────────────
+# ── F2: user found, no tier → 200 null ───────────────────────────────────────
 
 
 async def test_get_user_tier_returns_200_null_when_no_tier(
@@ -50,20 +50,22 @@ async def test_get_user_tier_returns_200_null_when_no_tier(
         )
         session.add(user)
         await session.commit()
+        await session.refresh(user)
+        user_id = user.id
 
-    response = await async_client.get(_ENDPOINT.format(username="notieruser"))
+    response = await async_client.get(_ENDPOINT.format(user_id=user_id))
 
     assert response.status_code == 200
     assert response.json() is None
 
 
-# ── F4: unknown username → 404 User not found ────────────────────────────────
+# ── F5/F8/F9: unknown user_id → 404 User not found ───────────────────────────
 
 
 async def test_get_user_tier_returns_404_for_unknown_user(
     async_client: AsyncClient,
 ) -> None:
-    response = await async_client.get(_ENDPOINT.format(username="ghost_xyz_99"))
+    response = await async_client.get(_ENDPOINT.format(user_id=999999))
 
     assert response.status_code == 404
     body = response.json()
@@ -71,11 +73,22 @@ async def test_get_user_tier_returns_404_for_unknown_user(
     assert body["error"]["message"] == "User not found"
 
 
-# ── F5: user with dangling tier_id → 404 Tier not found ──────────────────────
+# ── F3: non-integer user_id → 422 ────────────────────────────────────────────
+
+
+async def test_get_user_tier_returns_422_for_non_integer_user_id(
+    async_client: AsyncClient,
+) -> None:
+    response = await async_client.get(_ENDPOINT.format(user_id="abc"))
+
+    assert response.status_code == 422
+
+
+# ── F6/F8/F9: user with dangling tier_id → 404 Tier not found ────────────────
 
 
 @pytest_asyncio.fixture()
-async def seeded_user_with_dangling_tier(async_client: AsyncClient):
+async def seeded_user_with_dangling_tier(async_client: AsyncClient) -> int:
     """Insert a user whose tier_id references a non-existent tier row.
 
     Achieved by inserting tier + user, then deleting the tier row.
@@ -101,6 +114,7 @@ async def seeded_user_with_dangling_tier(async_client: AsyncClient):
         user.tier_id = tier_id
         session.add(user)
         await session.flush()
+        user_id = user.id
 
         # Delete the tier while deferring FK checks so the user row becomes orphaned.
         try:
@@ -110,16 +124,16 @@ async def seeded_user_with_dangling_tier(async_client: AsyncClient):
         except Exception:
             pytest.skip("FK constraint is not deferrable; skipping dangling-tier scenario")
 
-    return "danglinguser"
+    return user_id
 
 
 async def test_get_user_tier_returns_404_for_dangling_tier_id(
     async_client: AsyncClient,
-    seeded_user_with_dangling_tier: str,
+    seeded_user_with_dangling_tier: int,
 ) -> None:
-    username = seeded_user_with_dangling_tier
+    user_id = seeded_user_with_dangling_tier
 
-    response = await async_client.get(_ENDPOINT.format(username=username))
+    response = await async_client.get(_ENDPOINT.format(user_id=user_id))
 
     assert response.status_code == 404
     body = response.json()

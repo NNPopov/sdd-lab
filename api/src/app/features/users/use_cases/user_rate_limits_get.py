@@ -14,9 +14,9 @@ from ..schemas import UserRead
 
 
 async def read_user_rate_limits(
-    request: Request, username: str, db: Annotated[AsyncSession, Depends(async_get_db)]
+    request: Request, user_id: int, db: Annotated[AsyncSession, Depends(async_get_db)]
 ) -> dict[str, Any]:
-    db_user = await crud_users.get(db=db, username=username, schema_to_select=UserRead)
+    db_user = await crud_users.get(db=db, id=user_id, schema_to_select=UserRead)
     if db_user is None:
         raise NotFoundDomainError("User not found")
 

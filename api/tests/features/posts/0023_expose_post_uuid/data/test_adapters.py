@@ -44,8 +44,8 @@ async def test_list_posts_adapter_populates_post_uuid(
 
     adapter = ListPostsAdapter(session_factory=session_factory)
     query = ListPostsQuery(
-        username=seeded_alice["username"],
-        requester_username=seeded_alice["username"],
+        user_id=seeded_alice["id"],
+        requester_user_id=seeded_alice["id"],
         page=1,
         items_per_page=10,
     )
