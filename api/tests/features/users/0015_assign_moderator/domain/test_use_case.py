@@ -21,7 +21,7 @@ _TARGET = AssignedUser(
 )
 
 _CMD = AssignModeratorCommand(
-    target_username="targetuser",
+    target_user_id=42,
     requester_id=1,
     requester_is_superuser=True,
 )
@@ -29,7 +29,7 @@ _CMD = AssignModeratorCommand(
 
 def _make_port(*, target: AssignedUser | None = _TARGET) -> MagicMock:
     port = MagicMock()
-    port.get_by_username = AsyncMock(return_value=target)
+    port.get_by_id = AsyncMock(return_value=target)
     port.assign = AsyncMock(return_value=_TARGET.model_copy(update={"is_moderator": True}))
     return port
 
@@ -39,18 +39,18 @@ def _make_port(*, target: AssignedUser | None = _TARGET) -> MagicMock:
 
 @pytest.mark.asyncio
 async def test_forbidden_when_not_superuser() -> None:
-    """F4 — requester_is_superuser=False → ForbiddenDomainError; get_by_username not called."""
+    """F4 — requester_is_superuser=False → ForbiddenDomainError; get_by_id not called."""
     port = _make_port()
     use_case = AssignModeratorUseCase(port=port)  # type: ignore[arg-type]
     cmd = AssignModeratorCommand(
-        target_username="targetuser",
+        target_user_id=42,
         requester_id=1,
         requester_is_superuser=False,
     )
     with pytest.raises(ForbiddenDomainError) as exc_info:
         await use_case(cmd)
     assert exc_info.value.message == "Superuser privilege required"
-    port.get_by_username.assert_not_called()
+    port.get_by_id.assert_not_called()
 
 
 # ── F5: target not found ──────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ async def test_forbidden_when_not_superuser() -> None:
 
 @pytest.mark.asyncio
 async def test_not_found_when_port_returns_none() -> None:
-    """F5 — get_by_username returns None → NotFoundDomainError; assign not called."""
+    """F5 — get_by_id returns None → NotFoundDomainError; assign not called."""
     port = _make_port(target=None)
     use_case = AssignModeratorUseCase(port=port)  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
@@ -90,6 +90,6 @@ async def test_happy_path_returns_assigned_user() -> None:
     port = _make_port()
     use_case = AssignModeratorUseCase(port=port)  # type: ignore[arg-type]
     result = await use_case(_CMD)
-    port.assign.assert_called_once_with("targetuser", 1)
+    port.assign.assert_called_once_with(42, 1)
     assert result.is_moderator is True
     assert result.username == "targetuser"

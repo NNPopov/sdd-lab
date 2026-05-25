@@ -1,7 +1,7 @@
 # FEATURE: assign_moderator — adapter unit tests.
 #
-# Covers: F8 (get_by_username not found), F9 (get_by_username found, soft-deleted excluded),
-#         F10, F11, F12 (assign happy path).
+# Covers: F10 (get_by_id found / not found / soft-deleted excluded),
+#         F11 (assign UPDATE by User.id + refreshed entity), N2 (errors propagate).
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -32,33 +32,33 @@ def _make_user_row(**kwargs: object) -> MagicMock:
     return row
 
 
-# ── F8: get_by_username — not found ──────────────────────────────────────────
+# ── F10: get_by_id — not found ───────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_none_when_no_row() -> None:
-    """F8 — no active row matching username → None."""
+async def test_get_by_id_returns_none_when_no_row() -> None:
+    """F10 — no active row matching id → None."""
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result)
 
-    assert await _make_adapter(session).get_by_username("ghost") is None
+    assert await _make_adapter(session).get_by_id(404) is None
 
 
-# ── F9: get_by_username — active row found ────────────────────────────────────
+# ── F10: get_by_id — active row found ─────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_returns_entity_for_active_row() -> None:
-    """F9 — active row found → AssignedUser with all fields populated."""
+async def test_get_by_id_returns_entity_for_active_row() -> None:
+    """F10 — active row found → AssignedUser with all fields populated."""
     row = _make_user_row(id=7, name="Bob", username="bob", email="bob@example.com", tier_id=2)
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = row
     session.execute = AsyncMock(return_value=result)
 
-    entity = await _make_adapter(session).get_by_username("bob")
+    entity = await _make_adapter(session).get_by_id(7)
 
     assert isinstance(entity, AssignedUser)
     assert entity.id == 7
@@ -70,22 +70,22 @@ async def test_get_by_username_returns_entity_for_active_row() -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_by_username_excludes_soft_deleted_row() -> None:
-    """F8/F9 — soft-deleted row filtered by WHERE is_deleted=False at query level."""
+async def test_get_by_id_excludes_soft_deleted_row() -> None:
+    """F10 — soft-deleted row filtered by WHERE is_deleted=False at query level."""
     session = MagicMock()
     result = MagicMock()
     result.scalar_one_or_none.return_value = None
     session.execute = AsyncMock(return_value=result)
 
-    assert await _make_adapter(session).get_by_username("deleted_user") is None
+    assert await _make_adapter(session).get_by_id(123) is None
 
 
-# ── F10, F11, F12: assign happy path ─────────────────────────────────────────
+# ── F11: assign happy path ────────────────────────────────────────────────────
 
 
 @pytest.mark.asyncio
-async def test_assign_returns_updated_entity() -> None:
-    """F10, F11, F12 — assign writes is_moderator=True and returns the updated AssignedUser."""
+async def test_assign_updates_by_id_and_returns_entity() -> None:
+    """F11 — assign UPDATEs by User.id, sets is_moderator=True, returns the refreshed AssignedUser."""
     updated_row = _make_user_row(id=5, username="alice", is_moderator=True)
 
     execute_results = [MagicMock(), MagicMock()]
@@ -95,10 +95,27 @@ async def test_assign_returns_updated_entity() -> None:
     session.execute = AsyncMock(side_effect=execute_results)
     session.commit = AsyncMock()
 
-    entity = await _make_adapter(session).assign("alice", granted_by_user_id=99)
+    entity = await _make_adapter(session).assign(5, granted_by_user_id=99)
 
     assert isinstance(entity, AssignedUser)
     assert entity.is_moderator is True
     assert entity.id == 5
     assert entity.username == "alice"
     session.commit.assert_called_once()
+
+    # The first statement is the UPDATE; assert it filters on User.id, not username.
+    update_stmt = session.execute.call_args_list[0].args[0]
+    compiled = str(update_stmt)
+    assert '"user".id =' in compiled
+    assert "username" not in compiled
+
+
+@pytest.mark.asyncio
+async def test_assign_propagates_unknown_db_error() -> None:
+    """N2 — an unexpected DB error from commit propagates unchanged (no try/except)."""
+    session = MagicMock()
+    session.execute = AsyncMock(return_value=MagicMock())
+    session.commit = AsyncMock(side_effect=RuntimeError("unexpected"))
+
+    with pytest.raises(RuntimeError, match="unexpected"):
+        await _make_adapter(session).assign(5, granted_by_user_id=99)

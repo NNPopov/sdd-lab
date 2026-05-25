@@ -64,10 +64,6 @@ modules =
     app.features.users
     app.features.posts
 ignore_imports =
-    # Legacy pre-VSA posts router directly uses users repo/schemas.
-    # TODO: migrate posts/router.py to VSA slices and remove these.
-    app.features.posts.router -> app.features.users.repository
-    app.features.posts.router -> app.features.users.schemas
     # shared_dependencies uses a lazy bootstrap.container import inside a dependency
     # function to inject the token blacklist adapter. Not a real violation.
     app.shared_dependencies -> app.bootstrap.container

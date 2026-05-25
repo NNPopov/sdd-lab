@@ -14,18 +14,18 @@ router = APIRouter()
 
 
 @router.patch(
-    "/user/{username}/assign-moderator",
+    "/user/{user_id}/assign-moderator",
     response_model=AssignModeratorResponse,
     status_code=200,
 )
 @inject
 async def assign_moderator_endpoint(
-    username: str,
+    user_id: int,
     use_case: Annotated[AssignModeratorUseCase, Depends(Provide[Container.assign_moderator_use_case])],
     current_superuser: Annotated[dict, Depends(get_current_superuser)],
 ) -> AssignModeratorResponse:
     command = AssignModeratorCommand(
-        target_username=username,
+        target_user_id=user_id,
         requester_id=current_superuser["id"],
         requester_is_superuser=current_superuser["is_superuser"],
     )
