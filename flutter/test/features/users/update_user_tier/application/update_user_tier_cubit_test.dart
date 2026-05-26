@@ -99,6 +99,7 @@ void main() {
         build: () {
           when(() => authCubit.currentUser).thenReturn(
             const CurrentUser(
+              id: 1,
               username: 'admin',
               email: '',
               name: '',
@@ -134,6 +135,7 @@ void main() {
         build: () {
           when(() => authCubit.currentUser).thenReturn(
             const CurrentUser(
+              id: 1,
               username: 'user',
               email: '',
               name: '',

@@ -9,16 +9,16 @@ class UserDetailsCubit extends Cubit<UserDetailsState> {
 
   final GetUserUseCase _getUser;
 
-  Future<void> load(String username) async {
+  Future<void> load(int userId) async {
     emit(const UserDetailsState.loading());
-    final result = await _getUser(username);
+    final result = await _getUser(userId);
     result.fold(
       (f) => emit(UserDetailsState.error(f)),
       (u) => emit(UserDetailsState.loaded(u)),
     );
   }
 
-  Future<void> retry(String username) => load(username);
+  Future<void> retry(int userId) => load(userId);
 
   void updateIsModerator(bool isModerator) {
     final current = state;

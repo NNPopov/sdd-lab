@@ -11,9 +11,9 @@ import 'package:flutter_application_1/features/users/edit_user/presentation/widg
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EditUserScreen extends StatefulWidget {
-  const EditUserScreen({required this.username, super.key});
+  const EditUserScreen({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   State<EditUserScreen> createState() => _EditUserScreenState();
@@ -23,7 +23,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<EditUserCubit>().loadInitial(widget.username));
+    unawaited(context.read<EditUserCubit>().loadInitial(widget.userId));
   }
 
   @override
@@ -85,7 +85,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
                     FilledButton(
                       onPressed: () => unawaited(
                         context.read<EditUserCubit>().loadInitial(
-                          widget.username,
+                          widget.userId,
                         ),
                       ),
                       child: Text(t.common.retry),

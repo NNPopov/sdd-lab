@@ -80,7 +80,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<UserDto> getUser(String username) async {
+  Future<UserDto> getUser(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -89,7 +89,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}',
+            '/user/${userId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -107,7 +107,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> updateUser(String username, UpdateUserRequestDto body) async {
+  Future<void> updateUser(int userId, UpdateUserRequestDto body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -116,7 +116,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}',
+            '/user/${userId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -126,7 +126,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> deleteUser(String username) async {
+  Future<void> deleteUser(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -135,7 +135,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}',
+            '/user/${userId}',
             queryParameters: queryParameters,
             data: _data,
           )

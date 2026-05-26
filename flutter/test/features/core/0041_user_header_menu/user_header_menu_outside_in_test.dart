@@ -63,6 +63,7 @@ class _PermissiveAuthGuard extends AuthGuard {
 // ---------------------------------------------------------------------------
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',

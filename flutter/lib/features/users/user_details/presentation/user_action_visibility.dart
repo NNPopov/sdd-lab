@@ -24,12 +24,12 @@ final class UserActionVisibility {
   factory UserActionVisibility.from(
     Set<Permission> permissions,
     AuthState auth,
-    String username,
+    int userId,
   ) {
-    final currentUsername = auth is AuthAuthenticated
-        ? auth.currentUser?.username
+    final currentUserId = auth is AuthAuthenticated
+        ? auth.currentUser?.id
         : null;
-    final isMe = currentUsername == username;
+    final isMe = currentUserId == userId;
     return UserActionVisibility(
       isMe: isMe,
       showEdit: isMe,

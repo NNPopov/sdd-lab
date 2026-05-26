@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 @immutable
 final class CurrentUser {
   const CurrentUser({
+    required this.id,
     required this.username,
     required this.email,
     required this.name,
@@ -11,6 +12,7 @@ final class CurrentUser {
     this.profileImageUrl,
   });
 
+  final int id;
   final String username;
   final String email;
   final String name;
@@ -22,6 +24,7 @@ final class CurrentUser {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is CurrentUser &&
+          id == other.id &&
           username == other.username &&
           email == other.email &&
           name == other.name &&
@@ -31,6 +34,7 @@ final class CurrentUser {
 
   @override
   int get hashCode => Object.hash(
+    id,
     username,
     email,
     name,

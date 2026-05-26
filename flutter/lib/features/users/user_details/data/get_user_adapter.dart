@@ -16,10 +16,10 @@ class GetUserAdapter implements GetUserPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, User>> call(String username) async {
+  Future<Either<Failure, User>> call(int userId) async {
     try {
       try {
-        final dto = await _api.getUser(username);
+        final dto = await _api.getUser(userId);
         return Right(dto.toDomain());
       } on DioException catch (e) {
         switch (e.response?.statusCode) {

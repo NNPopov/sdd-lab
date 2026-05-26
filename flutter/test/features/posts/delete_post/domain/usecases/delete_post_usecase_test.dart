@@ -12,6 +12,7 @@ class _MockDeletePostPort extends Mock implements DeletePostPort {}
 class _MockAuthCubit extends Mock implements AuthCubit {}
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -20,6 +21,7 @@ const _alice = CurrentUser(
 );
 
 const _bob = CurrentUser(
+  id: 1,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',

@@ -14,10 +14,10 @@ class DeleteUserAdapter implements DeleteUserPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, Unit>> call(String username) async {
+  Future<Either<Failure, Unit>> call(int userId) async {
     try {
       try {
-        await _api.deleteUser(username);
+        await _api.deleteUser(userId);
         return const Right(unit);
       } on DioException catch (e) {
         switch (e.response?.statusCode) {

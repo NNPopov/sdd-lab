@@ -56,6 +56,8 @@ void main() {
           expect(u.id, original.id);
         },
       );
+      // PATCH path identity is the integer id, not the handle.
+      verify(() => apiClient.updateUser(original.id, any())).called(1);
     });
 
     test('returns Left(UnauthorizedFailure) on 401', () async {

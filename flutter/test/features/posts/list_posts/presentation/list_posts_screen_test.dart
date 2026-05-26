@@ -26,6 +26,7 @@ class _MockStackRouter extends Mock implements StackRouter {}
 class _FakePageRouteInfo extends Fake implements PageRouteInfo<dynamic> {}
 
 const _aliceUser = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',

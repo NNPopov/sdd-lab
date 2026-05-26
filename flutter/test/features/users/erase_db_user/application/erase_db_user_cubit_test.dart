@@ -27,6 +27,7 @@ void main() {
       ).thenAnswer((_) async {});
       when(() => authCubit.currentUser).thenReturn(
         const CurrentUser(
+          id: 1,
           username: 'testuser',
           email: '',
           name: '',

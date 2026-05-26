@@ -72,7 +72,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       user: u,
                       onDetailsTap: () async {
                         await context.router.push(
-                          UserDetailsRoute(username: u.username),
+                          UserDetailsRoute(userId: u.id),
                         );
                         if (context.mounted) {
                           unawaited(

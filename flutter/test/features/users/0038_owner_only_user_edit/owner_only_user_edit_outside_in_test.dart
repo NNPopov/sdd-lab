@@ -52,6 +52,7 @@ const _alice = User(
 );
 
 const _currentAlice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -60,6 +61,7 @@ const _currentAlice = CurrentUser(
 );
 
 const _currentBob = CurrentUser(
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -134,7 +136,7 @@ void main() {
           BlocProvider<GetUserTierCubit>.value(value: tierCubit),
           BlocProvider<UpdateUserTierCubit>.value(value: updateTierCubit),
         ],
-        child: const UserDetailsScreen(username: 'alice'),
+        child: const UserDetailsScreen(userId: 1),
       ),
     ),
   );

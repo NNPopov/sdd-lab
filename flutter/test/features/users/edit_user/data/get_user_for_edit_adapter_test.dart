@@ -24,7 +24,7 @@ void main() {
     test('returns UnknownFailure on unexpected exception', () async {
       when(() => apiClient.getUser(any())).thenThrow(TypeError());
 
-      final result = await adapter('testuser');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(

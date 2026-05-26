@@ -23,17 +23,17 @@ abstract class UsersApiClient {
   @POST('/user')
   Future<UserDto> createUser(@Body() CreateUserRequestDto body);
 
-  @GET('/user/{username}')
-  Future<UserDto> getUser(@Path('username') String username);
+  @GET('/user/{user_id}')
+  Future<UserDto> getUser(@Path('user_id') int userId);
 
-  @PATCH('/user/{username}')
+  @PATCH('/user/{user_id}')
   Future<void> updateUser(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Body() UpdateUserRequestDto body,
   );
 
-  @DELETE('/user/{username}')
-  Future<void> deleteUser(@Path('username') String username);
+  @DELETE('/user/{user_id}')
+  Future<void> deleteUser(@Path('user_id') int userId);
 
   @DELETE('/db_user/{username}')
   Future<void> eraseDbUser(@Path('username') String username);

@@ -8,17 +8,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @RoutePage()
 class EditUserPage extends StatelessWidget {
   const EditUserPage({
-    @PathParam('username') required this.username,
+    @PathParam('user_id') required this.userId,
     super.key,
   });
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EditUserCubit>(),
-      child: EditUserScreen(username: username),
+      child: EditUserScreen(userId: userId),
     );
   }
 }

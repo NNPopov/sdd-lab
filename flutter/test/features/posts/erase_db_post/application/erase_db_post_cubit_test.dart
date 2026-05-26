@@ -18,6 +18,7 @@ class _MockAuthCubit extends Mock implements AuthCubit {}
 class _MockPostEventBus extends Mock implements PostEventBus {}
 
 const _superuser = CurrentUser(
+  id: 1,
   username: 'admin',
   email: 'admin@example.com',
   name: 'Admin',
@@ -26,6 +27,7 @@ const _superuser = CurrentUser(
 );
 
 const _regularUser = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',

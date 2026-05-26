@@ -10,5 +10,5 @@ class GetUserForEditUseCase {
 
   final GetUserForEditPort _port;
 
-  Future<Either<Failure, User>> call(String username) => _port(username);
+  Future<Either<Failure, User>> call(int userId) => _port(userId);
 }

@@ -34,11 +34,11 @@ void main() {
       'load emits [loading, loaded] on success',
       build: () {
         when(
-          () => useCase('alice'),
+          () => useCase(1),
         ).thenAnswer((_) async => const Right(_user));
         return cubit;
       },
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(1),
       expect: () => [
         const UserDetailsState.loading(),
         const UserDetailsState.loaded(_user),
@@ -48,12 +48,12 @@ void main() {
     blocTest<UserDetailsCubit, UserDetailsState>(
       'load emits [loading, error(NotFoundFailure)] on 404',
       build: () {
-        when(() => useCase('nope')).thenAnswer(
+        when(() => useCase(2)).thenAnswer(
           (_) async => const Left(Failure.notFound(message: 'User not found')),
         );
         return cubit;
       },
-      act: (c) => c.load('nope'),
+      act: (c) => c.load(2),
       expect: () => [
         const UserDetailsState.loading(),
         const UserDetailsState.error(
@@ -65,12 +65,12 @@ void main() {
     blocTest<UserDetailsCubit, UserDetailsState>(
       'load emits [loading, error(NetworkFailure)] on network error',
       build: () {
-        when(() => useCase('alice')).thenAnswer(
+        when(() => useCase(1)).thenAnswer(
           (_) async => const Left(Failure.network(message: 'timeout')),
         );
         return cubit;
       },
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(1),
       expect: () => [
         const UserDetailsState.loading(),
         const UserDetailsState.error(Failure.network(message: 'timeout')),
@@ -81,11 +81,11 @@ void main() {
       'retry delegates to load',
       build: () {
         when(
-          () => useCase('alice'),
+          () => useCase(1),
         ).thenAnswer((_) async => const Right(_user));
         return cubit;
       },
-      act: (c) => c.retry('alice'),
+      act: (c) => c.retry(1),
       expect: () => [
         const UserDetailsState.loading(),
         const UserDetailsState.loaded(_user),

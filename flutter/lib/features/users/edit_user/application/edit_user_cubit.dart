@@ -16,9 +16,9 @@ class EditUserCubit extends Cubit<EditUserState> {
   final UpdateUserUseCase _updateUser;
   final AuthCubit _authCubit;
 
-  Future<void> loadInitial(String username) async {
+  Future<void> loadInitial(int userId) async {
     emit(const EditUserState.loadingInitialData());
-    if (!_authCubit.isMe(username)) {
+    if (!_authCubit.isMe(userId)) {
       emit(
         const EditUserState.loadError(
           Failure.forbidden(message: 'You can only edit your own profile'),
@@ -26,7 +26,7 @@ class EditUserCubit extends Cubit<EditUserState> {
       );
       return;
     }
-    final result = await _getUser(username);
+    final result = await _getUser(userId);
     result.fold(
       (f) => emit(EditUserState.loadError(f)),
       (u) => emit(EditUserState.loaded(u)),

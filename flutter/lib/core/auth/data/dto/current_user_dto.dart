@@ -23,6 +23,7 @@ sealed class CurrentUserDto with _$CurrentUserDto {
 
 extension CurrentUserDtoX on CurrentUserDto {
   CurrentUser toDomain() => CurrentUser(
+    id: id,
     username: username,
     email: email,
     name: name,

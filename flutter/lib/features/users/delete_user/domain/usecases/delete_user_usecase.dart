@@ -10,12 +10,12 @@ class DeleteUserUseCase {
   final DeleteUserPort _port;
 
   Future<Either<Failure, Unit>> call({
-    required String username,
-    required String currentUsername,
+    required int userId,
+    required int currentUserId,
   }) async {
-    if (username != currentUsername) {
+    if (userId != currentUserId) {
       return const Left(Failure.permissionDenied());
     }
-    return _port(username);
+    return _port(userId);
   }
 }

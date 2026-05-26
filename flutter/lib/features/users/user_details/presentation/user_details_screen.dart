@@ -25,9 +25,9 @@ import 'package:flutter_application_1/features/users/user_details/presentation/w
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  const UserDetailsScreen({required this.username, super.key});
+  const UserDetailsScreen({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   State<UserDetailsScreen> createState() => _UserDetailsScreenState();
@@ -37,24 +37,31 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    unawaited(context.read<UserDetailsCubit>().load(widget.username));
+    unawaited(context.read<UserDetailsCubit>().load(widget.userId));
   }
 
   @override
   Widget build(BuildContext context) {
     final t = context.t;
+    // The screen receives only the integer identity; the handle to show in the
+    // title comes from the loaded user (empty while loading).
+    final username = context.select<UserDetailsCubit, String?>((c) {
+      final s = c.state;
+      return s is UserDetailsLoaded ? s.user.username : null;
+    });
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.username),
-        actions: [_UserDetailsAppBarActions(username: widget.username)],
+        title: Text(username ?? ''),
+        actions: [_UserDetailsAppBarActions(userId: widget.userId)],
       ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<UserDetailsCubit, UserDetailsState>(
             listener: (context, state) {
               if (state is UserDetailsLoaded) {
+                // getUserTier still keys by the handle (not migrated).
                 unawaited(
-                  context.read<GetUserTierCubit>().load(widget.username),
+                  context.read<GetUserTierCubit>().load(state.user.username),
                 );
               }
             },
@@ -62,9 +69,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           BlocListener<UpdateUserTierCubit, UpdateUserTierState>(
             listener: (context, state) {
               if (state is UpdateUserTierSuccess) {
-                unawaited(
-                  context.read<GetUserTierCubit>().load(widget.username),
-                );
+                final detailsState = context.read<UserDetailsCubit>().state;
+                if (detailsState is UserDetailsLoaded) {
+                  unawaited(
+                    context.read<GetUserTierCubit>().load(
+                      detailsState.user.username,
+                    ),
+                  );
+                }
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(context.t.users.updateTier.success),
@@ -101,7 +113,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       : null,
                   tierLoading: tierState is GetUserTierLoading,
                   onPostsTap: () => context.router.push(
-                    UserPostsRoute(username: widget.username),
+                    // Posts routes are not migrated — bridge via the handle.
+                    UserPostsRoute(username: user.username),
                   ),
                 ),
               ),
@@ -113,7 +126,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   const SizedBox(height: 8),
                   FilledButton(
                     onPressed: () => unawaited(
-                      context.read<UserDetailsCubit>().retry(widget.username),
+                      context.read<UserDetailsCubit>().retry(widget.userId),
                     ),
                     child: Text(t.common.retry),
                   ),
@@ -143,9 +156,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
 }
 
 class _UserDetailsAppBarActions extends StatelessWidget {
-  const _UserDetailsAppBarActions({required this.username});
+  const _UserDetailsAppBarActions({required this.userId});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +171,7 @@ class _UserDetailsAppBarActions extends StatelessWidget {
     final visibility = UserActionVisibility.from(
       permissions,
       authState,
-      username,
+      userId,
     );
     if (!visibility.showAny) return const SizedBox.shrink();
 
@@ -169,17 +182,29 @@ class _UserDetailsAppBarActions extends StatelessWidget {
       },
     );
 
+    // The sibling actions still key by the handle (not migrated); source it
+    // from the loaded user. Null while loading — those buttons stay hidden.
+    final String? username = context.select<UserDetailsCubit, String?>(
+      (c) {
+        final s = c.state;
+        return s is UserDetailsLoaded ? s.user.username : null;
+      },
+    );
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (visibility.canManageModerators && isModerator != null)
+        if (visibility.canManageModerators &&
+            isModerator != null &&
+            username != null)
           AssignModeratorButton(
             username: username,
             isModerator: isModerator,
             onToggled: (val) =>
                 context.read<UserDetailsCubit>().updateIsModerator(val),
           ),
-        if (visibility.canEditTier) UpdateUserTierButton(username: username),
+        if (visibility.canEditTier && username != null)
+          UpdateUserTierButton(username: username),
         if (visibility.showEdit)
           IconButton(
             icon: const Icon(Icons.edit),
@@ -187,14 +212,13 @@ class _UserDetailsAppBarActions extends StatelessWidget {
             onPressed: () async {
               final cubit = context.read<UserDetailsCubit>();
               final router = context.router;
-              final updated = await router.push<User>(
-                EditUserRoute(username: username),
-              );
-              unawaited(cubit.load(updated?.username ?? username));
+              await router.push<User>(EditUserRoute(userId: userId));
+              unawaited(cubit.load(userId));
             },
           ),
-        if (visibility.showDelete) DeleteAccountButton(username: username),
-        if (visibility.showErase) EraseDbUserButton(username: username),
+        if (visibility.showDelete) DeleteAccountButton(userId: userId),
+        if (visibility.showErase && username != null)
+          EraseDbUserButton(username: username),
       ],
     );
   }

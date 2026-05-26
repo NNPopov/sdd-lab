@@ -23,6 +23,7 @@ class _MockAppLogger extends Mock implements AppLogger {}
 class _MockAuthCubit extends Mock implements AuthCubit {}
 
 const _currentUser = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',

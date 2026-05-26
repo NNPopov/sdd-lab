@@ -44,7 +44,7 @@ void main() {
       getUser = _MockGetUserForEditUseCase();
       updateUser = _MockUpdateUserUseCase();
       authCubit = _MockAuthCubit();
-      // Default: all usernames are "me".
+      // Default: all ids are "me".
       when(() => authCubit.isMe(any())).thenReturn(true);
     });
 
@@ -57,7 +57,7 @@ void main() {
           when(() => getUser(any())).thenAnswer((_) async => const Right(user));
           return build();
         },
-        act: (c) => c.loadInitial('testuser'),
+        act: (c) => c.loadInitial(1),
         expect: () => [
           const EditUserState.loadingInitialData(),
           const EditUserState.loaded(user),
@@ -72,7 +72,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.loadInitial('testuser'),
+        act: (c) => c.loadInitial(1),
         expect: () => [
           const EditUserState.loadingInitialData(),
           const EditUserState.loadError(Failure.network()),
@@ -81,12 +81,12 @@ void main() {
 
       blocTest<EditUserCubit, EditUserState>(
         'emits [loadingInitialData, loadError(ForbiddenFailure)] '
-        'when username is not the current user',
+        'when id is not the current user',
         build: () {
-          when(() => authCubit.isMe('otheruser')).thenReturn(false);
+          when(() => authCubit.isMe(99)).thenReturn(false);
           return build();
         },
-        act: (c) => c.loadInitial('otheruser'),
+        act: (c) => c.loadInitial(99),
         expect: () => [
           const EditUserState.loadingInitialData(),
           const EditUserState.loadError(

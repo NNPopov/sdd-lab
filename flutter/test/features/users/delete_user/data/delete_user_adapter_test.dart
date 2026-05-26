@@ -36,7 +36,7 @@ void main() {
     test('returns Right(unit) on 200 success', () async {
       when(() => apiClient.deleteUser(any())).thenAnswer((_) async {});
 
-      final result = await adapter('testuser');
+      final result = await adapter(1);
 
       expect(result, const Right<Failure, Unit>(unit));
     });
@@ -46,7 +46,7 @@ void main() {
         () => apiClient.deleteUser(any()),
       ).thenThrow(_dioError(403, 'Forbidden'));
 
-      final result = await adapter('testuser');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -63,7 +63,7 @@ void main() {
         () => apiClient.deleteUser(any()),
       ).thenThrow(_dioError(401, 'Session expired'));
 
-      final result = await adapter('testuser');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -80,7 +80,7 @@ void main() {
         () => apiClient.deleteUser(any()),
       ).thenThrow(_dioError(404, 'User not found'));
 
-      final result = await adapter('testuser');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -101,7 +101,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter('testuser');
+        final result = await adapter(1);
 
         expect(result.isLeft(), isTrue);
         result.fold(

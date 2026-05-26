@@ -41,9 +41,9 @@ void main() {
     });
 
     test('returns Right(user) on success', () async {
-      when(() => apiClient.getUser('alice')).thenAnswer((_) async => _dto);
+      when(() => apiClient.getUser(1)).thenAnswer((_) async => _dto);
 
-      final result = await adapter('alice');
+      final result = await adapter(1);
 
       expect(result.isRight(), isTrue);
       result.fold(
@@ -66,9 +66,9 @@ void main() {
         ),
         type: DioExceptionType.badResponse,
       );
-      when(() => apiClient.getUser('nope')).thenThrow(dioException);
+      when(() => apiClient.getUser(2)).thenThrow(dioException);
 
-      final result = await adapter('nope');
+      final result = await adapter(2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -83,9 +83,9 @@ void main() {
         type: DioExceptionType.connectionTimeout,
         message: 'Connection timeout',
       );
-      when(() => apiClient.getUser('alice')).thenThrow(dioException);
+      when(() => apiClient.getUser(1)).thenThrow(dioException);
 
-      final result = await adapter('alice');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -97,7 +97,7 @@ void main() {
     test('returns UnknownFailure on unexpected exception', () async {
       when(() => apiClient.getUser(any())).thenThrow(TypeError());
 
-      final result = await adapter('alice');
+      final result = await adapter(1);
 
       expect(result.isLeft(), isTrue);
       result.fold(

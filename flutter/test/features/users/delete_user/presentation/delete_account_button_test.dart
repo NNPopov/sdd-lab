@@ -55,7 +55,7 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             appBar: AppBar(
-              actions: const [DeleteAccountButton(username: 'alice')],
+              actions: const [DeleteAccountButton(userId: 1)],
             ),
           ),
         ),

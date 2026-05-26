@@ -19,27 +19,27 @@ void main() {
 
     test(
       'returns Right(unit) and calls port '
-      'when username matches currentUsername',
+      'when userId matches currentUserId',
       () async {
-        when(() => port('testuser')).thenAnswer((_) async => const Right(unit));
+        when(() => port(1)).thenAnswer((_) async => const Right(unit));
 
         final result = await useCase(
-          username: 'testuser',
-          currentUsername: 'testuser',
+          userId: 1,
+          currentUserId: 1,
         );
 
         expect(result, const Right<Failure, Unit>(unit));
-        verify(() => port('testuser')).called(1);
+        verify(() => port(1)).called(1);
       },
     );
 
     test(
       'returns Left(PermissionDenied) and does NOT call port '
-      'when username != currentUsername',
+      'when userId != currentUserId',
       () async {
         final result = await useCase(
-          username: 'other_user',
-          currentUsername: 'testuser',
+          userId: 2,
+          currentUserId: 1,
         );
 
         expect(result, const Left<Failure, Unit>(Failure.permissionDenied()));

@@ -24,6 +24,7 @@ void main() {
       authCubit = _MockAuthCubit();
       when(() => authCubit.currentUser).thenReturn(
         const CurrentUser(
+          id: 1,
           username: 'superuser',
           email: '',
           name: '',
@@ -144,6 +145,7 @@ void main() {
         build: () {
           when(() => authCubit.currentUser).thenReturn(
             const CurrentUser(
+              id: 1,
               username: 'regularuser',
               email: '',
               name: '',

@@ -27,6 +27,7 @@ void main() {
       ).thenAnswer((_) async {});
       when(() => authCubit.currentUser).thenReturn(
         const CurrentUser(
+          id: 1,
           username: 'testuser',
           email: '',
           name: '',
@@ -72,13 +73,13 @@ void main() {
         build: () {
           when(
             () => deleteUser(
-              username: any(named: 'username'),
-              currentUsername: any(named: 'currentUsername'),
+              userId: any(named: 'userId'),
+              currentUserId: any(named: 'currentUserId'),
             ),
           ).thenAnswer((_) async => const Right(unit));
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteUserState.deleting(),
           const DeleteUserState.success(),
@@ -94,15 +95,15 @@ void main() {
         build: () {
           when(
             () => deleteUser(
-              username: any(named: 'username'),
-              currentUsername: any(named: 'currentUsername'),
+              userId: any(named: 'userId'),
+              currentUserId: any(named: 'currentUserId'),
             ),
           ).thenAnswer(
             (_) async => const Left(Failure.forbidden(message: 'Forbidden')),
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteUserState.deleting(),
           const DeleteUserState.failure(
@@ -119,8 +120,8 @@ void main() {
         build: () {
           when(
             () => deleteUser(
-              username: any(named: 'username'),
-              currentUsername: any(named: 'currentUsername'),
+              userId: any(named: 'userId'),
+              currentUserId: any(named: 'currentUserId'),
             ),
           ).thenAnswer(
             (_) async =>
@@ -128,7 +129,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteUserState.deleting(),
           const DeleteUserState.failure(
@@ -145,15 +146,15 @@ void main() {
         build: () {
           when(
             () => deleteUser(
-              username: any(named: 'username'),
-              currentUsername: any(named: 'currentUsername'),
+              userId: any(named: 'userId'),
+              currentUserId: any(named: 'currentUserId'),
             ),
           ).thenAnswer(
             (_) async => const Left(Failure.unknown()),
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const DeleteUserState.deleting(),
           const DeleteUserState.failure(Failure.unknown()),
@@ -169,15 +170,15 @@ void main() {
         build: () {
           when(
             () => deleteUser(
-              username: any(named: 'username'),
-              currentUsername: any(named: 'currentUsername'),
+              userId: any(named: 'userId'),
+              currentUserId: any(named: 'currentUserId'),
             ),
           ).thenAnswer(
             (_) async => const Left(Failure.permissionDenied()),
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('other_user'),
+        act: (c) => c.confirmAndDelete(2),
         expect: () => [
           const DeleteUserState.deleting(),
           const DeleteUserState.failure(Failure.permissionDenied()),

@@ -43,6 +43,7 @@ final _post = Post(
 );
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -51,6 +52,7 @@ const _alice = CurrentUser(
 );
 
 const _bob = CurrentUser(
+  id: 1,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',

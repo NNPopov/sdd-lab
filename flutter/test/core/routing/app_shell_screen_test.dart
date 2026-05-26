@@ -65,6 +65,7 @@ class _MockUserPostsCubit extends MockCubit<UserPostsState>
     implements UserPostsCubit {}
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -180,6 +181,7 @@ void main() {
       prepare(
         const AuthState.authenticated(
           currentUser: CurrentUser(
+            id: 1,
             username: 'alice',
             email: 'alice@example.com',
             name: 'Alice',
@@ -202,6 +204,7 @@ void main() {
       prepare(
         const AuthState.authenticated(
           currentUser: CurrentUser(
+            id: 1,
             username: 'admin',
             email: 'admin@example.com',
             name: 'Admin',
@@ -226,6 +229,7 @@ void main() {
       prepare(
         const AuthState.authenticated(
           currentUser: CurrentUser(
+            id: 1,
             username: 'admin',
             email: 'admin@example.com',
             name: 'Admin',

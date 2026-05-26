@@ -27,6 +27,7 @@ class _FakePageRouteInfo extends Fake implements PageRouteInfo<dynamic> {}
 const _username = 'alice';
 
 const _aliceUser = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -35,6 +36,7 @@ const _aliceUser = CurrentUser(
 );
 
 const _bobUser = CurrentUser(
+  id: 1,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',

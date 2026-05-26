@@ -23,6 +23,7 @@ void main() {
 
   const session = AuthSession(accessToken: 'tok', username: 'alice');
   const me = CurrentUser(
+    id: 1,
     username: 'alice',
     email: 'alice@example.com',
     name: 'Alice',
@@ -272,5 +273,43 @@ void main() {
         await cubit.close();
       },
     );
+  });
+
+  group('isMe', () {
+    Future<AuthCubit> authenticatedCubit() async {
+      when(() => mockStorage.read()).thenAnswer((_) async => session);
+      when(
+        () => mockApi.getCurrentUser(),
+      ).thenAnswer((_) async => const Right(me));
+      final cubit = buildCubit();
+      await cubit.bootstrap();
+      expect(cubit.state, const AuthAuthenticated(currentUser: me));
+      return cubit;
+    }
+
+    test('returns true when the id matches the current user id', () async {
+      final cubit = await authenticatedCubit();
+      addTearDown(cubit.close);
+
+      // `me` has id 1; identity is decided by id, not the handle.
+      expect(cubit.isMe(1), isTrue);
+    });
+
+    test(
+      'returns false when the id differs from the current user id',
+      () async {
+        final cubit = await authenticatedCubit();
+        addTearDown(cubit.close);
+
+        expect(cubit.isMe(99), isFalse);
+      },
+    );
+
+    test('returns false when there is no current user', () async {
+      final cubit = buildCubit();
+      addTearDown(cubit.close);
+
+      expect(cubit.isMe(1), isFalse);
+    });
   });
 }

@@ -24,7 +24,7 @@ class UpdateUserAdapter implements UpdateUserPort {
     try {
       try {
         await _api.updateUser(
-          original.username,
+          original.id,
           UpdateUserRequestDto(
             name: update.name,
             username: update.username,

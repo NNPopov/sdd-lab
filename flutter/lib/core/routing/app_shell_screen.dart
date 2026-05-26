@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/auth/application/auth_cubit.dart';
 import 'package:flutter_application_1/core/auth/application/auth_state.dart';
+import 'package:flutter_application_1/core/auth/domain/entities/current_user.dart';
 import 'package:flutter_application_1/core/i18n/translations.g.dart';
 import 'package:flutter_application_1/core/rbac/permission.dart';
 import 'package:flutter_application_1/core/rbac/permission_cubit.dart';
@@ -170,8 +171,7 @@ class _AuthAppBarAction extends StatelessWidget {
       builder: (context, state) => switch (state) {
         AuthAuthenticated(:final currentUser) when currentUser != null =>
           PopupMenuButton<_UserMenuAction>(
-            onSelected: (action) =>
-                _onMenuAction(context, action, currentUser.username),
+            onSelected: (action) => _onMenuAction(context, action, currentUser),
             itemBuilder: (_) => [
               PopupMenuItem(
                 value: _UserMenuAction.myProfile,
@@ -213,13 +213,21 @@ class _AuthAppBarAction extends StatelessWidget {
   void _onMenuAction(
     BuildContext context,
     _UserMenuAction action,
-    String username,
+    CurrentUser currentUser,
   ) {
     switch (action) {
       case _UserMenuAction.myProfile:
-        unawaited(context.router.push(UserDetailsRoute(username: username)));
+        // Identity → integer id.
+        unawaited(
+          context.router.push(UserDetailsRoute(userId: currentUser.id)),
+        );
       case _UserMenuAction.myPosts:
-        unawaited(context.router.push(UserPostsRoute(username: username)));
+        // Posts routes are not migrated — keep the handle.
+        unawaited(
+          context.router.push(
+            UserPostsRoute(username: currentUser.username),
+          ),
+        );
       case _UserMenuAction.signOut:
         _confirmLogout(context);
     }

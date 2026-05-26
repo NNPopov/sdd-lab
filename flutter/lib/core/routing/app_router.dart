@@ -54,11 +54,11 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: CreateUserRoute.page, path: 'users/new'),
             AutoRoute(
               page: UserDetailsRoute.page,
-              path: 'user/:username',
+              path: 'user/:user_id',
             ),
             AutoRoute(
               page: EditUserRoute.page,
-              path: 'user/:username/edit',
+              path: 'user/:user_id/edit',
               guards: [authGuard],
             ),
             AutoRoute(

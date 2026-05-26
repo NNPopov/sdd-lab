@@ -1,4 +1,4 @@
-﻿import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/core/auth/application/auth_cubit.dart';
@@ -29,6 +29,7 @@ class _MockDeletePostCubit extends MockCubit<DeletePostState>
 class _MockStackRouter extends Mock implements StackRouter {}
 
 const _author = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -37,6 +38,7 @@ const _author = CurrentUser(
 );
 
 const _nonAuthor = CurrentUser(
+  id: 1,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',

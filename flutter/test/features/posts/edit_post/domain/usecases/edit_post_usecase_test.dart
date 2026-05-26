@@ -23,6 +23,7 @@ void main() {
   late EditPostUseCase useCase;
 
   const currentUser = CurrentUser(
+    id: 1,
     username: 'alice',
     email: 'alice@example.com',
     name: 'Alice',

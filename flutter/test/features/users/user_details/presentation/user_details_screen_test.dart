@@ -58,6 +58,7 @@ const _user = User(
 );
 
 const _meAlice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -66,6 +67,7 @@ const _meAlice = CurrentUser(
 );
 
 const _meBob = CurrentUser(
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -182,7 +184,7 @@ void main() {
     });
 
     Widget buildScreen() => _wrap(
-      child: const UserDetailsScreen(username: 'alice'),
+      child: const UserDetailsScreen(userId: 1),
       detailsCubit: detailsCubit,
       authCubit: authCubit,
       permissionCubit: permissionCubit,
@@ -192,7 +194,7 @@ void main() {
 
     testWidgets(
       'Edit and Delete buttons are visible when '
-      'currentUser.username == profile username',
+      'currentUser.id == profile id',
       (tester) async {
         when(() => authCubit.state).thenReturn(
           const AuthState.authenticated(currentUser: _meAlice),
@@ -206,7 +208,7 @@ void main() {
     );
 
     testWidgets(
-      'Edit button is hidden when currentUser.username != profile username',
+      'Edit button is hidden when currentUser.id != profile id',
       (tester) async {
         when(() => authCubit.state).thenReturn(
           const AuthState.authenticated(currentUser: _meBob),
@@ -331,7 +333,7 @@ void main() {
     });
 
     Widget buildScreen() => _wrap(
-      child: const UserDetailsScreen(username: 'alice'),
+      child: const UserDetailsScreen(userId: 1),
       detailsCubit: detailsCubit,
       authCubit: authCubit,
       permissionCubit: permissionCubit,
@@ -367,7 +369,7 @@ void main() {
         await tester.pump();
 
         // initState triggers exactly one load(); no reload after Posts tap
-        verify(() => detailsCubit.load('alice')).called(1);
+        verify(() => detailsCubit.load(1)).called(1);
       },
     );
   });

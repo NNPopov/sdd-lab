@@ -5,6 +5,7 @@ import 'package:flutter_application_1/features/users/user_details/presentation/u
 import 'package:flutter_test/flutter_test.dart';
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -20,7 +21,7 @@ void main() {
         final v = UserActionVisibility.from(
           {Permission.eraseUsers},
           const AuthState.authenticated(currentUser: _alice),
-          'bob',
+          99,
         );
         expect(v.showErase, isTrue);
         expect(v.showEdit, isFalse);
@@ -36,7 +37,7 @@ void main() {
         final v = UserActionVisibility.from(
           {},
           const AuthState.authenticated(currentUser: _alice),
-          'alice',
+          1,
         );
         expect(v.showEdit, isTrue);
         expect(v.showDelete, isTrue);
@@ -52,7 +53,7 @@ void main() {
         final v = UserActionVisibility.from(
           {Permission.manageModerators},
           const AuthState.unauthenticated(),
-          'alice',
+          1,
         );
         expect(v.canManageModerators, isTrue);
         expect(v.isMe, isFalse);
@@ -67,7 +68,7 @@ void main() {
         final v = UserActionVisibility.from(
           {Permission.editUserTier, Permission.eraseUsers},
           const AuthState.unauthenticated(),
-          'x',
+          99,
         );
         expect(v.canEditTier, isTrue);
         expect(v.showErase, isTrue);

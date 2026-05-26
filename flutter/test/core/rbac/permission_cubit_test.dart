@@ -17,6 +17,7 @@ void main() {
   late StreamController<AuthState> authCtrl;
 
   const superUser = CurrentUser(
+    id: 1,
     username: 'admin',
     email: 'admin@example.com',
     name: 'Admin',
@@ -24,6 +25,7 @@ void main() {
     isModerator: false,
   );
   const normalUser = CurrentUser(
+    id: 1,
     username: 'user',
     email: 'user@example.com',
     name: 'User',
@@ -140,6 +142,7 @@ void main() {
       'contains moderatePosts, NOT manageModerators',
       () async {
         const moderatorUser = CurrentUser(
+          id: 1,
           username: 'mod',
           email: 'mod@example.com',
           name: 'Moderator',

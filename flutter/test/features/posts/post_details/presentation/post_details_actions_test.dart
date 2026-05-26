@@ -41,6 +41,7 @@ final _post = Post(
 );
 
 const _alice = CurrentUser(
+  id: 1,
   username: 'alice',
   email: 'alice@example.com',
   name: 'Alice',
@@ -49,6 +50,7 @@ const _alice = CurrentUser(
 );
 
 const _superuser = CurrentUser(
+  id: 1,
   username: 'admin',
   email: 'admin@example.com',
   name: 'Admin',

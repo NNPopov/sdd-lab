@@ -12,23 +12,23 @@ import 'package:flutter_application_1/features/users/delete_user/presentation/wi
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeleteAccountButton extends StatelessWidget {
-  const DeleteAccountButton({required this.username, super.key});
+  const DeleteAccountButton({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<DeleteUserCubit>(),
-      child: _DeleteAccountButtonInner(username: username),
+      child: _DeleteAccountButtonInner(userId: userId),
     );
   }
 }
 
 class _DeleteAccountButtonInner extends StatelessWidget {
-  const _DeleteAccountButtonInner({required this.username});
+  const _DeleteAccountButtonInner({required this.userId});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _DeleteAccountButtonInner extends StatelessWidget {
             if (!context.mounted) return;
             if (confirmed == true) {
               unawaited(
-                context.read<DeleteUserCubit>().confirmAndDelete(username),
+                context.read<DeleteUserCubit>().confirmAndDelete(userId),
               );
             } else {
               context.read<DeleteUserCubit>().cancel();

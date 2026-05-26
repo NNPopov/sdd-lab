@@ -27,6 +27,7 @@ import 'package:flutter_application_1/features/tiers/list_tiers/application/list
 import 'package:flutter_application_1/features/tiers/list_tiers/application/list_tiers_state.dart';
 import 'package:flutter_application_1/features/tiers/tier_details/application/tier_details_cubit.dart';
 import 'package:flutter_application_1/features/tiers/tier_details/application/tier_details_state.dart';
+import 'package:flutter_application_1/features/users/_shared/domain/entities/user.dart';
 import 'package:flutter_application_1/features/users/get_user_tier/application/get_user_tier_cubit.dart';
 import 'package:flutter_application_1/features/users/get_user_tier/application/get_user_tier_state.dart';
 import 'package:flutter_application_1/features/users/list_users/application/users_list_cubit.dart';
@@ -38,6 +39,16 @@ import 'package:flutter_application_1/features/users/user_details/application/us
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+// The details screen now sources its AppBar title from the loaded user, so the
+// mocked cubit must report a loaded state for the title to render.
+const _aliceUser = User(
+  id: 1,
+  name: 'Alice',
+  username: 'alice',
+  email: 'alice@example.com',
+  isModerator: false,
+);
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -161,7 +172,9 @@ void main() {
       ..registerFactory<UserDetailsCubit>(() {
         final c = _MockUserDetailsCubit();
         when(() => c.stream).thenAnswer((_) => const Stream.empty());
-        when(() => c.state).thenReturn(const UserDetailsState.initial());
+        when(
+          () => c.state,
+        ).thenReturn(const UserDetailsState.loaded(_aliceUser));
         when(() => c.load(any())).thenAnswer((_) async {});
         when(() => c.retry(any())).thenAnswer((_) async {});
         return c;
@@ -261,7 +274,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await router.navigate(UserDetailsRoute(username: 'alice'));
+        await router.navigate(UserDetailsRoute(userId: 1));
         await tester.pumpAndSettle();
 
         expect(find.text('alice'), findsOneWidget);
@@ -291,7 +304,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await router.navigate(UserDetailsRoute(username: 'alice'));
+        await router.navigate(UserDetailsRoute(userId: 1));
         await tester.pumpAndSettle();
 
         expect(find.text('alice'), findsOneWidget);
@@ -356,6 +369,7 @@ void main() {
         prepareAuth(
           const AuthState.authenticated(
             currentUser: CurrentUser(
+              id: 1,
               username: 'admin',
               email: 'admin@example.com',
               name: 'Admin',
@@ -418,13 +432,20 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await router.navigate(UserDetailsRoute(username: 'alice'));
+        await router.navigate(UserDetailsRoute(userId: 1));
         await tester.pumpAndSettle();
 
         expect(find.text('alice'), findsOneWidget);
 
         // Switch away — Users stack is preserved (not reset yet).
-        await tester.tap(find.text('Posts'));
+        // The loaded details body also renders a "Posts" link, so target the
+        // nav tab in the shell AppBar specifically.
+        await tester.tap(
+          find.descendant(
+            of: find.byType(AppBar),
+            matching: find.text('Posts'),
+          ),
+        );
         await tester.pumpAndSettle();
 
         // Switch back — this tap triggers reset on the Users inner stack.

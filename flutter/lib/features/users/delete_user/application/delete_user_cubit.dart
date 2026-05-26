@@ -16,11 +16,11 @@ class DeleteUserCubit extends Cubit<DeleteUserState> {
     emit(const DeleteUserState.confirming());
   }
 
-  Future<void> confirmAndDelete(String username) async {
+  Future<void> confirmAndDelete(int userId) async {
     emit(const DeleteUserState.deleting());
     final result = await _deleteUser(
-      username: username,
-      currentUsername: _authCubit.currentUser?.username ?? '',
+      userId: userId,
+      currentUserId: _authCubit.currentUser?.id ?? -1,
     );
     await result.fold(
       (f) async => emit(DeleteUserState.failure(f)),

@@ -24,6 +24,7 @@ class _MockAuthCubit extends MockCubit<AuthState> implements AuthCubit {}
 class _MockStackRouter extends Mock implements StackRouter {}
 
 const _superuser = CurrentUser(
+  id: 1,
   username: 'admin',
   email: 'admin@test.com',
   name: 'Admin',

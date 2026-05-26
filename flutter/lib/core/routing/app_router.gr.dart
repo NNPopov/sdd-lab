@@ -236,16 +236,13 @@ class EditTierRouteArgs {
 /// generated route for
 /// [EditUserPage]
 class EditUserRoute extends PageRouteInfo<EditUserRouteArgs> {
-  EditUserRoute({
-    required String username,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
-         EditUserRoute.name,
-         args: EditUserRouteArgs(username: username, key: key),
-         rawPathParams: {'username': username},
-         initialChildren: children,
-       );
+  EditUserRoute({required int userId, Key? key, List<PageRouteInfo>? children})
+    : super(
+        EditUserRoute.name,
+        args: EditUserRouteArgs(userId: userId, key: key),
+        rawPathParams: {'user_id': userId},
+        initialChildren: children,
+      );
 
   static const String name = 'EditUserRoute';
 
@@ -254,35 +251,34 @@ class EditUserRoute extends PageRouteInfo<EditUserRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<EditUserRouteArgs>(
-        orElse: () =>
-            EditUserRouteArgs(username: pathParams.getString('username')),
+        orElse: () => EditUserRouteArgs(userId: pathParams.getInt('user_id')),
       );
-      return EditUserPage(username: args.username, key: args.key);
+      return EditUserPage(userId: args.userId, key: args.key);
     },
   );
 }
 
 class EditUserRouteArgs {
-  const EditUserRouteArgs({required this.username, this.key});
+  const EditUserRouteArgs({required this.userId, this.key});
 
-  final String username;
+  final int userId;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'EditUserRouteArgs{username: $username, key: $key}';
+    return 'EditUserRouteArgs{userId: $userId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! EditUserRouteArgs) return false;
-    return username == other.username && key == other.key;
+    return userId == other.userId && key == other.key;
   }
 
   @override
-  int get hashCode => username.hashCode ^ key.hashCode;
+  int get hashCode => userId.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -631,13 +627,13 @@ class TiersTabRoute extends PageRouteInfo<void> {
 /// [UserDetailsPage]
 class UserDetailsRoute extends PageRouteInfo<UserDetailsRouteArgs> {
   UserDetailsRoute({
-    required String username,
+    required int userId,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          UserDetailsRoute.name,
-         args: UserDetailsRouteArgs(username: username, key: key),
-         rawPathParams: {'username': username},
+         args: UserDetailsRouteArgs(userId: userId, key: key),
+         rawPathParams: {'user_id': userId},
          initialChildren: children,
        );
 
@@ -649,34 +645,34 @@ class UserDetailsRoute extends PageRouteInfo<UserDetailsRouteArgs> {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<UserDetailsRouteArgs>(
         orElse: () =>
-            UserDetailsRouteArgs(username: pathParams.getString('username')),
+            UserDetailsRouteArgs(userId: pathParams.getInt('user_id')),
       );
-      return UserDetailsPage(username: args.username, key: args.key);
+      return UserDetailsPage(userId: args.userId, key: args.key);
     },
   );
 }
 
 class UserDetailsRouteArgs {
-  const UserDetailsRouteArgs({required this.username, this.key});
+  const UserDetailsRouteArgs({required this.userId, this.key});
 
-  final String username;
+  final int userId;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'UserDetailsRouteArgs{username: $username, key: $key}';
+    return 'UserDetailsRouteArgs{userId: $userId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! UserDetailsRouteArgs) return false;
-    return username == other.username && key == other.key;
+    return userId == other.userId && key == other.key;
   }
 
   @override
-  int get hashCode => username.hashCode ^ key.hashCode;
+  int get hashCode => userId.hashCode ^ key.hashCode;
 }
 
 /// generated route for

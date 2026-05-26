@@ -100,7 +100,7 @@ class AuthCubit extends Cubit<AuthState> {
     return s is AuthAuthenticated ? s.currentUser : null;
   }
 
-  bool isMe(String username) => currentUser?.username == username;
+  bool isMe(int userId) => currentUser?.id == userId;
 
   @override
   Future<void> close() {

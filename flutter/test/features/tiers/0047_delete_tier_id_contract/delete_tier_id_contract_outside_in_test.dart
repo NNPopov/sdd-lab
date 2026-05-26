@@ -35,6 +35,7 @@ void main() {
     cubit = DeleteTierCubit(useCase, authCubit);
     when(() => authCubit.currentUser).thenReturn(
       const CurrentUser(
+        id: 1,
         username: 'admin',
         email: 'admin@example.com',
         name: 'Admin',
