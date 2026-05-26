@@ -11,8 +11,8 @@ class UserPostsUseCase {
   final UserPostsPort _port;
 
   Future<Either<Failure, PaginatedPosts>> call({
-    required String username,
+    required int userId,
     required int page,
     required int perPage,
-  }) => _port(username: username, page: page, perPage: perPage);
+  }) => _port(userId: userId, page: page, perPage: perPage);
 }

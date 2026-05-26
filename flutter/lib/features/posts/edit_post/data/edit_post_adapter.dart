@@ -20,7 +20,7 @@ class EditPostAdapter implements EditPostPort {
     try {
       try {
         await _api.patchPost(
-          data.username,
+          data.userId,
           data.id,
           UpdatePostRequestDto(
             title: data.title,

@@ -44,7 +44,7 @@ void main() {
   late _MockAuthCubit authCubit;
   late _MockPostEventBus eventBus;
 
-  const username = 'alice';
+  const userId = 7;
   const postId = 42;
 
   setUp(() {
@@ -90,14 +90,14 @@ void main() {
         when(() => authCubit.currentUser).thenReturn(_superuser);
         when(
           () => useCase(
-            username: username,
+            userId: userId,
             id: postId,
             isSuperuser: true,
           ),
         ).thenAnswer((_) async => const Right(unit));
         when(() => eventBus.publish(any())).thenReturn(null);
       },
-      act: (c) => c.confirmAndErase(username, postId),
+      act: (c) => c.confirmAndErase(userId, postId),
       expect: () => [
         const EraseDbPostState.deleting(),
         const EraseDbPostState.success(),
@@ -122,7 +122,7 @@ void main() {
         when(() => authCubit.currentUser).thenReturn(_superuser);
         when(
           () => useCase(
-            username: username,
+            userId: userId,
             id: postId,
             isSuperuser: true,
           ),
@@ -130,7 +130,7 @@ void main() {
           (_) async => const Left(Failure.forbidden(message: 'Forbidden')),
         );
       },
-      act: (c) => c.confirmAndErase(username, postId),
+      act: (c) => c.confirmAndErase(userId, postId),
       expect: () => [
         const EraseDbPostState.deleting(),
         const EraseDbPostState.failure(
@@ -150,7 +150,7 @@ void main() {
         when(() => authCubit.currentUser).thenReturn(_regularUser);
         when(
           () => useCase(
-            username: username,
+            userId: userId,
             id: postId,
             isSuperuser: false,
           ),
@@ -158,7 +158,7 @@ void main() {
           (_) async => const Left(Failure.permissionDenied()),
         );
       },
-      act: (c) => c.confirmAndErase(username, postId),
+      act: (c) => c.confirmAndErase(userId, postId),
       expect: () => [
         const EraseDbPostState.deleting(),
         const EraseDbPostState.failure(Failure.permissionDenied()),

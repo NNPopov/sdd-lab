@@ -29,6 +29,9 @@ class _MockDeletePostCubit extends MockCubit<DeletePostState>
 class _MockEraseDbPostCubit extends MockCubit<EraseDbPostState>
     implements EraseDbPostCubit {}
 
+// getPost carries no handle (the loaded post's username is null). Since slice
+// 0052 the action row keys Delete/Erase by the route userId, so both render
+// regardless of the handle being absent.
 final _post = Post(
   id: 1,
   title: 'Test Post',
@@ -37,7 +40,6 @@ final _post = Post(
   createdByUserId: 1,
   postUuid: 'uuid-1',
   status: PostStatus.approved,
-  username: 'alice',
 );
 
 const _alice = CurrentUser(
@@ -50,11 +52,20 @@ const _alice = CurrentUser(
 );
 
 const _superuser = CurrentUser(
-  id: 1,
+  id: 2,
   username: 'admin',
   email: 'admin@example.com',
   name: 'Admin',
   isSuperuser: true,
+  isModerator: false,
+);
+
+const _regularUser = CurrentUser(
+  id: 3,
+  username: 'bob',
+  email: 'bob@example.com',
+  name: 'Bob',
+  isSuperuser: false,
   isModerator: false,
 );
 
@@ -69,7 +80,7 @@ Widget _wrap({
           BlocProvider<PostDetailsCubit>.value(value: postCubit),
           BlocProvider<AuthCubit>.value(value: authCubit),
         ],
-        child: const PostDetailsScreen(username: 'alice', id: 1),
+        child: const PostDetailsScreen(userId: 1, id: 1),
       ),
     ),
   );
@@ -118,7 +129,8 @@ void main() {
   });
 
   testWidgets(
-    'PostDetailsLoaded + author → edit and delete visible, erase absent',
+    'PostDetailsLoaded + author (id == userId) → delete and edit visible; '
+    'erase hidden (no handle needed since 0052)',
     (tester) async {
       when(
         () => postCubit.state,
@@ -134,13 +146,13 @@ void main() {
 
       expect(find.byIcon(Icons.edit_outlined), findsOneWidget);
       expect(find.byIcon(Icons.delete_outline), findsOneWidget);
-      expect(find.byIcon(Icons.auto_delete_outlined), findsNothing);
+      expect(find.byIcon(Icons.delete_forever), findsNothing);
     },
   );
 
   testWidgets(
-    'PostDetailsLoaded + superuser (not author) → erase visible, '
-    'edit and delete absent',
+    'PostDetailsLoaded + superuser (id != userId) → erase visible; '
+    'delete and edit hidden (no handle needed since 0052)',
     (tester) async {
       when(
         () => postCubit.state,
@@ -154,8 +166,30 @@ void main() {
       );
       await tester.pump();
 
+      expect(find.byIcon(Icons.delete_forever), findsOneWidget);
       expect(find.byIcon(Icons.edit_outlined), findsNothing);
       expect(find.byIcon(Icons.delete_outline), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'PostDetailsLoaded + non-author non-superuser → no actions',
+    (tester) async {
+      when(
+        () => postCubit.state,
+      ).thenReturn(PostDetailsState.loaded(post: _post));
+      when(() => authCubit.state).thenReturn(
+        const AuthState.authenticated(currentUser: _regularUser),
+      );
+
+      await tester.pumpWidget(
+        _wrap(postCubit: postCubit, authCubit: authCubit),
+      );
+      await tester.pump();
+
+      expect(find.byIcon(Icons.edit_outlined), findsNothing);
+      expect(find.byIcon(Icons.delete_outline), findsNothing);
+      expect(find.byIcon(Icons.delete_forever), findsNothing);
     },
   );
 

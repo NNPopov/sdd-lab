@@ -279,7 +279,7 @@ void main() {
 
       final captured = verify(() => router.push(captureAny())).captured;
       final route = captured.first as CreatePostRoute;
-      expect(route.args!.username, 'alice');
+      expect(route.args!.userId, 1);
     },
   );
 }

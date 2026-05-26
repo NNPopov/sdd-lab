@@ -30,12 +30,12 @@ void main() {
     });
 
     blocTest<PostDetailsCubit, PostDetailsState>(
-      'load(username, id) → Right(post) → emits [loading, loaded(post)]',
+      'load(userId, id) → Right(post) → emits [loading, loaded(post)]',
       build: () {
         when(() => useCase(any(), any())).thenAnswer((_) async => Right(post));
         return PostDetailsCubit(useCase);
       },
-      act: (cubit) => cubit.load('testuser', 1),
+      act: (cubit) => cubit.load(42, 1),
       expect: () => [
         const PostDetailsState.loading(),
         PostDetailsState.loaded(post: post),
@@ -43,7 +43,7 @@ void main() {
     );
 
     blocTest<PostDetailsCubit, PostDetailsState>(
-      'load(username, id) → Left(NotFoundFailure) '
+      'load(userId, id) → Left(NotFoundFailure) '
       '→ emits [loading, error(NotFoundFailure)]',
       build: () {
         when(
@@ -51,7 +51,7 @@ void main() {
         ).thenAnswer((_) async => const Left(Failure.notFound()));
         return PostDetailsCubit(useCase);
       },
-      act: (cubit) => cubit.load('testuser', 999),
+      act: (cubit) => cubit.load(42, 999),
       expect: () => [
         const PostDetailsState.loading(),
         const PostDetailsState.error(failure: Failure.notFound()),
@@ -59,7 +59,7 @@ void main() {
     );
 
     blocTest<PostDetailsCubit, PostDetailsState>(
-      'load(username, id) → Left(UnknownFailure) '
+      'load(userId, id) → Left(UnknownFailure) '
       '→ emits [loading, error(UnknownFailure)]',
       build: () {
         when(
@@ -67,7 +67,7 @@ void main() {
         ).thenAnswer((_) async => const Left(Failure.unknown()));
         return PostDetailsCubit(useCase);
       },
-      act: (cubit) => cubit.load('testuser', 1),
+      act: (cubit) => cubit.load(42, 1),
       expect: () => [
         const PostDetailsState.loading(),
         const PostDetailsState.error(failure: Failure.unknown()),

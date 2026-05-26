@@ -29,21 +29,21 @@ void main() {
       useCase = GetPostUseCase(port);
     });
 
-    test('call(username, id) → port Right(post) → Right(post)', () async {
-      when(() => port('testuser', 1)).thenAnswer((_) async => Right(post));
+    test('call(userId, id) → port Right(post) → Right(post)', () async {
+      when(() => port(42, 1)).thenAnswer((_) async => Right(post));
 
-      final result = await useCase('testuser', 1);
+      final result = await useCase(42, 1);
 
       expect(result, Right<Failure, Post>(post));
     });
 
-    test('call(username, id) → port Left(NotFoundFailure) '
+    test('call(userId, id) → port Left(NotFoundFailure) '
         '→ Left(NotFoundFailure)', () async {
       when(
-        () => port('testuser', 999),
+        () => port(42, 999),
       ).thenAnswer((_) async => const Left(Failure.notFound()));
 
-      final result = await useCase('testuser', 999);
+      final result = await useCase(42, 999);
 
       expect(result, const Left<Failure, Post>(Failure.notFound()));
     });

@@ -15,17 +15,17 @@ class GetPostAdapter implements PostDetailsPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, Post>> call(String username, int id) async {
+  Future<Either<Failure, Post>> call(int userId, int id) async {
     try {
       try {
-        final dto = await _api.getPost(username, id);
+        final dto = await _api.getPost(userId, id);
         return Right(
           Post(
             id: dto.id,
             title: dto.title,
             text: dto.text,
             createdAt: dto.createdAt ?? DateTime(0),
-            createdByUserId: dto.createdByUserId ?? 0,
+            createdByUserId: dto.createdByUserId,
             mediaUrl: dto.mediaUrl,
             postUuid: dto.postUuid,
             status: _parseStatus(dto.status),

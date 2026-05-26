@@ -13,7 +13,7 @@ sealed class PostDto with _$PostDto {
     @Default('') String text,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'media_url') String? mediaUrl,
-    @JsonKey(name: 'created_by_user_id') int? createdByUserId,
+    @JsonKey(name: 'created_by_user_id') required int createdByUserId,
   }) = _PostDto;
 
   factory PostDto.fromJson(Map<String, dynamic> json) =>

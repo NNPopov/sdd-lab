@@ -8,17 +8,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @RoutePage()
 class UserPostsPage extends StatelessWidget {
   const UserPostsPage({
-    @PathParam('username') required this.username,
+    @PathParam('user_id') required this.userId,
+    required this.username,
     super.key,
   });
 
+  final int userId;
   final String username;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<UserPostsCubit>(),
-      child: UserPostsScreen(username: username),
+      child: UserPostsScreen(userId: userId, username: username),
     );
   }
 }

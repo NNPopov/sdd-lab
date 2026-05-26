@@ -54,7 +54,7 @@ class _PostsApiClient implements PostsApiClient {
 
   @override
   Future<PaginatedPostsDto> getUserPosts(
-    String username, {
+    int userId, {
     required int page,
     required int perPage,
   }) async {
@@ -69,7 +69,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/posts',
+            '/${userId}/posts',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -87,7 +87,7 @@ class _PostsApiClient implements PostsApiClient {
   }
 
   @override
-  Future<PostDto> createPost(String username, CreatePostRequestDto body) async {
+  Future<PostDto> createPost(int userId, CreatePostRequestDto body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -96,7 +96,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/post',
+            '/${userId}/post',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -114,7 +114,7 @@ class _PostsApiClient implements PostsApiClient {
   }
 
   @override
-  Future<PostDto> getPost(String username, int id) async {
+  Future<PostDto> getPost(int userId, int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -123,7 +123,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/post/${id}',
+            '/${userId}/post/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -141,11 +141,7 @@ class _PostsApiClient implements PostsApiClient {
   }
 
   @override
-  Future<void> patchPost(
-    String username,
-    int id,
-    UpdatePostRequestDto body,
-  ) async {
+  Future<void> patchPost(int userId, int id, UpdatePostRequestDto body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -154,7 +150,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/post/${id}',
+            '/${userId}/post/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -164,7 +160,7 @@ class _PostsApiClient implements PostsApiClient {
   }
 
   @override
-  Future<void> deletePost(String username, int id) async {
+  Future<void> deletePost(int userId, int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -173,7 +169,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/post/${id}',
+            '/${userId}/post/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -183,7 +179,7 @@ class _PostsApiClient implements PostsApiClient {
   }
 
   @override
-  Future<void> eraseDbPost(String username, int id) async {
+  Future<void> eraseDbPost(int userId, int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -192,7 +188,7 @@ class _PostsApiClient implements PostsApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${username}/db_post/${id}',
+            '/${userId}/db_post/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

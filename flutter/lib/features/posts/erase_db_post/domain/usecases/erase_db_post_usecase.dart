@@ -10,11 +10,11 @@ class EraseDbPostUseCase {
   final EraseDbPostPort _port;
 
   Future<Either<Failure, Unit>> call({
-    required String username,
+    required int userId,
     required int id,
     required bool isSuperuser,
   }) async {
     if (!isSuperuser) return const Left(Failure.permissionDenied());
-    return _port(username, id);
+    return _port(userId, id);
   }
 }

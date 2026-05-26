@@ -24,6 +24,7 @@ class _MockStackRouter extends Mock implements StackRouter {}
 
 class _FakePageRouteInfo extends Fake implements PageRouteInfo<dynamic> {}
 
+const _userId = 1;
 const _username = 'alice';
 
 const _aliceUser = CurrentUser(
@@ -36,7 +37,7 @@ const _aliceUser = CurrentUser(
 );
 
 const _bobUser = CurrentUser(
-  id: 1,
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -113,7 +114,8 @@ void main() {
     });
 
     testWidgets(
-      'T-04: tap Open pushes PostDetailsRoute with correct username and id',
+      'T-04: tap Open pushes PostDetailsRoute with the post author user id '
+      'and id',
       (tester) async {
         when(() => cubit.state).thenReturn(
           UserPostsState.loaded(
@@ -125,7 +127,7 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithRouter(
-            const UserPostsScreen(username: _username),
+            const UserPostsScreen(userId: _userId, username: _username),
             cubit,
             mockRouter,
             authCubit,
@@ -137,7 +139,7 @@ void main() {
 
         final captured = verify(() => mockRouter.push(captureAny())).captured;
         final route = captured.first as PostDetailsRoute;
-        expect(route.args!.username, _username);
+        expect(route.args!.userId, _posts.first.createdByUserId);
         expect(route.args!.id, _posts.first.id);
       },
     );
@@ -155,7 +157,7 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithRouter(
-            const UserPostsScreen(username: _username),
+            const UserPostsScreen(userId: _userId, username: _username),
             cubit,
             mockRouter,
             authCubit,
@@ -201,7 +203,7 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithRouter(
-            const UserPostsScreen(username: _username),
+            const UserPostsScreen(userId: _userId, username: _username),
             cubit,
             mockRouter,
             authCubit,
@@ -221,7 +223,7 @@ void main() {
 
         await tester.pumpWidget(
           _wrapWithRouter(
-            const UserPostsScreen(username: _username),
+            const UserPostsScreen(userId: _userId, username: _username),
             cubit,
             mockRouter,
             authCubit,

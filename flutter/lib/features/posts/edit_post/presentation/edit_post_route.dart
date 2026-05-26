@@ -11,12 +11,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EditPostPage extends StatelessWidget {
   const EditPostPage({
     required this.post,
-    required this.username,
     super.key,
   });
 
   final Post post;
-  final String username;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +23,7 @@ class EditPostPage extends StatelessWidget {
         BlocProvider(create: (_) => getIt<EditPostCubit>()),
         BlocProvider(create: (_) => getIt<ModerationLogCubit>()),
       ],
-      child: EditPostScreen(post: post, username: username),
+      child: EditPostScreen(post: post),
     );
   }
 }

@@ -20,7 +20,7 @@ void main() {
   late EditPostAdapter adapter;
 
   const data = UpdatedPostData(
-    username: 'alice',
+    userId: 42,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.pendingReview,
@@ -56,12 +56,20 @@ void main() {
   );
 
   group('call', () {
-    test('success → Right(null)', () async {
+    test('success → Right(null), patchPost called with integer userId '
+        'and unchanged body', () async {
       mockApiSuccess();
 
       final result = await adapter(data);
 
       expect(result, const Right<Failure, void>(null));
+      final captured = verify(
+        () => api.patchPost(42, 1, captureAny()),
+      ).captured;
+      final body = captured.single as UpdatePostRequestDto;
+      expect(body.title, 'Updated Title');
+      expect(body.text, 'Updated text');
+      expect(body.mediaUrl, isNull);
     });
 
     test('DioException 401 → Left(UnauthorizedFailure)', () async {

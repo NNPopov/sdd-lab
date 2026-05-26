@@ -11,9 +11,9 @@ import 'package:flutter_application_1/features/posts/create_post/domain/entities
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreatePostScreen extends StatefulWidget {
-  const CreatePostScreen({required this.username, super.key});
+  const CreatePostScreen({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   State<CreatePostScreen> createState() => _CreatePostScreenState();
@@ -39,7 +39,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     unawaited(
       context.read<CreatePostCubit>().submit(
         NewPostData(
-          username: widget.username,
+          userId: widget.userId,
           title: _titleController.text.trim(),
           text: _textController.text.trim(),
           mediaUrl: mediaUrl.isEmpty ? null : mediaUrl,

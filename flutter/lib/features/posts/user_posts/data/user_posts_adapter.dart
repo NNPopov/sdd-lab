@@ -18,14 +18,14 @@ class UserPostsAdapter implements UserPostsPort {
 
   @override
   Future<Either<Failure, PaginatedPosts>> call({
-    required String username,
+    required int userId,
     required int page,
     required int perPage,
   }) async {
     try {
       try {
         final dto = await _api.getUserPosts(
-          username,
+          userId,
           page: page,
           perPage: perPage,
         );
@@ -38,7 +38,7 @@ class UserPostsAdapter implements UserPostsPort {
                     title: p.title,
                     text: p.text,
                     createdAt: p.createdAt ?? DateTime(0),
-                    createdByUserId: p.createdByUserId ?? 0,
+                    createdByUserId: p.createdByUserId,
                     mediaUrl: p.mediaUrl,
                     username: p.username,
                     postUuid: p.postUuid,

@@ -2,7 +2,7 @@ import 'package:flutter_application_1/features/posts/_shared/domain/entities/pos
 
 class UpdatedPostData {
   const UpdatedPostData({
-    required this.username,
+    required this.userId,
     required this.id,
     required this.postUuid,
     required this.status,
@@ -12,7 +12,7 @@ class UpdatedPostData {
     this.revisionMessage,
   });
 
-  final String username;
+  final int userId;
   final int id;
   final String postUuid;
   final PostStatus status;

@@ -35,8 +35,8 @@ abstract class UsersApiClient {
   @DELETE('/user/{user_id}')
   Future<void> deleteUser(@Path('user_id') int userId);
 
-  @DELETE('/db_user/{username}')
-  Future<void> eraseDbUser(@Path('username') String username);
+  @DELETE('/db_user/{user_id}')
+  Future<void> eraseDbUser(@Path('user_id') int userId);
 
   @GET('/user/{username}/tier')
   Future<UserTierDto> getUserTier(@Path('username') String username);

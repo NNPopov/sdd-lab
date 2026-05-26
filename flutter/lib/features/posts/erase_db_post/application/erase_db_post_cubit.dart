@@ -23,10 +23,10 @@ class EraseDbPostCubit extends Cubit<EraseDbPostState> {
     }
   }
 
-  Future<void> confirmAndErase(String username, int id) async {
+  Future<void> confirmAndErase(int userId, int id) async {
     emit(const EraseDbPostState.deleting());
     final result = await _eraseDbPost(
-      username: username,
+      userId: userId,
       id: id,
       isSuperuser: _authCubit.currentUser?.isSuperuser ?? false,
     );

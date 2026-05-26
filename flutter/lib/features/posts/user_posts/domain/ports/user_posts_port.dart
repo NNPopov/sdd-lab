@@ -4,7 +4,7 @@ import 'package:flutter_application_1/features/posts/_shared/domain/entities/pag
 
 abstract class UserPostsPort {
   Future<Either<Failure, PaginatedPosts>> call({
-    required String username,
+    required int userId,
     required int page,
     required int perPage,
   });

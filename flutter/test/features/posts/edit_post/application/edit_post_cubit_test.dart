@@ -16,7 +16,7 @@ void main() {
   late EditPostCubit cubit;
 
   const data = UpdatedPostData(
-    username: 'alice',
+    userId: 42,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.pendingReview,
@@ -68,7 +68,7 @@ void main() {
     },
     act: (c) => c.submit(
       const UpdatedPostData(
-        username: 'alice',
+        userId: 42,
         id: 1,
         postUuid: 'post-uuid-001',
         status: PostStatus.changesRequested,

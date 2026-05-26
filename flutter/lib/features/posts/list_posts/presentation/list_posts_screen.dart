@@ -52,7 +52,7 @@ class _ListPostsScreenState extends State<ListPostsScreen> {
           return FloatingActionButton(
             tooltip: t.posts.listPosts.fabTooltip,
             onPressed: () => context.router.push(
-              CreatePostRoute(username: authState.currentUser!.username),
+              CreatePostRoute(userId: authState.currentUser!.id),
             ),
             child: const Icon(Icons.add),
           );
@@ -79,7 +79,7 @@ class _ListPostsScreenState extends State<ListPostsScreen> {
                             post: posts[index],
                             onOpenTap: () => context.router.push(
                               PostDetailsRoute(
-                                username: posts[index].username!,
+                                userId: posts[index].createdByUserId,
                                 id: posts[index].id,
                               ),
                             ),

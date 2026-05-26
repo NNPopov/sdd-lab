@@ -103,7 +103,7 @@ void main() {
         ]),
       );
 
-      await cubit.load('userson1');
+      await cubit.load(2);
       await expectation;
 
       verifyNever(
@@ -131,7 +131,7 @@ void main() {
         ]),
       );
 
-      await cubit.load('userson1');
+      await cubit.load(2);
       await expectation;
 
       verifyNever(

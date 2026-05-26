@@ -14,7 +14,7 @@ class CreatePostUseCase {
 
   Future<Either<Failure, void>> call(NewPostData data) async {
     final currentUser = _authCubit.currentUser;
-    if (currentUser == null || currentUser.username != data.username) {
+    if (currentUser == null || currentUser.id != data.userId) {
       return const Left(
         Failure.forbidden(message: 'Cannot post as another user'),
       );

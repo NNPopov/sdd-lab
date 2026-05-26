@@ -145,7 +145,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> eraseDbUser(String username) async {
+  Future<void> eraseDbUser(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -154,7 +154,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/db_user/${username}',
+            '/db_user/${userId}',
             queryParameters: queryParameters,
             data: _data,
           )

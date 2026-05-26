@@ -20,7 +20,7 @@ void main() {
   late CreatePostAdapter adapter;
 
   const data = NewPostData(
-    username: 'alice',
+    userId: 1,
     title: 'My Post',
     text: 'body text',
   );
@@ -41,6 +41,7 @@ void main() {
         id: 1,
         postUuid: '',
         status: 'pending_review',
+        createdByUserId: 1,
       ),
     );
   }

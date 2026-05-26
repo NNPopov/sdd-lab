@@ -25,7 +25,7 @@ void main() {
   late _MockAppLogger logger;
   late DeletePostAdapter adapter;
 
-  const username = 'alice';
+  const userId = 7;
   const postId = 42;
 
   setUp(() {
@@ -36,19 +36,19 @@ void main() {
 
   group('DeletePostAdapter', () {
     test('returns Right(unit) on success', () async {
-      when(() => api.deletePost(username, postId)).thenAnswer((_) async {});
+      when(() => api.deletePost(userId, postId)).thenAnswer((_) async {});
 
-      final result = await adapter(username, postId);
+      final result = await adapter(userId, postId);
 
       expect(result, const Right<Failure, Unit>(unit));
     });
 
     test('returns Left(UnauthorizedFailure) on 401', () async {
       when(
-        () => api.deletePost(username, postId),
+        () => api.deletePost(userId, postId),
       ).thenThrow(_makeDioError(401));
 
-      final result = await adapter(username, postId);
+      final result = await adapter(userId, postId);
 
       result.fold(
         (f) => expect(f, isA<UnauthorizedFailure>()),
@@ -58,10 +58,10 @@ void main() {
 
     test('returns Left(ForbiddenFailure) on 403', () async {
       when(
-        () => api.deletePost(username, postId),
+        () => api.deletePost(userId, postId),
       ).thenThrow(_makeDioError(403));
 
-      final result = await adapter(username, postId);
+      final result = await adapter(userId, postId);
 
       result.fold(
         (f) => expect(f, isA<ForbiddenFailure>()),
@@ -71,10 +71,10 @@ void main() {
 
     test('returns Left(NotFoundFailure) on 404', () async {
       when(
-        () => api.deletePost(username, postId),
+        () => api.deletePost(userId, postId),
       ).thenThrow(_makeDioError(404));
 
-      final result = await adapter(username, postId);
+      final result = await adapter(userId, postId);
 
       result.fold(
         (f) => expect(f, isA<NotFoundFailure>()),
@@ -84,10 +84,10 @@ void main() {
 
     test('returns Left(NetworkFailure) on 500', () async {
       when(
-        () => api.deletePost(username, postId),
+        () => api.deletePost(userId, postId),
       ).thenThrow(_makeDioError(500));
 
-      final result = await adapter(username, postId);
+      final result = await adapter(userId, postId);
 
       result.fold(
         (f) => expect(f, isA<NetworkFailure>()),
@@ -100,7 +100,7 @@ void main() {
       'exception',
       () async {
         when(
-          () => api.deletePost(username, postId),
+          () => api.deletePost(userId, postId),
         ).thenThrow(Exception('unexpected'));
         when(
           () => logger.error(
@@ -110,7 +110,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter(username, postId);
+        final result = await adapter(userId, postId);
 
         result.fold(
           (f) => expect(f, isA<UnknownFailure>()),

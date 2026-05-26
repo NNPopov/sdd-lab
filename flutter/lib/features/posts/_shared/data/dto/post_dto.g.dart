@@ -16,7 +16,7 @@ _PostDto _$PostDtoFromJson(Map<String, dynamic> json) => _PostDto(
       ? null
       : DateTime.parse(json['created_at'] as String),
   mediaUrl: json['media_url'] as String?,
-  createdByUserId: (json['created_by_user_id'] as num?)?.toInt(),
+  createdByUserId: (json['created_by_user_id'] as num).toInt(),
 );
 
 Map<String, dynamic> _$PostDtoToJson(_PostDto instance) => <String, dynamic>{

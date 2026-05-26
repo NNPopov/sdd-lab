@@ -22,41 +22,41 @@ abstract class PostsApiClient {
     @Query('items_per_page') required int perPage,
   });
 
-  @GET('/{username}/posts')
+  @GET('/{user_id}/posts')
   Future<PaginatedPostsDto> getUserPosts(
-    @Path('username') String username, {
+    @Path('user_id') int userId, {
     @Query('page') required int page,
     @Query('items_per_page') required int perPage,
   });
 
-  @POST('/{username}/post')
+  @POST('/{user_id}/post')
   Future<PostDto> createPost(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Body() CreatePostRequestDto body,
   );
 
-  @GET('/{username}/post/{id}')
+  @GET('/{user_id}/post/{id}')
   Future<PostDto> getPost(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Path('id') int id,
   );
 
-  @PATCH('/{username}/post/{id}')
+  @PATCH('/{user_id}/post/{id}')
   Future<void> patchPost(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Path('id') int id,
     @Body() UpdatePostRequestDto body,
   );
 
-  @DELETE('/{username}/post/{id}')
+  @DELETE('/{user_id}/post/{id}')
   Future<void> deletePost(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Path('id') int id,
   );
 
-  @DELETE('/{username}/db_post/{id}')
+  @DELETE('/{user_id}/db_post/{id}')
   Future<void> eraseDbPost(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Path('id') int id,
   );
 

@@ -20,15 +20,15 @@ void main() {
     test(
       'returns Right(unit) and calls port when isSuperuser is true',
       () async {
-        when(() => port('testuser')).thenAnswer((_) async => const Right(unit));
+        when(() => port(1)).thenAnswer((_) async => const Right(unit));
 
         final result = await useCase(
-          username: 'testuser',
+          userId: 1,
           isSuperuser: true,
         );
 
         expect(result, const Right<Failure, Unit>(unit));
-        verify(() => port('testuser')).called(1);
+        verify(() => port(1)).called(1);
       },
     );
 
@@ -37,7 +37,7 @@ void main() {
       'when isSuperuser is false',
       () async {
         final result = await useCase(
-          username: 'testuser',
+          userId: 1,
           isSuperuser: false,
         );
 

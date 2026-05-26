@@ -31,6 +31,8 @@ class _MockDeletePostCubit extends MockCubit<DeletePostState>
 class _MockEraseDbPostCubit extends MockCubit<EraseDbPostState>
     implements EraseDbPostCubit {}
 
+// Authorship in the body is decided by id (currentUser.id ==
+// post.createdByUserId); getPost carries no handle, so username stays null.
 final _post = Post(
   id: 1,
   title: 'My Post',
@@ -39,7 +41,6 @@ final _post = Post(
   createdByUserId: 1,
   postUuid: 'uuid-1',
   status: PostStatus.approved,
-  username: 'alice',
 );
 
 const _alice = CurrentUser(
@@ -52,7 +53,7 @@ const _alice = CurrentUser(
 );
 
 const _bob = CurrentUser(
-  id: 1,
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -71,7 +72,7 @@ Widget _wrap({
           BlocProvider<PostDetailsCubit>.value(value: postCubit),
           BlocProvider<AuthCubit>.value(value: authCubit),
         ],
-        child: const PostDetailsScreen(username: 'alice', id: 1),
+        child: const PostDetailsScreen(userId: 1, id: 1),
       ),
     ),
   );

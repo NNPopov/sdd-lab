@@ -17,7 +17,7 @@ _PostItemDto _$PostItemDtoFromJson(Map<String, dynamic> json) => _PostItemDto(
   createdAt: json['created_at'] == null
       ? null
       : DateTime.parse(json['created_at'] as String),
-  createdByUserId: (json['created_by_user_id'] as num?)?.toInt(),
+  createdByUserId: (json['created_by_user_id'] as num).toInt(),
 );
 
 Map<String, dynamic> _$PostItemDtoToJson(_PostItemDto instance) =>

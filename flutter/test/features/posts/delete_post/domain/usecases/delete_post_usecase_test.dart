@@ -21,7 +21,7 @@ const _alice = CurrentUser(
 );
 
 const _bob = CurrentUser(
-  id: 1,
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -34,7 +34,7 @@ void main() {
   late _MockAuthCubit authCubit;
   late DeletePostUseCase useCase;
 
-  const username = 'alice';
+  const userId = 1;
   const postId = 42;
 
   setUp(() {
@@ -53,7 +53,7 @@ void main() {
       () async {
         when(() => authCubit.currentUser).thenReturn(null);
 
-        final result = await useCase(username, postId);
+        final result = await useCase(userId, postId);
 
         expect(result, forbidden);
         verifyNever(() => port(any(), any()));
@@ -61,11 +61,11 @@ void main() {
     );
 
     test(
-      'returns ForbiddenFailure without calling port when username differs',
+      'returns ForbiddenFailure without calling port when id differs',
       () async {
         when(() => authCubit.currentUser).thenReturn(_bob);
 
-        final result = await useCase(username, postId);
+        final result = await useCase(userId, postId);
 
         expect(result, forbidden);
         verifyNever(() => port(any(), any()));
@@ -73,17 +73,17 @@ void main() {
     );
 
     test(
-      'delegates to port when username matches currentUser',
+      'delegates to port when id matches currentUser',
       () async {
         when(() => authCubit.currentUser).thenReturn(_alice);
         when(
-          () => port(username, postId),
+          () => port(userId, postId),
         ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
 
-        final result = await useCase(username, postId);
+        final result = await useCase(userId, postId);
 
         expect(result, const Right<Failure, Unit>(unit));
-        verify(() => port(username, postId)).called(1);
+        verify(() => port(userId, postId)).called(1);
       },
     );
   });

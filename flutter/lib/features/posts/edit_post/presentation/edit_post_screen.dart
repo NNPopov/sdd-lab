@@ -22,12 +22,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EditPostScreen extends StatefulWidget {
   const EditPostScreen({
     required this.post,
-    required this.username,
     super.key,
   });
 
   final Post post;
-  final String username;
 
   @override
   State<EditPostScreen> createState() => _EditPostScreenState();
@@ -99,7 +97,7 @@ class _EditPostScreenState extends State<EditPostScreen>
     unawaited(
       context.read<EditPostCubit>().submit(
         UpdatedPostData(
-          username: widget.username,
+          userId: widget.post.createdByUserId,
           id: widget.post.id,
           postUuid: widget.post.postUuid,
           status: widget.post.status,

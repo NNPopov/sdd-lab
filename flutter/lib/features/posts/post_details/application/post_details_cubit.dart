@@ -8,9 +8,9 @@ class PostDetailsCubit extends Cubit<PostDetailsState> {
   PostDetailsCubit(this._useCase) : super(const PostDetailsState.initial());
   final GetPostUseCase _useCase;
 
-  Future<void> load(String username, int id) async {
+  Future<void> load(int userId, int id) async {
     emit(const PostDetailsState.loading());
-    final result = await _useCase(username, id);
+    final result = await _useCase(userId, id);
     result.fold(
       (failure) => emit(PostDetailsState.error(failure: failure)),
       (post) => emit(PostDetailsState.loaded(post: post)),

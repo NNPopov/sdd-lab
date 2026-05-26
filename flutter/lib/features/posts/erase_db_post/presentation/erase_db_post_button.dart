@@ -12,27 +12,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EraseDbPostButton extends StatelessWidget {
   const EraseDbPostButton({
-    required this.username,
+    required this.userId,
     required this.id,
     super.key,
   });
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EraseDbPostCubit>(),
-      child: _EraseDbPostButtonInner(username: username, id: id),
+      child: _EraseDbPostButtonInner(userId: userId, id: id),
     );
   }
 }
 
 class _EraseDbPostButtonInner extends StatelessWidget {
-  const _EraseDbPostButtonInner({required this.username, required this.id});
+  const _EraseDbPostButtonInner({required this.userId, required this.id});
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -48,7 +48,7 @@ class _EraseDbPostButtonInner extends StatelessWidget {
             if (!context.mounted) return;
             if (confirmed == true) {
               unawaited(
-                context.read<EraseDbPostCubit>().confirmAndErase(username, id),
+                context.read<EraseDbPostCubit>().confirmAndErase(userId, id),
               );
             } else {
               context.read<EraseDbPostCubit>().cancel();

@@ -11,7 +11,7 @@ void main() {
   late _MockEraseDbPostPort port;
   late EraseDbPostUseCase useCase;
 
-  const username = 'alice';
+  const userId = 7;
   const postId = 42;
 
   setUp(() {
@@ -25,7 +25,7 @@ void main() {
       'when isSuperuser is false',
       () async {
         final result = await useCase(
-          username: username,
+          userId: userId,
           id: postId,
           isSuperuser: false,
         );
@@ -43,17 +43,17 @@ void main() {
       'when isSuperuser is true and port succeeds',
       () async {
         when(
-          () => port(username, postId),
+          () => port(userId, postId),
         ).thenAnswer((_) async => const Right(unit));
 
         final result = await useCase(
-          username: username,
+          userId: userId,
           id: postId,
           isSuperuser: true,
         );
 
         expect(result, const Right<Failure, Unit>(unit));
-        verify(() => port(username, postId)).called(1);
+        verify(() => port(userId, postId)).called(1);
       },
     );
 
@@ -62,13 +62,13 @@ void main() {
       'and port returns NotFoundFailure',
       () async {
         when(
-          () => port(username, postId),
+          () => port(userId, postId),
         ).thenAnswer(
           (_) async => const Left(Failure.notFound(message: 'Post not found')),
         );
 
         final result = await useCase(
-          username: username,
+          userId: userId,
           id: postId,
           isSuperuser: true,
         );

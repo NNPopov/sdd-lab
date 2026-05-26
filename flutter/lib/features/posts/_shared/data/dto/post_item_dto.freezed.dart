@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostItemDto {
 
- int get id; String get username;@JsonKey(name: 'post_uuid') String get postUuid; String get status; String get title; String get text;@JsonKey(name: 'media_url') String? get mediaUrl;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'created_by_user_id') int? get createdByUserId;
+ int get id; String get username;@JsonKey(name: 'post_uuid') String get postUuid; String get status; String get title; String get text;@JsonKey(name: 'media_url') String? get mediaUrl;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'created_by_user_id') int get createdByUserId;
 /// Create a copy of PostItemDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $PostItemDtoCopyWith<$Res>  {
   factory $PostItemDtoCopyWith(PostItemDto value, $Res Function(PostItemDto) _then) = _$PostItemDtoCopyWithImpl;
 @useResult
 $Res call({
- int id, String username,@JsonKey(name: 'post_uuid') String postUuid, String status, String title, String text,@JsonKey(name: 'media_url') String? mediaUrl,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'created_by_user_id') int? createdByUserId
+ int id, String username,@JsonKey(name: 'post_uuid') String postUuid, String status, String title, String text,@JsonKey(name: 'media_url') String? mediaUrl,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'created_by_user_id') int createdByUserId
 });
 
 
@@ -65,7 +65,7 @@ class _$PostItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PostItemDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? postUuid = null,Object? status = null,Object? title = null,Object? text = null,Object? mediaUrl = freezed,Object? createdAt = freezed,Object? createdByUserId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? postUuid = null,Object? status = null,Object? title = null,Object? text = null,Object? mediaUrl = freezed,Object? createdAt = freezed,Object? createdByUserId = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -75,8 +75,8 @@ as String,title: null == title ? _self.title : title // ignore: cast_nullable_to
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,mediaUrl: freezed == mediaUrl ? _self.mediaUrl : mediaUrl // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,createdByUserId: freezed == createdByUserId ? _self.createdByUserId : createdByUserId // ignore: cast_nullable_to_non_nullable
-as int?,
+as DateTime?,createdByUserId: null == createdByUserId ? _self.createdByUserId : createdByUserId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int? createdByUserId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int createdByUserId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostItemDto() when $default != null:
 return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,_that.text,_that.mediaUrl,_that.createdAt,_that.createdByUserId);case _:
@@ -179,7 +179,7 @@ return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int? createdByUserId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int createdByUserId)  $default,) {final _that = this;
 switch (_that) {
 case _PostItemDto():
 return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,_that.text,_that.mediaUrl,_that.createdAt,_that.createdByUserId);}
@@ -196,7 +196,7 @@ return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int? createdByUserId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String username, @JsonKey(name: 'post_uuid')  String postUuid,  String status,  String title,  String text, @JsonKey(name: 'media_url')  String? mediaUrl, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'created_by_user_id')  int createdByUserId)?  $default,) {final _that = this;
 switch (_that) {
 case _PostItemDto() when $default != null:
 return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,_that.text,_that.mediaUrl,_that.createdAt,_that.createdByUserId);case _:
@@ -211,7 +211,7 @@ return $default(_that.id,_that.username,_that.postUuid,_that.status,_that.title,
 @JsonSerializable()
 
 class _PostItemDto implements PostItemDto {
-  const _PostItemDto({required this.id, required this.username, @JsonKey(name: 'post_uuid') required this.postUuid, required this.status, this.title = '', this.text = '', @JsonKey(name: 'media_url') this.mediaUrl, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'created_by_user_id') this.createdByUserId});
+  const _PostItemDto({required this.id, required this.username, @JsonKey(name: 'post_uuid') required this.postUuid, required this.status, this.title = '', this.text = '', @JsonKey(name: 'media_url') this.mediaUrl, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'created_by_user_id') required this.createdByUserId});
   factory _PostItemDto.fromJson(Map<String, dynamic> json) => _$PostItemDtoFromJson(json);
 
 @override final  int id;
@@ -222,7 +222,7 @@ class _PostItemDto implements PostItemDto {
 @override@JsonKey() final  String text;
 @override@JsonKey(name: 'media_url') final  String? mediaUrl;
 @override@JsonKey(name: 'created_at') final  DateTime? createdAt;
-@override@JsonKey(name: 'created_by_user_id') final  int? createdByUserId;
+@override@JsonKey(name: 'created_by_user_id') final  int createdByUserId;
 
 /// Create a copy of PostItemDto
 /// with the given fields replaced by the non-null parameter values.
@@ -257,7 +257,7 @@ abstract mixin class _$PostItemDtoCopyWith<$Res> implements $PostItemDtoCopyWith
   factory _$PostItemDtoCopyWith(_PostItemDto value, $Res Function(_PostItemDto) _then) = __$PostItemDtoCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String username,@JsonKey(name: 'post_uuid') String postUuid, String status, String title, String text,@JsonKey(name: 'media_url') String? mediaUrl,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'created_by_user_id') int? createdByUserId
+ int id, String username,@JsonKey(name: 'post_uuid') String postUuid, String status, String title, String text,@JsonKey(name: 'media_url') String? mediaUrl,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'created_by_user_id') int createdByUserId
 });
 
 
@@ -274,7 +274,7 @@ class __$PostItemDtoCopyWithImpl<$Res>
 
 /// Create a copy of PostItemDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? postUuid = null,Object? status = null,Object? title = null,Object? text = null,Object? mediaUrl = freezed,Object? createdAt = freezed,Object? createdByUserId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? postUuid = null,Object? status = null,Object? title = null,Object? text = null,Object? mediaUrl = freezed,Object? createdAt = freezed,Object? createdByUserId = null,}) {
   return _then(_PostItemDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -284,8 +284,8 @@ as String,title: null == title ? _self.title : title // ignore: cast_nullable_to
 as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,mediaUrl: freezed == mediaUrl ? _self.mediaUrl : mediaUrl // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,createdByUserId: freezed == createdByUserId ? _self.createdByUserId : createdByUserId // ignore: cast_nullable_to_non_nullable
-as int?,
+as DateTime?,createdByUserId: null == createdByUserId ? _self.createdByUserId : createdByUserId // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

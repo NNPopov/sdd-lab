@@ -31,7 +31,7 @@ void main() {
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
   const data = NewPostData(
-    username: 'alice',
+    userId: 1,
     title: 'My Post',
     text: longText,
   );
@@ -44,7 +44,7 @@ void main() {
   });
 
   test(
-    'username matches currentUser → delegates to port and returns result',
+    'userId matches currentUser.id → delegates to port and returns result',
     () async {
       when(() => authCubit.currentUser).thenReturn(currentUser);
       when(() => port(any())).thenAnswer((_) async => const Right(null));
@@ -67,12 +67,12 @@ void main() {
     expect(result, const Left<Failure, void>(Failure.network()));
   });
 
-  test('username differs from currentUser → '
+  test('userId differs from currentUser.id → '
       'Left(ForbiddenFailure), port not called', () async {
     when(() => authCubit.currentUser).thenReturn(currentUser);
 
     const otherData = NewPostData(
-      username: 'bob',
+      userId: 2,
       title: 'My Post',
       text: longText,
     );

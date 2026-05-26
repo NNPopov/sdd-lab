@@ -12,23 +12,23 @@ import 'package:flutter_application_1/features/users/erase_db_user/presentation/
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EraseDbUserButton extends StatelessWidget {
-  const EraseDbUserButton({required this.username, super.key});
+  const EraseDbUserButton({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EraseDbUserCubit>(),
-      child: _EraseDbUserButtonInner(username: username),
+      child: _EraseDbUserButtonInner(userId: userId),
     );
   }
 }
 
 class _EraseDbUserButtonInner extends StatelessWidget {
-  const _EraseDbUserButtonInner({required this.username});
+  const _EraseDbUserButtonInner({required this.userId});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _EraseDbUserButtonInner extends StatelessWidget {
             if (!context.mounted) return;
             if (confirmed == true) {
               unawaited(
-                context.read<EraseDbUserCubit>().confirmAndDelete(username),
+                context.read<EraseDbUserCubit>().confirmAndDelete(userId),
               );
             } else {
               context.read<EraseDbUserCubit>().cancel();

@@ -14,7 +14,7 @@ sealed class PostItemDto with _$PostItemDto {
     @Default('') String text,
     @JsonKey(name: 'media_url') String? mediaUrl,
     @JsonKey(name: 'created_at') DateTime? createdAt,
-    @JsonKey(name: 'created_by_user_id') int? createdByUserId,
+    @JsonKey(name: 'created_by_user_id') required int createdByUserId,
   }) = _PostItemDto;
 
   factory PostItemDto.fromJson(Map<String, dynamic> json) =>

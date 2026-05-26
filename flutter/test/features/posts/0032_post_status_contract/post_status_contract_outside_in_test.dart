@@ -43,7 +43,7 @@ void main() {
   test(
     'load — known status "approved" — Post.status is approved and postUuid round-trips',
     () async {
-      when(() => api.getPost('alice', 42)).thenAnswer(
+      when(() => api.getPost(7, 42)).thenAnswer(
         (_) async => PostDto(
           id: 42,
           title: 'Hello',
@@ -73,7 +73,7 @@ void main() {
         ]),
       );
 
-      await cubit.load('alice', 42);
+      await cubit.load(7, 42);
       await expectation;
 
       verifyNever(() => logger.warning(any()));
@@ -90,7 +90,7 @@ void main() {
   test(
     'load — unknown status "archived" — Post.status falls back to pendingReview, warning logged',
     () async {
-      when(() => api.getPost('alice', 42)).thenAnswer(
+      when(() => api.getPost(7, 42)).thenAnswer(
         (_) async => PostDto(
           id: 42,
           title: 'Hello',
@@ -120,7 +120,7 @@ void main() {
         ]),
       );
 
-      await cubit.load('alice', 42);
+      await cubit.load(7, 42);
       await expectation;
 
       verify(() => logger.warning(any())).called(1);

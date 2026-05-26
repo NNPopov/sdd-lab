@@ -52,3 +52,6 @@
 | 0048 | core/auth | current_user_id_field | 📋 | [specs/features/core/0048_current_user_id_field/](features/core/0048_current_user_id_field/) |
 | 0049 | users | delete_user_route_to_user_id | 📋 | [specs/features/users/0049_delete_user_route_to_user_id/](features/users/0049_delete_user_route_to_user_id/) |
 | 0050 | users | user_details_edit_user_route_to_user_id | 📋 | [specs/features/users/0050_user_details_edit_user_route_to_user_id/](features/users/0050_user_details_edit_user_route_to_user_id/) |
+| 0051 | posts | post_details_edit_post_route_to_user_id | ✅ | [specs/features/posts/0051_post_details_edit_post_route_to_user_id/](features/posts/0051_post_details_edit_post_route_to_user_id/) |
+| 0052 | posts | delete_post_erase_db_post_route_to_user_id | 📋 | [specs/features/posts/0052_delete_post_erase_db_post_route_to_user_id/](features/posts/0052_delete_post_erase_db_post_route_to_user_id/) |
+| 0053 | posts | user_posts_create_post_route_to_user_id | 📋 | [specs/features/posts/0053_user_posts_create_post_route_to_user_id/](features/posts/0053_user_posts_create_post_route_to_user_id/) |

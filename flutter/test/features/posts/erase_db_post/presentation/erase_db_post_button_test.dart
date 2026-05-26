@@ -53,7 +53,7 @@ void main() {
           home: Scaffold(
             appBar: AppBar(
               actions: const [
-                EraseDbPostButton(username: 'alice', id: 42),
+                EraseDbPostButton(userId: 7, id: 42),
               ],
             ),
           ),
@@ -145,7 +145,7 @@ void main() {
       await tester.tap(find.text('Erase'));
       await tester.pumpAndSettle();
 
-      verify(() => mockCubit.confirmAndErase('alice', 42)).called(1);
+      verify(() => mockCubit.confirmAndErase(7, 42)).called(1);
 
       await controller.close();
     },

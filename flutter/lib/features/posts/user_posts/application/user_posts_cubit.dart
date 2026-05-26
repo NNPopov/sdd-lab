@@ -39,10 +39,10 @@ class UserPostsCubit extends Cubit<UserPostsState> {
     return super.close();
   }
 
-  Future<void> load(String username) async {
+  Future<void> load(int userId) async {
     emit(const UserPostsState.loading());
     final result = await _useCase(
-      username: username,
+      userId: userId,
       page: 1,
       perPage: _pageSize,
     );
@@ -58,10 +58,10 @@ class UserPostsCubit extends Cubit<UserPostsState> {
     );
   }
 
-  Future<void> refresh(String username) async {
+  Future<void> refresh(int userId) async {
     emit(const UserPostsState.loading());
     final result = await _useCase(
-      username: username,
+      userId: userId,
       page: 1,
       perPage: _pageSize,
     );
@@ -77,7 +77,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
     );
   }
 
-  Future<void> loadMore(String username) async {
+  Future<void> loadMore(int userId) async {
     final current = state;
     if (current is! UserPostsLoaded) return;
     if (!current.hasMore) return;
@@ -91,7 +91,7 @@ class UserPostsCubit extends Cubit<UserPostsState> {
     );
 
     final result = await _useCase(
-      username: username,
+      userId: userId,
       page: current.page + 1,
       perPage: _pageSize,
     );

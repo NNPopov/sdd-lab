@@ -9,6 +9,5 @@ class GetPostUseCase {
   GetPostUseCase(this._port);
   final PostDetailsPort _port;
 
-  Future<Either<Failure, Post>> call(String username, int id) =>
-      _port(username, id);
+  Future<Either<Failure, Post>> call(int userId, int id) => _port(userId, id);
 }

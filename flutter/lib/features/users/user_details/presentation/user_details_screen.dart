@@ -113,8 +113,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       : null,
                   tierLoading: tierState is GetUserTierLoading,
                   onPostsTap: () => context.router.push(
-                    // Posts routes are not migrated — bridge via the handle.
-                    UserPostsRoute(username: user.username),
+                    UserPostsRoute(
+                      userId: user.id,
+                      username: user.username,
+                    ),
                   ),
                 ),
               ),
@@ -217,8 +219,7 @@ class _UserDetailsAppBarActions extends StatelessWidget {
             },
           ),
         if (visibility.showDelete) DeleteAccountButton(userId: userId),
-        if (visibility.showErase && username != null)
-          EraseDbUserButton(username: username),
+        if (visibility.showErase) EraseDbUserButton(userId: userId),
       ],
     );
   }

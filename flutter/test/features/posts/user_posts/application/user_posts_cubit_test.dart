@@ -70,7 +70,7 @@ void main() {
   void mockSuccess(PaginatedPosts result, {int callPage = 1}) {
     when(
       () => useCase(
-        username: any(named: 'username'),
+        userId: any(named: 'userId'),
         page: callPage,
         perPage: any(named: 'perPage'),
       ),
@@ -80,7 +80,7 @@ void main() {
   void mockFailure(Failure failure) {
     when(
       () => useCase(
-        username: any(named: 'username'),
+        userId: any(named: 'userId'),
         page: any(named: 'page'),
         perPage: any(named: 'perPage'),
       ),
@@ -92,7 +92,7 @@ void main() {
       'success emits [loading, loaded]',
       build: () => cubit,
       setUp: () => mockSuccess(page([post1])),
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(7),
       expect: () => [
         const UserPostsState.loading(),
         UserPostsState.loaded(posts: [post1], page: 1, hasMore: true),
@@ -103,7 +103,7 @@ void main() {
       'failure emits [loading, error]',
       build: () => cubit,
       setUp: () => mockFailure(const Failure.network()),
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(7),
       expect: () => [
         const UserPostsState.loading(),
         const UserPostsState.error(Failure.network()),
@@ -121,7 +121,7 @@ void main() {
         hasMore: false,
       ),
       setUp: () => mockSuccess(page([post1], totalCount: 10)),
-      act: (c) => c.refresh('alice'),
+      act: (c) => c.refresh(7),
       expect: () => [
         const UserPostsState.loading(),
         UserPostsState.loaded(posts: [post1], page: 1, hasMore: false),
@@ -141,13 +141,13 @@ void main() {
       setUp: () {
         when(
           () => useCase(
-            username: any(named: 'username'),
+            userId: any(named: 'userId'),
             page: 2,
             perPage: any(named: 'perPage'),
           ),
         ).thenAnswer((_) async => Right(page([post2], page: 2)));
       },
-      act: (c) => c.loadMore('alice'),
+      act: (c) => c.loadMore(7),
       expect: () => [
         UserPostsState.loaded(
           posts: [post1],
@@ -167,11 +167,11 @@ void main() {
         page: 1,
         hasMore: false,
       ),
-      act: (c) => c.loadMore('alice'),
+      act: (c) => c.loadMore(7),
       expect: () => <UserPostsState>[],
       verify: (_) => verifyNever(
         () => useCase(
-          username: any(named: 'username'),
+          userId: any(named: 'userId'),
           page: any(named: 'page'),
           perPage: any(named: 'perPage'),
         ),
@@ -187,11 +187,11 @@ void main() {
         hasMore: true,
         loadMoreStatus: LoadMoreStatus.loading,
       ),
-      act: (c) => c.loadMore('alice'),
+      act: (c) => c.loadMore(7),
       expect: () => <UserPostsState>[],
       verify: (_) => verifyNever(
         () => useCase(
-          username: any(named: 'username'),
+          userId: any(named: 'userId'),
           page: any(named: 'page'),
           perPage: any(named: 'perPage'),
         ),

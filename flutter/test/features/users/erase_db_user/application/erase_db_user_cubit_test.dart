@@ -73,13 +73,13 @@ void main() {
         build: () {
           when(
             () => eraseDbUser(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer((_) async => const Right(unit));
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const EraseDbUserState.deleting(),
           const EraseDbUserState.success(),
@@ -95,7 +95,7 @@ void main() {
         build: () {
           when(
             () => eraseDbUser(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
@@ -103,7 +103,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const EraseDbUserState.deleting(),
           const EraseDbUserState.failure(
@@ -120,7 +120,7 @@ void main() {
         build: () {
           when(
             () => eraseDbUser(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
@@ -129,7 +129,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const EraseDbUserState.deleting(),
           const EraseDbUserState.failure(
@@ -146,7 +146,7 @@ void main() {
         build: () {
           when(
             () => eraseDbUser(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
@@ -154,7 +154,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const EraseDbUserState.deleting(),
           const EraseDbUserState.failure(Failure.unknown()),
@@ -170,7 +170,7 @@ void main() {
         build: () {
           when(
             () => eraseDbUser(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
           ).thenAnswer(
@@ -178,7 +178,7 @@ void main() {
           );
           return build();
         },
-        act: (c) => c.confirmAndDelete('testuser'),
+        act: (c) => c.confirmAndDelete(1),
         expect: () => [
           const EraseDbUserState.deleting(),
           const EraseDbUserState.failure(Failure.permissionDenied()),

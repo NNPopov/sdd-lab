@@ -15,7 +15,7 @@ void main() {
   late CreatePostCubit cubit;
 
   const data = NewPostData(
-    username: 'alice',
+    userId: 1,
     title: 'My Post',
     text: 'body text',
   );

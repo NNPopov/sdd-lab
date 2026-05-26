@@ -30,13 +30,13 @@ class AppShellRoute extends PageRouteInfo<void> {
 /// [CreatePostPage]
 class CreatePostRoute extends PageRouteInfo<CreatePostRouteArgs> {
   CreatePostRoute({
-    required String username,
+    required int userId,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          CreatePostRoute.name,
-         args: CreatePostRouteArgs(username: username, key: key),
-         rawPathParams: {'username': username},
+         args: CreatePostRouteArgs(userId: userId, key: key),
+         rawPathParams: {'user_id': userId},
          initialChildren: children,
        );
 
@@ -47,35 +47,34 @@ class CreatePostRoute extends PageRouteInfo<CreatePostRouteArgs> {
     builder: (data) {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<CreatePostRouteArgs>(
-        orElse: () =>
-            CreatePostRouteArgs(username: pathParams.getString('username')),
+        orElse: () => CreatePostRouteArgs(userId: pathParams.getInt('user_id')),
       );
-      return CreatePostPage(username: args.username, key: args.key);
+      return CreatePostPage(userId: args.userId, key: args.key);
     },
   );
 }
 
 class CreatePostRouteArgs {
-  const CreatePostRouteArgs({required this.username, this.key});
+  const CreatePostRouteArgs({required this.userId, this.key});
 
-  final String username;
+  final int userId;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'CreatePostRouteArgs{username: $username, key: $key}';
+    return 'CreatePostRouteArgs{userId: $userId, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! CreatePostRouteArgs) return false;
-    return username == other.username && key == other.key;
+    return userId == other.userId && key == other.key;
   }
 
   @override
-  int get hashCode => username.hashCode ^ key.hashCode;
+  int get hashCode => userId.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -113,16 +112,12 @@ class CreateUserRoute extends PageRouteInfo<void> {
 /// generated route for
 /// [EditPostPage]
 class EditPostRoute extends PageRouteInfo<EditPostRouteArgs> {
-  EditPostRoute({
-    required Post post,
-    required String username,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
-         EditPostRoute.name,
-         args: EditPostRouteArgs(post: post, username: username, key: key),
-         initialChildren: children,
-       );
+  EditPostRoute({required Post post, Key? key, List<PageRouteInfo>? children})
+    : super(
+        EditPostRoute.name,
+        args: EditPostRouteArgs(post: post, key: key),
+        initialChildren: children,
+      );
 
   static const String name = 'EditPostRoute';
 
@@ -130,42 +125,32 @@ class EditPostRoute extends PageRouteInfo<EditPostRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<EditPostRouteArgs>();
-      return EditPostPage(
-        post: args.post,
-        username: args.username,
-        key: args.key,
-      );
+      return EditPostPage(post: args.post, key: args.key);
     },
   );
 }
 
 class EditPostRouteArgs {
-  const EditPostRouteArgs({
-    required this.post,
-    required this.username,
-    this.key,
-  });
+  const EditPostRouteArgs({required this.post, this.key});
 
   final Post post;
-
-  final String username;
 
   final Key? key;
 
   @override
   String toString() {
-    return 'EditPostRouteArgs{post: $post, username: $username, key: $key}';
+    return 'EditPostRouteArgs{post: $post, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! EditPostRouteArgs) return false;
-    return post == other.post && username == other.username && key == other.key;
+    return post == other.post && key == other.key;
   }
 
   @override
-  int get hashCode => post.hashCode ^ username.hashCode ^ key.hashCode;
+  int get hashCode => post.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -457,14 +442,14 @@ class PendingTabRoute extends PageRouteInfo<void> {
 /// [PostDetailsPage]
 class PostDetailsRoute extends PageRouteInfo<PostDetailsRouteArgs> {
   PostDetailsRoute({
-    required String username,
+    required int userId,
     required int id,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          PostDetailsRoute.name,
-         args: PostDetailsRouteArgs(username: username, id: id, key: key),
-         rawPathParams: {'username': username, 'id': id},
+         args: PostDetailsRouteArgs(userId: userId, id: id, key: key),
+         rawPathParams: {'user_id': userId, 'id': id},
          initialChildren: children,
        );
 
@@ -476,27 +461,23 @@ class PostDetailsRoute extends PageRouteInfo<PostDetailsRouteArgs> {
       final pathParams = data.inheritedPathParams;
       final args = data.argsAs<PostDetailsRouteArgs>(
         orElse: () => PostDetailsRouteArgs(
-          username: pathParams.getString('username'),
+          userId: pathParams.getInt('user_id'),
           id: pathParams.getInt('id'),
         ),
       );
-      return PostDetailsPage(
-        username: args.username,
-        id: args.id,
-        key: args.key,
-      );
+      return PostDetailsPage(userId: args.userId, id: args.id, key: args.key);
     },
   );
 }
 
 class PostDetailsRouteArgs {
   const PostDetailsRouteArgs({
-    required this.username,
+    required this.userId,
     required this.id,
     this.key,
   });
 
-  final String username;
+  final int userId;
 
   final int id;
 
@@ -504,18 +485,18 @@ class PostDetailsRouteArgs {
 
   @override
   String toString() {
-    return 'PostDetailsRouteArgs{username: $username, id: $id, key: $key}';
+    return 'PostDetailsRouteArgs{userId: $userId, id: $id, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! PostDetailsRouteArgs) return false;
-    return username == other.username && id == other.id && key == other.key;
+    return userId == other.userId && id == other.id && key == other.key;
   }
 
   @override
-  int get hashCode => username.hashCode ^ id.hashCode ^ key.hashCode;
+  int get hashCode => userId.hashCode ^ id.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -679,13 +660,14 @@ class UserDetailsRouteArgs {
 /// [UserPostsPage]
 class UserPostsRoute extends PageRouteInfo<UserPostsRouteArgs> {
   UserPostsRoute({
+    required int userId,
     required String username,
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
          UserPostsRoute.name,
-         args: UserPostsRouteArgs(username: username, key: key),
-         rawPathParams: {'username': username},
+         args: UserPostsRouteArgs(userId: userId, username: username, key: key),
+         rawPathParams: {'user_id': userId},
          initialChildren: children,
        );
 
@@ -694,18 +676,24 @@ class UserPostsRoute extends PageRouteInfo<UserPostsRouteArgs> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<UserPostsRouteArgs>(
-        orElse: () =>
-            UserPostsRouteArgs(username: pathParams.getString('username')),
+      final args = data.argsAs<UserPostsRouteArgs>();
+      return UserPostsPage(
+        userId: args.userId,
+        username: args.username,
+        key: args.key,
       );
-      return UserPostsPage(username: args.username, key: args.key);
     },
   );
 }
 
 class UserPostsRouteArgs {
-  const UserPostsRouteArgs({required this.username, this.key});
+  const UserPostsRouteArgs({
+    required this.userId,
+    required this.username,
+    this.key,
+  });
+
+  final int userId;
 
   final String username;
 
@@ -713,18 +701,20 @@ class UserPostsRouteArgs {
 
   @override
   String toString() {
-    return 'UserPostsRouteArgs{username: $username, key: $key}';
+    return 'UserPostsRouteArgs{userId: $userId, username: $username, key: $key}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! UserPostsRouteArgs) return false;
-    return username == other.username && key == other.key;
+    return userId == other.userId &&
+        username == other.username &&
+        key == other.key;
   }
 
   @override
-  int get hashCode => username.hashCode ^ key.hashCode;
+  int get hashCode => userId.hashCode ^ username.hashCode ^ key.hashCode;
 }
 
 /// generated route for

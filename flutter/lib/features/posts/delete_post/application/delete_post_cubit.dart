@@ -15,9 +15,9 @@ class DeletePostCubit extends Cubit<DeletePostState> {
 
   void requestConfirmation() => emit(const DeletePostState.confirming());
 
-  Future<void> confirmAndDelete(String username, int id) async {
+  Future<void> confirmAndDelete(int userId, int id) async {
     emit(const DeletePostState.deleting());
-    final result = await _deletePost(username, id);
+    final result = await _deletePost(userId, id);
     result.fold(
       (f) => emit(DeletePostState.failure(f)),
       (_) {

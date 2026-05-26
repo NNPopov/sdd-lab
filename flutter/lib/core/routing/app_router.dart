@@ -63,20 +63,20 @@ class AppRouter extends RootStackRouter {
             ),
             AutoRoute(
               page: UserPostsRoute.page,
-              path: 'user/:username/posts',
+              path: 'user/:user_id/posts',
             ),
             AutoRoute(
               page: CreatePostRoute.page,
-              path: 'user/:username/posts/create',
+              path: 'user/:user_id/posts/create',
               guards: [authGuard],
             ),
             AutoRoute(
               page: PostDetailsRoute.page,
-              path: 'user/:username/posts/:id',
+              path: 'user/:user_id/posts/:id',
             ),
             AutoRoute(
               page: EditPostRoute.page,
-              path: 'user/:username/posts/:id/edit',
+              path: 'user/:user_id/posts/:id/edit',
               guards: [authGuard],
             ),
           ],
@@ -90,16 +90,16 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: ListPostsRoute.page, initial: true, path: ''),
             AutoRoute(
               page: PostDetailsRoute.page,
-              path: ':username/posts/:id',
+              path: ':user_id/posts/:id',
             ),
             AutoRoute(
               page: EditPostRoute.page,
-              path: ':username/posts/:id/edit',
+              path: ':user_id/posts/:id/edit',
               guards: [authGuard],
             ),
             AutoRoute(
               page: CreatePostRoute.page,
-              path: ':username/posts/create',
+              path: ':user_id/posts/create',
               guards: [authGuard],
             ),
           ],

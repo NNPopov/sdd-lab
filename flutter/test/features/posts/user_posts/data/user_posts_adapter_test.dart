@@ -57,6 +57,7 @@ void main() {
         username: 'alice',
         postUuid: 'test-uuid',
         status: 'pending_review',
+        createdByUserId: 1,
       ),
     ],
     totalCount: 100,
@@ -69,7 +70,7 @@ void main() {
       mockApi(testDto);
 
       final result = await adapter(
-        username: 'alice',
+        userId: 1,
         page: 1,
         perPage: 10,
       );
@@ -91,6 +92,7 @@ void main() {
               username: 'alice',
               postUuid: 'u',
               status: 'pending_review',
+              createdByUserId: 1,
             ),
           ],
           totalCount: 10,
@@ -99,7 +101,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       expect(result.isRight(), isTrue);
       final posts = (result as Right<Failure, PaginatedPosts>).value;
@@ -115,6 +117,7 @@ void main() {
               username: 'u',
               postUuid: 'u',
               status: 'pending_review',
+              createdByUserId: 1,
             ),
           ],
           totalCount: 10,
@@ -123,7 +126,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       expect(result.isRight(), isTrue);
       final posts = (result as Right<Failure, PaginatedPosts>).value;
@@ -142,7 +145,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       expect(result, const Left<Failure, PaginatedPosts>(Failure.notFound()));
     });
@@ -155,7 +158,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       expect(result.isLeft(), isTrue);
       expect(
@@ -178,7 +181,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter(username: 'alice', page: 1, perPage: 10);
+        final result = await adapter(userId: 1, page: 1, perPage: 10);
 
         expect(result, const Left<Failure, PaginatedPosts>(Failure.unknown()));
         verify(
@@ -202,6 +205,7 @@ void main() {
                 username: 'alice',
                 postUuid: 'uuid-1',
                 status: 'approved',
+                createdByUserId: 1,
               ),
             ],
             totalCount: 1,
@@ -210,7 +214,7 @@ void main() {
           ),
         );
 
-        final result = await adapter(username: 'alice', page: 1, perPage: 10);
+        final result = await adapter(userId: 1, page: 1, perPage: 10);
 
         final posts = (result as Right<Failure, PaginatedPosts>).value;
         expect(posts.items.first.status, PostStatus.approved);
@@ -226,6 +230,7 @@ void main() {
               username: 'alice',
               postUuid: 'uuid-1',
               status: 'pending_review',
+              createdByUserId: 1,
             ),
           ],
           totalCount: 1,
@@ -234,7 +239,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       final posts = (result as Right<Failure, PaginatedPosts>).value;
       expect(posts.items.first.status, PostStatus.pendingReview);
@@ -251,6 +256,7 @@ void main() {
                 username: 'alice',
                 postUuid: 'uuid-1',
                 status: 'changes_requested',
+                createdByUserId: 1,
               ),
             ],
             totalCount: 1,
@@ -259,7 +265,7 @@ void main() {
           ),
         );
 
-        final result = await adapter(username: 'alice', page: 1, perPage: 10);
+        final result = await adapter(userId: 1, page: 1, perPage: 10);
 
         final posts = (result as Right<Failure, PaginatedPosts>).value;
         expect(posts.items.first.status, PostStatus.changesRequested);
@@ -277,6 +283,7 @@ void main() {
                 username: 'alice',
                 postUuid: 'uuid-1',
                 status: 'archived',
+                createdByUserId: 1,
               ),
             ],
             totalCount: 1,
@@ -287,7 +294,7 @@ void main() {
 
         when(() => logger.warning(any())).thenReturn(null);
 
-        final result = await adapter(username: 'alice', page: 1, perPage: 10);
+        final result = await adapter(userId: 1, page: 1, perPage: 10);
 
         final posts = (result as Right<Failure, PaginatedPosts>).value;
         expect(posts.items.first.status, PostStatus.pendingReview);
@@ -304,6 +311,7 @@ void main() {
               username: 'alice',
               postUuid: 'uuid-abc',
               status: 'pending_review',
+              createdByUserId: 1,
             ),
           ],
           totalCount: 1,
@@ -312,7 +320,7 @@ void main() {
         ),
       );
 
-      final result = await adapter(username: 'alice', page: 1, perPage: 10);
+      final result = await adapter(userId: 1, page: 1, perPage: 10);
 
       final posts = (result as Right<Failure, PaginatedPosts>).value;
       expect(posts.items.first.postUuid, 'uuid-abc');

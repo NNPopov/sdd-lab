@@ -60,7 +60,7 @@ void main() {
     );
     registerFallbackValue(
       const UpdatedPostData(
-        username: 'alice',
+        userId: 1,
         id: 1,
         postUuid: _postUuid,
         status: PostStatus.changesRequested,
@@ -113,7 +113,7 @@ void main() {
 
       await cubit.submit(
         const UpdatedPostData(
-          username: 'alice',
+          userId: 1,
           id: 1,
           postUuid: _postUuid,
           status: PostStatus.changesRequested,
@@ -162,7 +162,7 @@ void main() {
 
       await cubit.submit(
         const UpdatedPostData(
-          username: 'alice',
+          userId: 1,
           id: 1,
           postUuid: _postUuid,
           status: PostStatus.changesRequested,

@@ -343,7 +343,8 @@ void main() {
     );
 
     testWidgets(
-      'T-04: Tap Posts button pushes UserPostsRoute with correct username',
+      'T-04: Tap Posts button pushes UserPostsRoute with the user id '
+      'and display handle',
       (tester) async {
         await tester.pumpWidget(buildScreen());
 
@@ -355,6 +356,7 @@ void main() {
         ).captured;
         expect(captured.single, isA<UserPostsRoute>());
         final route = captured.single as UserPostsRoute;
+        expect(route.args?.userId, 1);
         expect(route.args?.username, 'alice');
       },
     );

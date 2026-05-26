@@ -20,7 +20,7 @@ class CreatePostAdapter implements CreatePostPort {
     try {
       try {
         await _api.createPost(
-          data.username,
+          data.userId,
           CreatePostRequestDto(
             title: data.title,
             text: data.text,

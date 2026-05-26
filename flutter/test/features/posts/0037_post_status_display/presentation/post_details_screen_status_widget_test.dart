@@ -39,7 +39,7 @@ const _author = CurrentUser(
 );
 
 const _nonAuthor = CurrentUser(
-  id: 1,
+  id: 2,
   username: 'bob',
   email: 'bob@example.com',
   name: 'Bob',
@@ -108,7 +108,7 @@ void main() {
               BlocProvider<PostDetailsCubit>.value(value: mockPostDetailsCubit),
               BlocProvider<AuthCubit>.value(value: mockAuthCubit),
             ],
-            child: const PostDetailsScreen(username: 'alice', id: 42),
+            child: const PostDetailsScreen(userId: 1, id: 42),
           ),
         ),
       ),

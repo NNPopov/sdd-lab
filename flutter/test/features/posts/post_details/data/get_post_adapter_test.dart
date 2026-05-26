@@ -58,17 +58,21 @@ void main() {
     test("status 'approved' maps to PostStatus.approved", () async {
       mockApi(dto(status: 'approved'));
 
-      final result = await adapter('alice', 42);
+      final result = await adapter(7, 42);
 
       final post = (result as Right<Failure, Post>).value;
       expect(post.status, PostStatus.approved);
+      // The integer user id (not a handle) selects the post, and the
+      // required created_by_user_id is surfaced without a `?? 0` default.
+      expect(post.createdByUserId, 7);
+      verify(() => api.getPost(7, 42)).called(1);
       verifyNever(() => logger.warning(any()));
     });
 
     test("status 'pending_review' maps to PostStatus.pendingReview", () async {
       mockApi(dto(status: 'pending_review'));
 
-      final result = await adapter('alice', 42);
+      final result = await adapter(7, 42);
 
       final post = (result as Right<Failure, Post>).value;
       expect(post.status, PostStatus.pendingReview);
@@ -80,7 +84,7 @@ void main() {
       () async {
         mockApi(dto(status: 'changes_requested'));
 
-        final result = await adapter('alice', 42);
+        final result = await adapter(7, 42);
 
         final post = (result as Right<Failure, Post>).value;
         expect(post.status, PostStatus.changesRequested);
@@ -93,7 +97,7 @@ void main() {
       () async {
         mockApi(dto(status: 'archived'));
 
-        final result = await adapter('alice', 42);
+        final result = await adapter(7, 42);
 
         final post = (result as Right<Failure, Post>).value;
         expect(post.status, PostStatus.pendingReview);
@@ -104,7 +108,7 @@ void main() {
     test('post_uuid round-trips correctly', () async {
       mockApi(dto(status: 'approved', postUuid: 'uuid-abc'));
 
-      final result = await adapter('alice', 42);
+      final result = await adapter(7, 42);
 
       final post = (result as Right<Failure, Post>).value;
       expect(post.postUuid, 'uuid-abc');
@@ -124,7 +128,7 @@ void main() {
         ),
       );
 
-      final result = await adapter('alice', 42);
+      final result = await adapter(7, 42);
 
       expect(result, const Left<Failure, Post>(Failure.notFound()));
     });
@@ -141,7 +145,7 @@ void main() {
         ),
       );
 
-      final result = await adapter('alice', 42);
+      final result = await adapter(7, 42);
 
       expect(
         result,
@@ -155,7 +159,7 @@ void main() {
         final exception = Exception('unexpected');
         mockApiThrows(exception);
 
-        final result = await adapter('alice', 42);
+        final result = await adapter(7, 42);
 
         expect(result, const Left<Failure, Post>(Failure.unknown()));
         verify(

@@ -21,7 +21,7 @@ void main() {
   late _MockDeletePostUseCase useCase;
   late _MockPostEventBus eventBus;
 
-  const username = 'alice';
+  const userId = 7;
   const postId = 42;
 
   setUp(() {
@@ -64,11 +64,11 @@ void main() {
       build: build,
       setUp: () {
         when(
-          () => useCase(username, postId),
+          () => useCase(userId, postId),
         ).thenAnswer((_) async => const Right(unit));
         when(() => eventBus.publish(any())).thenReturn(null);
       },
-      act: (c) => c.confirmAndDelete(username, postId),
+      act: (c) => c.confirmAndDelete(userId, postId),
       expect: () => [
         const DeletePostState.deleting(),
         const DeletePostState.success(),
@@ -90,11 +90,11 @@ void main() {
       'failure emits [deleting, failure]',
       build: build,
       setUp: () {
-        when(() => useCase(username, postId)).thenAnswer(
+        when(() => useCase(userId, postId)).thenAnswer(
           (_) async => const Left(Failure.forbidden(message: 'forbidden')),
         );
       },
-      act: (c) => c.confirmAndDelete(username, postId),
+      act: (c) => c.confirmAndDelete(userId, postId),
       expect: () => [
         const DeletePostState.deleting(),
         const DeletePostState.failure(

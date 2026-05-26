@@ -14,10 +14,10 @@ class EraseDbPostAdapter implements EraseDbPostPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, Unit>> call(String username, int id) async {
+  Future<Either<Failure, Unit>> call(int userId, int id) async {
     try {
       try {
-        await _api.eraseDbPost(username, id);
+        await _api.eraseDbPost(userId, id);
         return const Right(unit);
       } on DioException catch (e) {
         switch (e.response?.statusCode) {

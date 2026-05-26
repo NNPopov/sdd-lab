@@ -14,10 +14,10 @@ class EraseDbUserAdapter implements EraseDbUserPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, Unit>> call(String username) async {
+  Future<Either<Failure, Unit>> call(int userId) async {
     try {
       try {
-        await _api.eraseDbUser(username);
+        await _api.eraseDbUser(userId);
         return const Right(unit);
       } on DioException catch (e) {
         switch (e.response?.statusCode) {

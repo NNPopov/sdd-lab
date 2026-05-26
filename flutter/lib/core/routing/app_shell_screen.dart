@@ -222,10 +222,12 @@ class _AuthAppBarAction extends StatelessWidget {
           context.router.push(UserDetailsRoute(userId: currentUser.id)),
         );
       case _UserMenuAction.myPosts:
-        // Posts routes are not migrated — keep the handle.
         unawaited(
           context.router.push(
-            UserPostsRoute(username: currentUser.username),
+            UserPostsRoute(
+              userId: currentUser.id,
+              username: currentUser.username,
+            ),
           ),
         );
       case _UserMenuAction.signOut:

@@ -83,7 +83,10 @@ class _UsersScreenState extends State<UsersScreen> {
                       onPostsTap: () {
                         unawaited(
                           context.router.push(
-                            UserPostsRoute(username: u.username),
+                            UserPostsRoute(
+                              userId: u.id,
+                              username: u.username,
+                            ),
                           ),
                         );
                       },

@@ -348,7 +348,7 @@ void main() {
         // navigate (not push) — push returns a Future that completes on POP,
         // which would block pumpAndSettle indefinitely in tests.
         await postsInnerRouter?.navigate(
-          PostDetailsRoute(username: 'alice', id: 1),
+          PostDetailsRoute(userId: 1, id: 1),
         );
         await tester.pumpAndSettle();
 

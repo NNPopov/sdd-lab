@@ -32,7 +32,7 @@ void main() {
   );
 
   const pendingData = UpdatedPostData(
-    username: 'alice',
+    userId: 1,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.pendingReview,
@@ -41,7 +41,7 @@ void main() {
   );
 
   const changesRequestedData = UpdatedPostData(
-    username: 'alice',
+    userId: 1,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.changesRequested,
@@ -51,7 +51,7 @@ void main() {
   );
 
   const changesRequestedEmptyMsg = UpdatedPostData(
-    username: 'alice',
+    userId: 1,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.changesRequested,
@@ -60,7 +60,7 @@ void main() {
   );
 
   const approvedData = UpdatedPostData(
-    username: 'alice',
+    userId: 1,
     id: 1,
     postUuid: 'post-uuid-001',
     status: PostStatus.approved,
@@ -90,12 +90,12 @@ void main() {
     },
   );
 
-  test('username differs from currentUser → '
+  test('userId differs from currentUser.id → '
       'Left(ForbiddenFailure), port not called', () async {
     when(() => authCubit.currentUser).thenReturn(currentUser);
 
     const otherData = UpdatedPostData(
-      username: 'bob',
+      userId: 2,
       id: 1,
       postUuid: 'post-uuid-001',
       status: PostStatus.pendingReview,

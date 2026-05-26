@@ -33,7 +33,7 @@ class ListPostsAdapter implements ListPostsPort {
                     title: p.title,
                     text: p.text,
                     createdAt: p.createdAt ?? DateTime(0),
-                    createdByUserId: p.createdByUserId ?? 0,
+                    createdByUserId: p.createdByUserId,
                     mediaUrl: p.mediaUrl,
                     username: p.username,
                     postUuid: p.postUuid,

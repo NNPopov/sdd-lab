@@ -12,27 +12,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeletePostButton extends StatelessWidget {
   const DeletePostButton({
-    required this.username,
+    required this.userId,
     required this.id,
     super.key,
   });
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<DeletePostCubit>(),
-      child: _DeletePostButtonInner(username: username, id: id),
+      child: _DeletePostButtonInner(userId: userId, id: id),
     );
   }
 }
 
 class _DeletePostButtonInner extends StatelessWidget {
-  const _DeletePostButtonInner({required this.username, required this.id});
+  const _DeletePostButtonInner({required this.userId, required this.id});
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -48,7 +48,7 @@ class _DeletePostButtonInner extends StatelessWidget {
             if (!context.mounted) return;
             if (confirmed == true) {
               unawaited(
-                context.read<DeletePostCubit>().confirmAndDelete(username, id),
+                context.read<DeletePostCubit>().confirmAndDelete(userId, id),
               );
             } else {
               context.read<DeletePostCubit>().cancel();

@@ -17,12 +17,12 @@ import 'package:intl/intl.dart';
 
 class PostDetailsScreen extends StatefulWidget {
   const PostDetailsScreen({
-    required this.username,
+    required this.userId,
     required this.id,
     super.key,
   });
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -37,18 +37,18 @@ class _PostDetailsScreenState extends State<PostDetailsScreen> {
       appBar: AppBar(
         title: Text(t.posts.postDetails.title),
         actions: [
-          _PostDetailsActions(username: widget.username, id: widget.id),
+          _PostDetailsActions(userId: widget.userId, id: widget.id),
         ],
       ),
-      body: _PostDetailsBody(username: widget.username, id: widget.id),
+      body: _PostDetailsBody(userId: widget.userId, id: widget.id),
     );
   }
 }
 
 class _PostDetailsActions extends StatelessWidget {
-  const _PostDetailsActions({required this.username, required this.id});
+  const _PostDetailsActions({required this.userId, required this.id});
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -61,7 +61,7 @@ class _PostDetailsActions extends StatelessWidget {
             final currentUser = authState is AuthAuthenticated
                 ? authState.currentUser
                 : null;
-            final isAuthor = currentUser?.username == username;
+            final isAuthor = currentUser?.id == userId;
             final isSuperuser = currentUser?.isSuperuser ?? false;
             final showErase = isSuperuser && !isAuthor;
             if (!isAuthor && !showErase) return const SizedBox.shrink();
@@ -69,23 +69,20 @@ class _PostDetailsActions extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isAuthor) ...[
-                  DeletePostButton(username: username, id: id),
+                  DeletePostButton(userId: userId, id: id),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     tooltip: context.t.posts.editPost.title,
                     onPressed: () async {
                       final cubit = context.read<PostDetailsCubit>();
                       await context.router.push(
-                        EditPostRoute(
-                          post: postState.post,
-                          username: username,
-                        ),
+                        EditPostRoute(post: postState.post),
                       );
-                      unawaited(cubit.load(username, id));
+                      unawaited(cubit.load(userId, id));
                     },
                   ),
                 ],
-                if (showErase) EraseDbPostButton(username: username, id: id),
+                if (showErase) EraseDbPostButton(userId: userId, id: id),
               ],
             );
           },
@@ -96,9 +93,9 @@ class _PostDetailsActions extends StatelessWidget {
 }
 
 class _PostDetailsBody extends StatelessWidget {
-  const _PostDetailsBody({required this.username, required this.id});
+  const _PostDetailsBody({required this.userId, required this.id});
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -117,7 +114,7 @@ class _PostDetailsBody extends StatelessWidget {
               const SizedBox(height: 8),
               FilledButton(
                 onPressed: () => unawaited(
-                  context.read<PostDetailsCubit>().load(username, id),
+                  context.read<PostDetailsCubit>().load(userId, id),
                 ),
                 child: Text(t.common.retry),
               ),
@@ -129,8 +126,7 @@ class _PostDetailsBody extends StatelessWidget {
             final currentUser = authState is AuthAuthenticated
                 ? authState.currentUser
                 : null;
-            final isAuthor =
-                post.username != null && currentUser?.username == post.username;
+            final isAuthor = currentUser?.id == post.createdByUserId;
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(

@@ -11,13 +11,13 @@ class DeletePostUseCase {
   final DeletePostPort _port;
   final AuthCubit _authCubit;
 
-  Future<Either<Failure, Unit>> call(String username, int id) async {
+  Future<Either<Failure, Unit>> call(int userId, int id) async {
     final currentUser = _authCubit.currentUser;
-    if (currentUser == null || currentUser.username != username) {
+    if (currentUser == null || currentUser.id != userId) {
       return const Left(
         Failure.forbidden(message: "Cannot delete another user's post"),
       );
     }
-    return _port(username, id);
+    return _port(userId, id);
   }
 }

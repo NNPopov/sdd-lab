@@ -50,7 +50,7 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             appBar: AppBar(
-              actions: const [DeletePostButton(username: 'alice', id: 42)],
+              actions: const [DeletePostButton(userId: 7, id: 42)],
             ),
           ),
         ),

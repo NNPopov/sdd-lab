@@ -11,12 +11,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @RoutePage()
 class PostDetailsPage extends StatelessWidget {
   const PostDetailsPage({
-    @PathParam('username') required this.username,
+    @PathParam('user_id') required this.userId,
     @PathParam('id') required this.id,
     super.key,
   });
 
-  final String username;
+  final int userId;
   final int id;
 
   @override
@@ -26,13 +26,13 @@ class PostDetailsPage extends StatelessWidget {
         BlocProvider(
           create: (_) {
             final cubit = getIt<PostDetailsCubit>();
-            unawaited(cubit.load(username, id));
+            unawaited(cubit.load(userId, id));
             return cubit;
           },
         ),
         BlocProvider(create: (_) => getIt<DeletePostCubit>()),
       ],
-      child: PostDetailsScreen(username: username, id: id),
+      child: PostDetailsScreen(userId: userId, id: id),
     );
   }
 }

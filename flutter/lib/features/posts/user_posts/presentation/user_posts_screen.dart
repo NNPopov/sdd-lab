@@ -12,8 +12,13 @@ import 'package:flutter_application_1/features/posts/user_posts/presentation/wid
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserPostsScreen extends StatefulWidget {
-  const UserPostsScreen({required this.username, super.key});
+  const UserPostsScreen({
+    required this.userId,
+    required this.username,
+    super.key,
+  });
 
+  final int userId;
   final String username;
 
   @override
@@ -28,7 +33,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     unawaited(
-      context.read<UserPostsCubit>().load(widget.username),
+      context.read<UserPostsCubit>().load(widget.userId),
     );
   }
 
@@ -42,7 +47,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
     final position = _scrollController.position;
     if (position.pixels >= position.maxScrollExtent - 200) {
       unawaited(
-        context.read<UserPostsCubit>().loadMore(widget.username),
+        context.read<UserPostsCubit>().loadMore(widget.userId),
       );
     }
   }
@@ -60,17 +65,17 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
         builder: (context, authState) {
           final isOwner =
               authState is AuthAuthenticated &&
-              authState.currentUser?.username == widget.username;
+              authState.currentUser?.id == widget.userId;
           if (!isOwner) return const SizedBox.shrink();
           return FloatingActionButton(
             tooltip: t.posts.createPost.fabTooltip,
             onPressed: () async {
               final cubit = context.read<UserPostsCubit>();
               await context.router.push(
-                CreatePostRoute(username: widget.username),
+                CreatePostRoute(userId: widget.userId),
               );
               if (!mounted) return;
-              unawaited(cubit.refresh(widget.username));
+              unawaited(cubit.refresh(widget.userId));
             },
             child: const Icon(Icons.add),
           );
@@ -87,7 +92,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                 ? Center(child: Text(t.posts.userPosts.empty))
                 : RefreshIndicator(
                     onRefresh: () =>
-                        context.read<UserPostsCubit>().refresh(widget.username),
+                        context.read<UserPostsCubit>().refresh(widget.userId),
                     child: ListView.builder(
                       controller: _scrollController,
                       padding: const EdgeInsets.all(8),
@@ -98,7 +103,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                             post: posts[index],
                             onOpenTap: () => context.router.push(
                               PostDetailsRoute(
-                                username: widget.username,
+                                userId: posts[index].createdByUserId,
                                 id: posts[index].id,
                               ),
                             ),
@@ -115,7 +120,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                             child: TextButton(
                               onPressed: () => unawaited(
                                 context.read<UserPostsCubit>().loadMore(
-                                  widget.username,
+                                  widget.userId,
                                 ),
                               ),
                               child: Text(t.common.retry),
@@ -134,7 +139,7 @@ class _UserPostsScreenState extends State<UserPostsScreen> {
                 const SizedBox(height: 8),
                 FilledButton(
                   onPressed: () => unawaited(
-                    context.read<UserPostsCubit>().load(widget.username),
+                    context.read<UserPostsCubit>().load(widget.userId),
                   ),
                   child: Text(t.common.retry),
                 ),
