@@ -109,7 +109,7 @@ void main() {
           );
           when(
             () => updateTier(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               tierId: any(named: 'tierId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
@@ -120,7 +120,7 @@ void main() {
           tiers: _tiers,
           selectedTierId: 2,
         ),
-        act: (c) => c.submit('alice'),
+        act: (c) => c.submit(7),
         expect: () => [
           const UpdateUserTierState.submitting(
             tiers: _tiers,
@@ -145,7 +145,7 @@ void main() {
           );
           when(
             () => updateTier(
-              username: any(named: 'username'),
+              userId: any(named: 'userId'),
               tierId: any(named: 'tierId'),
               isSuperuser: any(named: 'isSuperuser'),
             ),
@@ -156,7 +156,7 @@ void main() {
           tiers: _tiers,
           selectedTierId: 2,
         ),
-        act: (c) => c.submit('alice'),
+        act: (c) => c.submit(7),
         expect: () => [
           const UpdateUserTierState.submitting(
             tiers: _tiers,
@@ -170,11 +170,11 @@ void main() {
         'does nothing and does not call updateTier when selectedTierId is null',
         build: build,
         seed: () => const UpdateUserTierState.tiersLoaded(tiers: _tiers),
-        act: (c) => c.submit('alice'),
+        act: (c) => c.submit(7),
         expect: () => <UpdateUserTierState>[],
         verify: (_) => verifyNever(
           () => updateTier(
-            username: any(named: 'username'),
+            userId: any(named: 'userId'),
             tierId: any(named: 'tierId'),
             isSuperuser: any(named: 'isSuperuser'),
           ),

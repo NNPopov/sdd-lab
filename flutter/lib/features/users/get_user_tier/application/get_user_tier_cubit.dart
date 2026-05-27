@@ -9,9 +9,9 @@ class GetUserTierCubit extends Cubit<GetUserTierState> {
 
   final GetUserTierUseCase _getUserTier;
 
-  Future<void> load(String username) async {
+  Future<void> load(int userId) async {
     emit(const GetUserTierState.loading());
-    final result = await _getUserTier(username);
+    final result = await _getUserTier(userId);
     result.fold(
       (f) => emit(GetUserTierState.error(f)),
       (tier) => emit(GetUserTierState.loaded(tier)),

@@ -33,7 +33,7 @@ class UpdateUserTierCubit extends Cubit<UpdateUserTierState> {
     }
   }
 
-  Future<void> submit(String username) async {
+  Future<void> submit(int userId) async {
     final s = state;
     if (s is! UpdateUserTierTiersLoaded || s.selectedTierId == null) return;
     final tierId = s.selectedTierId!;
@@ -44,7 +44,7 @@ class UpdateUserTierCubit extends Cubit<UpdateUserTierState> {
     );
 
     final result = await _updateTier(
-      username: username,
+      userId: userId,
       tierId: tierId,
       isSuperuser: isSuperuser,
     );

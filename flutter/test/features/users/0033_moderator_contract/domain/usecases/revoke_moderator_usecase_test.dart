@@ -18,22 +18,22 @@ void main() {
 
   test('delegates to port.revokeModerator and passes result through', () async {
     when(
-      () => port.revokeModerator('alice'),
+      () => port.revokeModerator(7),
     ).thenAnswer((_) async => const Right(null));
 
-    final result = await useCase('alice');
+    final result = await useCase(7);
 
     expect(result, const Right<Failure, void>(null));
-    verify(() => port.revokeModerator('alice')).called(1);
+    verify(() => port.revokeModerator(7)).called(1);
   });
 
   test('passes Left through from port on failure', () async {
     const failure = Failure.conflict(message: 'not a moderator');
     when(
-      () => port.revokeModerator('alice'),
+      () => port.revokeModerator(7),
     ).thenAnswer((_) async => const Left(failure));
 
-    final result = await useCase('alice');
+    final result = await useCase(7);
 
     expect(result, const Left<Failure, void>(failure));
   });

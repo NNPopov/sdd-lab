@@ -39,17 +39,17 @@ void main() {
 
   group('assignModerator', () {
     test('200 → Right(null)', () async {
-      when(() => api.assignModerator('alice')).thenAnswer((_) async {});
+      when(() => api.assignModerator(7)).thenAnswer((_) async {});
 
-      final result = await adapter.assignModerator('alice');
+      final result = await adapter.assignModerator(7);
 
       expect(result.isRight(), isTrue);
     });
 
     test('403 → Left(ForbiddenFailure)', () async {
-      when(() => api.assignModerator('alice')).thenThrow(_dioError(403));
+      when(() => api.assignModerator(7)).thenThrow(_dioError(403));
 
-      final result = await adapter.assignModerator('alice');
+      final result = await adapter.assignModerator(7);
 
       expect(
         result.swap().getOrElse(() => const Failure.unknown()),
@@ -58,9 +58,9 @@ void main() {
     });
 
     test('404 → Left(NotFoundFailure)', () async {
-      when(() => api.assignModerator('alice')).thenThrow(_dioError(404));
+      when(() => api.assignModerator(7)).thenThrow(_dioError(404));
 
-      final result = await adapter.assignModerator('alice');
+      final result = await adapter.assignModerator(7);
 
       expect(
         result.swap().getOrElse(() => const Failure.unknown()),
@@ -69,9 +69,9 @@ void main() {
     });
 
     test('409 → Left(ConflictFailure)', () async {
-      when(() => api.assignModerator('alice')).thenThrow(_dioError(409));
+      when(() => api.assignModerator(7)).thenThrow(_dioError(409));
 
-      final result = await adapter.assignModerator('alice');
+      final result = await adapter.assignModerator(7);
 
       expect(
         result.swap().getOrElse(() => const Failure.unknown()),
@@ -82,9 +82,9 @@ void main() {
     test(
       'unexpected exception → Left(UnknownFailure) and logger.error called',
       () async {
-        when(() => api.assignModerator('alice')).thenThrow(Exception('boom'));
+        when(() => api.assignModerator(7)).thenThrow(Exception('boom'));
 
-        final result = await adapter.assignModerator('alice');
+        final result = await adapter.assignModerator(7);
 
         expect(
           result.swap().getOrElse(() => const Failure.conflict(message: '')),
@@ -103,17 +103,17 @@ void main() {
 
   group('revokeModerator', () {
     test('200 → Right(null)', () async {
-      when(() => api.revokeModerator('alice')).thenAnswer((_) async {});
+      when(() => api.revokeModerator(7)).thenAnswer((_) async {});
 
-      final result = await adapter.revokeModerator('alice');
+      final result = await adapter.revokeModerator(7);
 
       expect(result.isRight(), isTrue);
     });
 
     test('403 → Left(ForbiddenFailure)', () async {
-      when(() => api.revokeModerator('alice')).thenThrow(_dioError(403));
+      when(() => api.revokeModerator(7)).thenThrow(_dioError(403));
 
-      final result = await adapter.revokeModerator('alice');
+      final result = await adapter.revokeModerator(7);
 
       expect(
         result.swap().getOrElse(() => const Failure.unknown()),
@@ -122,9 +122,9 @@ void main() {
     });
 
     test('409 → Left(ConflictFailure)', () async {
-      when(() => api.revokeModerator('alice')).thenThrow(_dioError(409));
+      when(() => api.revokeModerator(7)).thenThrow(_dioError(409));
 
-      final result = await adapter.revokeModerator('alice');
+      final result = await adapter.revokeModerator(7);
 
       expect(
         result.swap().getOrElse(() => const Failure.unknown()),
@@ -135,9 +135,9 @@ void main() {
     test(
       'unexpected exception → Left(UnknownFailure) and logger.error called',
       () async {
-        when(() => api.revokeModerator('alice')).thenThrow(Exception('boom'));
+        when(() => api.revokeModerator(7)).thenThrow(Exception('boom'));
 
-        final result = await adapter.revokeModerator('alice');
+        final result = await adapter.revokeModerator(7);
 
         expect(
           result.swap().getOrElse(() => const Failure.conflict(message: '')),

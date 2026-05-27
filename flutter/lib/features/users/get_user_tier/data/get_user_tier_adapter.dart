@@ -16,10 +16,10 @@ class GetUserTierAdapter implements GetUserTierPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, UserTier>> call(String username) async {
+  Future<Either<Failure, UserTier>> call(int userId) async {
     try {
       try {
-        final dto = await _api.getUserTier(username);
+        final dto = await _api.getUserTier(userId);
         return Right(dto.toDomain());
       } on DioException catch (e) {
         return Left(_mapHttp(e));

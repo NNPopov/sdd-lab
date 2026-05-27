@@ -30,10 +30,10 @@ void main() {
       build: build,
       setUp: () {
         when(
-          () => assignUseCase('alice'),
+          () => assignUseCase(7),
         ).thenAnswer((_) async => const Right(null));
       },
-      act: (c) => c.assign('alice'),
+      act: (c) => c.assign(7),
       expect: () => [
         const AssignModeratorState.loading(),
         const AssignModeratorState.success(isModerator: true),
@@ -45,13 +45,13 @@ void main() {
       build: build,
       setUp: () {
         when(
-          () => assignUseCase('alice'),
+          () => assignUseCase(7),
         ).thenAnswer(
           (_) async =>
               const Left(Failure.conflict(message: 'already a moderator')),
         );
       },
-      act: (c) => c.assign('alice'),
+      act: (c) => c.assign(7),
       expect: () => [
         const AssignModeratorState.loading(),
         isA<AssignModeratorError>().having(
@@ -69,10 +69,10 @@ void main() {
       build: build,
       setUp: () {
         when(
-          () => revokeUseCase('alice'),
+          () => revokeUseCase(7),
         ).thenAnswer((_) async => const Right(null));
       },
-      act: (c) => c.revoke('alice'),
+      act: (c) => c.revoke(7),
       expect: () => [
         const AssignModeratorState.loading(),
         const AssignModeratorState.success(isModerator: false),
@@ -84,12 +84,12 @@ void main() {
       build: build,
       setUp: () {
         when(
-          () => revokeUseCase('alice'),
+          () => revokeUseCase(7),
         ).thenAnswer(
           (_) async => const Left(Failure.forbidden(message: 'denied')),
         );
       },
-      act: (c) => c.revoke('alice'),
+      act: (c) => c.revoke(7),
       expect: () => [
         const AssignModeratorState.loading(),
         isA<AssignModeratorError>().having(

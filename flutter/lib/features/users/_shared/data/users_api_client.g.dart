@@ -164,7 +164,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<UserTierDto> getUserTier(String username) async {
+  Future<UserTierDto> getUserTier(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -173,7 +173,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}/tier',
+            '/user/${userId}/tier',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -224,10 +224,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> patchUserTier(
-    String username,
-    UpdateUserTierRequestDto body,
-  ) async {
+  Future<void> patchUserTier(int userId, UpdateUserTierRequestDto body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -236,7 +233,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}/tier',
+            '/user/${userId}/tier',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -246,7 +243,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> assignModerator(String username) async {
+  Future<void> assignModerator(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -255,7 +252,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}/assign-moderator',
+            '/user/${userId}/assign-moderator',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -265,7 +262,7 @@ class _UsersApiClient implements UsersApiClient {
   }
 
   @override
-  Future<void> revokeModerator(String username) async {
+  Future<void> revokeModerator(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -274,7 +271,7 @@ class _UsersApiClient implements UsersApiClient {
       Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/user/${username}/revoke-moderator',
+            '/users/${userId}/revoke-moderator',
             queryParameters: queryParameters,
             data: _data,
           )

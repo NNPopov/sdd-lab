@@ -10,5 +10,5 @@ class GetUserTierUseCase {
 
   final GetUserTierPort _port;
 
-  Future<Either<Failure, UserTier>> call(String username) => _port(username);
+  Future<Either<Failure, UserTier>> call(int userId) => _port(userId);
 }

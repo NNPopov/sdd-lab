@@ -38,8 +38,8 @@ abstract class UsersApiClient {
   @DELETE('/db_user/{user_id}')
   Future<void> eraseDbUser(@Path('user_id') int userId);
 
-  @GET('/user/{username}/tier')
-  Future<UserTierDto> getUserTier(@Path('username') String username);
+  @GET('/user/{user_id}/tier')
+  Future<UserTierDto> getUserTier(@Path('user_id') int userId);
 
   @GET('/tiers')
   Future<PaginatedTierOptionsDto> getTiersForSelection({
@@ -47,15 +47,15 @@ abstract class UsersApiClient {
     @Query('items_per_page') int perPage = 100,
   });
 
-  @PATCH('/user/{username}/tier')
+  @PATCH('/user/{user_id}/tier')
   Future<void> patchUserTier(
-    @Path('username') String username,
+    @Path('user_id') int userId,
     @Body() UpdateUserTierRequestDto body,
   );
 
-  @PATCH('/user/{username}/assign-moderator')
-  Future<void> assignModerator(@Path('username') String username);
+  @PATCH('/user/{user_id}/assign-moderator')
+  Future<void> assignModerator(@Path('user_id') int userId);
 
-  @PATCH('/user/{username}/revoke-moderator')
-  Future<void> revokeModerator(@Path('username') String username);
+  @PATCH('/users/{user_id}/revoke-moderator')
+  Future<void> revokeModerator(@Path('user_id') int userId);
 }

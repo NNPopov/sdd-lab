@@ -16,13 +16,13 @@ class UpdateUserTierAdapter implements UpdateUserTierPort {
 
   @override
   Future<Either<Failure, Unit>> call({
-    required String username,
+    required int userId,
     required int tierId,
   }) async {
     try {
       try {
         await _api.patchUserTier(
-          username,
+          userId,
           UpdateUserTierRequestDto(tierId: tierId),
         );
         return const Right(unit);

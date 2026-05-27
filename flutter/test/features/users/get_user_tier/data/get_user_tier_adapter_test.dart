@@ -37,9 +37,9 @@ void main() {
         tierName: 'Free',
         tierCreatedAt: _createdAt,
       );
-      when(() => apiClient.getUserTier('alice')).thenAnswer((_) async => dto);
+      when(() => apiClient.getUserTier(7)).thenAnswer((_) async => dto);
 
-      final result = await adapter('alice');
+      final result = await adapter(7);
 
       expect(result.isRight(), isTrue);
       result.fold(
@@ -55,10 +55,10 @@ void main() {
       'returns Right(UserTier) without date when tier_created_at is null',
       () async {
         when(
-          () => apiClient.getUserTier('alice'),
+          () => apiClient.getUserTier(7),
         ).thenAnswer((_) async => _dtoWithDate);
 
-        final result = await adapter('alice');
+        final result = await adapter(7);
 
         expect(result.isRight(), isTrue);
         result.fold(
@@ -75,7 +75,7 @@ void main() {
     test('returns Left(UnauthorizedFailure) on 401', () async {
       _throwDio(apiClient, 401);
 
-      final result = await adapter('alice');
+      final result = await adapter(7);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -87,7 +87,7 @@ void main() {
     test('returns Left(ForbiddenFailure) on 403', () async {
       _throwDio(apiClient, 403);
 
-      final result = await adapter('alice');
+      final result = await adapter(7);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -99,7 +99,7 @@ void main() {
     test('returns Left(NotFoundFailure) on 404', () async {
       _throwDio(apiClient, 404);
 
-      final result = await adapter('alice');
+      final result = await adapter(7);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -111,7 +111,7 @@ void main() {
     test('returns Left(NetworkFailure) on 5xx', () async {
       _throwDio(apiClient, 500);
 
-      final result = await adapter('alice');
+      final result = await adapter(7);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -134,7 +134,7 @@ void main() {
           ),
         ).thenReturn(null);
 
-        final result = await adapter('alice');
+        final result = await adapter(7);
 
         expect(result.isLeft(), isTrue);
         result.fold(
@@ -154,7 +154,7 @@ void main() {
 }
 
 void _throwDio(_MockUsersApiClient apiClient, int statusCode) {
-  const path = '/user/alice/tier';
+  const path = '/user/7/tier';
   when(() => apiClient.getUserTier(any())).thenThrow(
     DioException(
       requestOptions: RequestOptions(path: path),

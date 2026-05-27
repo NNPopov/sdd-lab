@@ -8,9 +8,9 @@ import 'package:flutter_application_1/features/users/update_user_tier/domain/ent
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdateUserTierSheet extends StatelessWidget {
-  const UpdateUserTierSheet({required this.username, super.key});
+  const UpdateUserTierSheet({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class UpdateUserTierSheet extends StatelessWidget {
                   UpdateUserTierTiersLoaded() ||
                   UpdateUserTierSubmitting() ||
                   UpdateUserTierSuccess() => _TiersBody(
-                    username: username,
+                    userId: userId,
                     state: state,
                   ),
                 },
@@ -85,9 +85,9 @@ class _ErrorBody extends StatelessWidget {
 }
 
 class _TiersBody extends StatelessWidget {
-  const _TiersBody({required this.username, required this.state});
+  const _TiersBody({required this.userId, required this.state});
 
-  final String username;
+  final int userId;
   final UpdateUserTierState state;
 
   @override
@@ -136,7 +136,7 @@ class _TiersBody extends StatelessWidget {
           onPressed: (selectedTierId == null || isSubmitting)
               ? null
               : () => unawaited(
-                  context.read<UpdateUserTierCubit>().submit(username),
+                  context.read<UpdateUserTierCubit>().submit(userId),
                 ),
           child: isSubmitting
               ? const SizedBox(

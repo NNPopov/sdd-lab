@@ -59,9 +59,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           BlocListener<UserDetailsCubit, UserDetailsState>(
             listener: (context, state) {
               if (state is UserDetailsLoaded) {
-                // getUserTier still keys by the handle (not migrated).
+                // getUserTier keys by the integer id (migrated, slice 0054).
                 unawaited(
-                  context.read<GetUserTierCubit>().load(state.user.username),
+                  context.read<GetUserTierCubit>().load(state.user.id),
                 );
               }
             },
@@ -73,7 +73,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 if (detailsState is UserDetailsLoaded) {
                   unawaited(
                     context.read<GetUserTierCubit>().load(
-                      detailsState.user.username,
+                      detailsState.user.id,
                     ),
                   );
                 }
@@ -184,29 +184,17 @@ class _UserDetailsAppBarActions extends StatelessWidget {
       },
     );
 
-    // The sibling actions still key by the handle (not migrated); source it
-    // from the loaded user. Null while loading — those buttons stay hidden.
-    final String? username = context.select<UserDetailsCubit, String?>(
-      (c) {
-        final s = c.state;
-        return s is UserDetailsLoaded ? s.user.username : null;
-      },
-    );
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (visibility.canManageModerators &&
-            isModerator != null &&
-            username != null)
+        if (visibility.canManageModerators && isModerator != null)
           AssignModeratorButton(
-            username: username,
+            userId: userId,
             isModerator: isModerator,
             onToggled: (val) =>
                 context.read<UserDetailsCubit>().updateIsModerator(val),
           ),
-        if (visibility.canEditTier && username != null)
-          UpdateUserTierButton(username: username),
+        if (visibility.canEditTier) UpdateUserTierButton(userId: userId),
         if (visibility.showEdit)
           IconButton(
             icon: const Icon(Icons.edit),

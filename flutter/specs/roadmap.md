@@ -55,3 +55,5 @@
 | 0051 | posts | post_details_edit_post_route_to_user_id | ✅ | [specs/features/posts/0051_post_details_edit_post_route_to_user_id/](features/posts/0051_post_details_edit_post_route_to_user_id/) |
 | 0052 | posts | delete_post_erase_db_post_route_to_user_id | 📋 | [specs/features/posts/0052_delete_post_erase_db_post_route_to_user_id/](features/posts/0052_delete_post_erase_db_post_route_to_user_id/) |
 | 0053 | posts | user_posts_create_post_route_to_user_id | 📋 | [specs/features/posts/0053_user_posts_create_post_route_to_user_id/](features/posts/0053_user_posts_create_post_route_to_user_id/) |
+| 0054 | users | user_tier_routes_to_user_id | 📋 | [specs/features/users/0054_user_tier_routes_to_user_id/](features/users/0054_user_tier_routes_to_user_id/) |
+| 0055 | users | moderator_routes_to_user_id | 📋 | [specs/features/users/0055_moderator_routes_to_user_id/](features/users/0055_moderator_routes_to_user_id/) |

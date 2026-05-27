@@ -7,9 +7,9 @@ import 'package:flutter_application_1/features/users/update_user_tier/presentati
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UpdateUserTierButton extends StatelessWidget {
-  const UpdateUserTierButton({required this.username, super.key});
+  const UpdateUserTierButton({required this.userId, super.key});
 
-  final String username;
+  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class UpdateUserTierButton extends StatelessWidget {
           isScrollControlled: true,
           builder: (_) => BlocProvider.value(
             value: context.read<UpdateUserTierCubit>(),
-            child: UpdateUserTierSheet(username: username),
+            child: UpdateUserTierSheet(userId: userId),
           ),
         );
         if (context.mounted) {

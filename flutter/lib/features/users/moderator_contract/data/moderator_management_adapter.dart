@@ -14,10 +14,10 @@ class ModeratorManagementAdapter implements ModeratorManagementPort {
   final AppLogger _logger;
 
   @override
-  Future<Either<Failure, void>> assignModerator(String username) async {
+  Future<Either<Failure, void>> assignModerator(int userId) async {
     try {
       try {
-        await _api.assignModerator(username);
+        await _api.assignModerator(userId);
         return const Right(null);
       } on DioException catch (e) {
         return Left(_mapHttp(e));
@@ -33,10 +33,10 @@ class ModeratorManagementAdapter implements ModeratorManagementPort {
   }
 
   @override
-  Future<Either<Failure, void>> revokeModerator(String username) async {
+  Future<Either<Failure, void>> revokeModerator(int userId) async {
     try {
       try {
-        await _api.revokeModerator(username);
+        await _api.revokeModerator(userId);
         return const Right(null);
       } on DioException catch (e) {
         return Left(_mapHttp(e));

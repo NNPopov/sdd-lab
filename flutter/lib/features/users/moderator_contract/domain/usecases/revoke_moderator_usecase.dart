@@ -9,6 +9,6 @@ class RevokeModeratorUseCase {
 
   final ModeratorManagementPort _port;
 
-  Future<Either<Failure, void>> call(String username) =>
-      _port.revokeModerator(username);
+  Future<Either<Failure, void>> call(int userId) =>
+      _port.revokeModerator(userId);
 }

@@ -46,7 +46,7 @@ void main() {
           appBar: AppBar(
             actions: [
               AssignModeratorButton(
-                username: 'alice',
+                userId: 7,
                 isModerator: isModerator,
                 onToggled: onToggled ?? (_) {},
               ),

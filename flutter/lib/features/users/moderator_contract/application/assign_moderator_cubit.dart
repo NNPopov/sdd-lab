@@ -12,18 +12,18 @@ class AssignModeratorCubit extends Cubit<AssignModeratorState> {
   final AssignModeratorUseCase _assign;
   final RevokeModeratorUseCase _revoke;
 
-  Future<void> assign(String username) async {
+  Future<void> assign(int userId) async {
     emit(const AssignModeratorState.loading());
-    final result = await _assign(username);
+    final result = await _assign(userId);
     result.fold(
       (f) => emit(AssignModeratorState.error(f)),
       (_) => emit(const AssignModeratorState.success(isModerator: true)),
     );
   }
 
-  Future<void> revoke(String username) async {
+  Future<void> revoke(int userId) async {
     emit(const AssignModeratorState.loading());
-    final result = await _revoke(username);
+    final result = await _revoke(userId);
     result.fold(
       (f) => emit(AssignModeratorState.error(f)),
       (_) => emit(const AssignModeratorState.success(isModerator: false)),

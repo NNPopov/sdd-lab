@@ -30,7 +30,7 @@ void main() {
         () => apiClient.patchUserTier(any(), any()),
       ).thenAnswer((_) async {});
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result, const Right<Failure, Unit>(unit));
     });
@@ -38,7 +38,7 @@ void main() {
     test('returns Left(UnauthorizedFailure) on 401', () async {
       _throwDio(apiClient, 401);
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -50,7 +50,7 @@ void main() {
     test('returns Left(ForbiddenFailure) on 403', () async {
       _throwDio(apiClient, 403);
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -62,7 +62,7 @@ void main() {
     test('returns Left(NotFoundFailure) on 404', () async {
       _throwDio(apiClient, 404);
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -74,7 +74,7 @@ void main() {
     test('returns Left(ServerFailure) on 500', () async {
       _throwDio(apiClient, 500);
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -96,7 +96,7 @@ void main() {
         ),
       ).thenReturn(null);
 
-      final result = await adapter(username: 'alice', tierId: 2);
+      final result = await adapter(userId: 7, tierId: 2);
 
       expect(result.isLeft(), isTrue);
       result.fold(
@@ -115,7 +115,7 @@ void main() {
 }
 
 void _throwDio(_MockUsersApiClient apiClient, int statusCode) {
-  const path = '/user/alice/tier';
+  const path = '/user/7/tier';
   when(() => apiClient.patchUserTier(any(), any())).thenThrow(
     DioException(
       requestOptions: RequestOptions(path: path),

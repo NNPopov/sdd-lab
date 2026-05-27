@@ -9,11 +9,11 @@ class UpdateUserTierUseCase {
   final UpdateUserTierPort _port;
 
   Future<Either<Failure, Unit>> call({
-    required String username,
+    required int userId,
     required int tierId,
     required bool isSuperuser,
   }) async {
     if (!isSuperuser) return const Left(Failure.permissionDenied());
-    return _port(username: username, tierId: tierId);
+    return _port(userId: userId, tierId: tierId);
   }
 }

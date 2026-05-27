@@ -9,6 +9,6 @@ class AssignModeratorUseCase {
 
   final ModeratorManagementPort _port;
 
-  Future<Either<Failure, void>> call(String username) =>
-      _port.assignModerator(username);
+  Future<Either<Failure, void>> call(int userId) =>
+      _port.assignModerator(userId);
 }

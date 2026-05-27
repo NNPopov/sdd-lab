@@ -18,22 +18,22 @@ void main() {
 
   test('delegates to port.assignModerator and passes result through', () async {
     when(
-      () => port.assignModerator('alice'),
+      () => port.assignModerator(7),
     ).thenAnswer((_) async => const Right(null));
 
-    final result = await useCase('alice');
+    final result = await useCase(7);
 
     expect(result, const Right<Failure, void>(null));
-    verify(() => port.assignModerator('alice')).called(1);
+    verify(() => port.assignModerator(7)).called(1);
   });
 
   test('passes Left through from port on failure', () async {
     const failure = Failure.forbidden(message: 'denied');
     when(
-      () => port.assignModerator('alice'),
+      () => port.assignModerator(7),
     ).thenAnswer((_) async => const Left(failure));
 
-    final result = await useCase('alice');
+    final result = await useCase(7);
 
     expect(result, const Left<Failure, void>(failure));
   });

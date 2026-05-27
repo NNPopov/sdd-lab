@@ -10,13 +10,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AssignModeratorButton extends StatelessWidget {
   const AssignModeratorButton({
-    required this.username,
+    required this.userId,
     required this.isModerator,
     required this.onToggled,
     super.key,
   });
 
-  final String username;
+  final int userId;
   final bool isModerator;
   final void Function(bool isModerator) onToggled;
 
@@ -25,7 +25,7 @@ class AssignModeratorButton extends StatelessWidget {
     return BlocProvider(
       create: (_) => getIt<AssignModeratorCubit>(),
       child: _AssignModeratorButtonInner(
-        username: username,
+        userId: userId,
         isModerator: isModerator,
         onToggled: onToggled,
       ),
@@ -35,12 +35,12 @@ class AssignModeratorButton extends StatelessWidget {
 
 class _AssignModeratorButtonInner extends StatelessWidget {
   const _AssignModeratorButtonInner({
-    required this.username,
+    required this.userId,
     required this.isModerator,
     required this.onToggled,
   });
 
-  final String username;
+  final int userId;
   final bool isModerator;
   final void Function(bool isModerator) onToggled;
 
@@ -74,9 +74,9 @@ class _AssignModeratorButtonInner extends StatelessWidget {
             onPressed: () {
               final cubit = context.read<AssignModeratorCubit>();
               if (isModerator) {
-                unawaited(cubit.revoke(username));
+                unawaited(cubit.revoke(userId));
               } else {
-                unawaited(cubit.assign(username));
+                unawaited(cubit.assign(userId));
               }
             },
             child: Text(label),

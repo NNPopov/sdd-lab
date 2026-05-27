@@ -30,10 +30,10 @@ void main() {
     blocTest<GetUserTierCubit, GetUserTierState>(
       'load emits [loading, loaded] on success',
       build: () {
-        when(() => useCase('alice')).thenAnswer((_) async => Right(_tier));
+        when(() => useCase(7)).thenAnswer((_) async => Right(_tier));
         return cubit;
       },
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(7),
       expect: () => [
         const GetUserTierState.loading(),
         GetUserTierState.loaded(_tier),
@@ -43,13 +43,13 @@ void main() {
     blocTest<GetUserTierCubit, GetUserTierState>(
       'load emits [loading, error] on failure',
       build: () {
-        when(() => useCase('alice')).thenAnswer(
+        when(() => useCase(7)).thenAnswer(
           (_) async =>
               const Left(Failure.notFound(message: 'Tier not assigned')),
         );
         return cubit;
       },
-      act: (c) => c.load('alice'),
+      act: (c) => c.load(7),
       expect: () => [
         const GetUserTierState.loading(),
         const GetUserTierState.error(
@@ -62,7 +62,7 @@ void main() {
       'second load overwrites result of first',
       build: () {
         var callCount = 0;
-        when(() => useCase('alice')).thenAnswer((_) async {
+        when(() => useCase(7)).thenAnswer((_) async {
           callCount++;
           return callCount == 1
               ? Right<Failure, UserTier>(_tier)
@@ -71,8 +71,8 @@ void main() {
         return cubit;
       },
       act: (c) async {
-        await c.load('alice');
-        await c.load('alice');
+        await c.load(7);
+        await c.load(7);
       },
       expect: () => [
         const GetUserTierState.loading(),

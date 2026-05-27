@@ -56,7 +56,7 @@ void main() {
   test(
     'assign success — emits [loading, success(isModerator: true)]',
     () async {
-      when(() => api.assignModerator('alice')).thenAnswer((_) async {});
+      when(() => api.assignModerator(7)).thenAnswer((_) async {});
 
       // expectLater must be set up BEFORE the action to avoid stream timing issues.
       final stateExpectation = expectLater(
@@ -71,17 +71,17 @@ void main() {
         ]),
       );
 
-      await cubit.assign('alice');
+      await cubit.assign(7);
       await stateExpectation;
 
-      verify(() => api.assignModerator('alice')).called(1);
+      verify(() => api.assignModerator(7)).called(1);
     },
   );
 
   test(
     'assign conflict (409) — emits [loading, error(ConflictFailure)]',
     () async {
-      when(() => api.assignModerator('alice')).thenThrow(_makeDioError(409));
+      when(() => api.assignModerator(7)).thenThrow(_makeDioError(409));
 
       // expectLater must be set up BEFORE the action to avoid stream timing issues.
       final stateExpectation = expectLater(
@@ -96,10 +96,10 @@ void main() {
         ]),
       );
 
-      await cubit.assign('alice');
+      await cubit.assign(7);
       await stateExpectation;
 
-      verify(() => api.assignModerator('alice')).called(1);
+      verify(() => api.assignModerator(7)).called(1);
     },
   );
 }
