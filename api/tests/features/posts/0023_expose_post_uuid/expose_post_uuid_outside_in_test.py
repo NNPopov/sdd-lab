@@ -18,10 +18,10 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_CREATE_POST_PATH = "/api/v1/{username}/post"
+_CREATE_POST_PATH = "/api/v1/{user_id}/post"
 _LIST_POSTS_PATH = "/api/v1/{user_id}/posts"
 _LIST_ALL_POSTS_PATH = "/api/v1/posts"
-_READ_POST_PATH = "/api/v1/{username}/post/{id}"
+_READ_POST_PATH = "/api/v1/{user_id}/post/{id}"
 
 
 async def test_post_uuid_present_and_consistent(
@@ -37,14 +37,12 @@ async def test_post_uuid_present_and_consistent(
     from app.features.users.dependencies import get_current_user, get_optional_user
     from app.main import app as _fastapi_app
 
-    username = seeded_alice["username"]
-
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: seeded_alice
     try:
         # 1. Create post via HTTP — verifies F3.
         create_resp = await async_client.post(
-            _CREATE_POST_PATH.format(username=username),
+            _CREATE_POST_PATH.format(user_id=seeded_alice["id"]),
             json={"title": "UUID Test Post", "text": "Checking post_uuid propagation."},
         )
         assert create_resp.status_code == 201, create_resp.text
@@ -85,8 +83,8 @@ async def test_post_uuid_present_and_consistent(
         list_all_uuid = all_item["post_uuid"]
         assert _is_valid_uuid(list_all_uuid), f"list_all_posts: post_uuid is not a valid UUID: {list_all_uuid!r}"
 
-        # 5. GET /api/v1/{username}/post/{id} — verifies F4.
-        read_resp = await async_client.get(_READ_POST_PATH.format(username=username, id=post_id))
+        # 5. GET /api/v1/{user_id}/post/{id} — verifies F4.
+        read_resp = await async_client.get(_READ_POST_PATH.format(user_id=seeded_alice["id"], id=post_id))
         assert read_resp.status_code == 200, read_resp.text
         read_body = read_resp.json()
         assert "post_uuid" in read_body, f"post_uuid missing from read_post response; keys: {sorted(read_body.keys())}"
@@ -117,12 +115,10 @@ async def test_read_post_exposes_post_uuid_not_raw_uuid_field(
     from app.features.users.dependencies import get_current_user, get_optional_user
     from app.main import app as _fastapi_app
 
-    username = seeded_alice["username"]
-
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         create_resp = await async_client.post(
-            _CREATE_POST_PATH.format(username=username),
+            _CREATE_POST_PATH.format(user_id=seeded_alice["id"]),
             json={"title": "UUID Field Leak Test", "text": "Verifying uuid is excluded from output."},
         )
         assert create_resp.status_code == 201, create_resp.text
@@ -132,7 +128,7 @@ async def test_read_post_exposes_post_uuid_not_raw_uuid_field(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: seeded_alice
     try:
-        read_resp = await async_client.get(_READ_POST_PATH.format(username=username, id=post_id))
+        read_resp = await async_client.get(_READ_POST_PATH.format(user_id=seeded_alice["id"], id=post_id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
     assert read_resp.status_code == 200, read_resp.text

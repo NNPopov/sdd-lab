@@ -3,17 +3,16 @@
 # Covers: F1, F9  (scenario 1 — owner patches their post; GET confirms change)
 #         F4      (scenario 2 — ownership violation → 403, DB unchanged)
 #
-# Red-state trigger: the existing inline patch_post handler raises
-# ForbiddenDomainError() with no message. Scenario 2 asserts the message is
-# "You can only update your own posts" → AssertionError on the response body.
+# Migrated to the integer {user_id} route by slice 0056; ownership now delegates
+# to the shared check_post_owner, which raises a bare ForbiddenDomainError().
 import pytest
 from httpx import AsyncClient
 from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_PATCH_PATH = "/api/v1/{username}/post/{id}"
-_GET_PATH = "/api/v1/{username}/post/{id}"
+_PATCH_PATH = "/api/v1/{user_id}/post/{id}"
+_GET_PATH = "/api/v1/{user_id}/post/{id}"  # get_post migrated to integer user_id (slice 0054)
 
 
 async def test_owner_patches_post_and_get_confirms_change(
@@ -27,8 +26,8 @@ async def test_owner_patches_post_and_get_confirms_change(
     from app.main import app as _fastapi_app
 
     post_id = up28_alice_post["id"]
-    patch_url = _PATCH_PATH.format(username="up28alice", id=post_id)
-    get_url = _GET_PATH.format(username="up28alice", id=post_id)
+    patch_url = _PATCH_PATH.format(user_id=up28_alice["id"], id=post_id)
+    get_url = _GET_PATH.format(user_id=up28_alice["id"], id=post_id)
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_alice
     try:
@@ -71,7 +70,7 @@ async def test_ownership_violation_bob_targets_alice_post(
     from app.main import app as _fastapi_app
 
     post_id = up28_alice_post["id"]
-    patch_url = _PATCH_PATH.format(username="up28alice", id=post_id)
+    patch_url = _PATCH_PATH.format(user_id=up28_alice["id"], id=post_id)
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_bob
     try:
@@ -83,12 +82,7 @@ async def test_ownership_violation_bob_targets_alice_post(
         del _fastapi_app.dependency_overrides[get_current_user]
 
     assert response.status_code == 403, response.text
-    assert response.json() == {
-        "error": {
-            "code": "forbidden",
-            "message": "You can only update your own posts",
-        }
-    }
+    assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
     async with _di_container.session_factory()() as session:
         result = await session.execute(

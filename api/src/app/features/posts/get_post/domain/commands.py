@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class GetPostQuery(BaseModel):
-    username: str
+    user_id: int
     post_id: int
-    requester_username: str | None = None
+    requester_user_id: int | None = None
     requester_is_privileged: bool = False

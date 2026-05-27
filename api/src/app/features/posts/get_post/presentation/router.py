@@ -14,22 +14,22 @@ from .schemas import GetPostResponse
 router = APIRouter(tags=["posts"])
 
 
-@router.get("/{username}/post/{id}", response_model=GetPostResponse, status_code=200)
-@cache(key_prefix="{username}_post_cache", resource_id_name="id")
+@router.get("/{user_id}/post/{id}", response_model=GetPostResponse, status_code=200)
+@cache(key_prefix="{user_id}_post_cache", resource_id_name="id")
 @inject
 async def get_post_endpoint(
     request: Request,
-    username: str,
+    user_id: int,
     id: int,
     optional_user: Annotated[dict | None, Depends(get_optional_user)],
     use_case: Annotated[GetPostUseCase, Depends(Provide[Container.get_post_use_case])],
 ) -> GetPostResponse:
     requester_is_privileged = bool(optional_user and (optional_user["is_superuser"] or optional_user["is_moderator"]))
-    requester_username = optional_user["username"] if optional_user else None
+    requester_user_id = optional_user["id"] if optional_user else None
     query = GetPostQuery(
-        username=username,
+        user_id=user_id,
         post_id=id,
-        requester_username=requester_username,
+        requester_user_id=requester_user_id,
         requester_is_privileged=requester_is_privileged,
     )
     post = await use_case(query)

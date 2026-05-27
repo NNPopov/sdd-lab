@@ -16,8 +16,8 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_DELETE_PATH = "/api/v1/{username}/db_post/{id}"
-_GET_PATH = "/api/v1/{username}/post/{id}"
+_DELETE_PATH = "/api/v1/{user_id}/db_post/{id}"  # migrated to integer user_id (slice 0058)
+_GET_PATH = "/api/v1/{user_id}/post/{id}"  # get_post migrated to integer user_id (slice 0054)
 
 # Superuser identity injected via dependency_overrides on get_current_user.
 _SUPERUSER = {
@@ -40,8 +40,8 @@ async def test_admin_hard_deletes_post_row_is_gone_and_get_returns_404(
     from app.main import app as _fastapi_app
 
     post_id = ep30_alice_post["id"]
-    delete_url = _DELETE_PATH.format(username="ep30alice", id=post_id)
-    get_url = _GET_PATH.format(username="ep30alice", id=post_id)
+    delete_url = _DELETE_PATH.format(user_id=ep30_alice["id"], id=post_id)
+    get_url = _GET_PATH.format(user_id=ep30_alice["id"], id=post_id)
 
     # Seed a PostModerationLog row to exercise the cascade-delete path (F2, N2).
     async with _di_container.session_factory()() as session:
@@ -110,8 +110,8 @@ async def test_ownership_enforcement_wrong_namespace_and_non_superuser(
 
     post_id = ep30_alice_post["id"]
 
-    # Step 1: admin uses bob's namespace for alice's post → 404 (ownership filter).
-    wrong_ns_url = _DELETE_PATH.format(username="ep30bob", id=post_id)
+    # Step 1: admin uses bob's user_id for alice's post → 404 (ownership filter).
+    wrong_ns_url = _DELETE_PATH.format(user_id=ep30_bob["id"], id=post_id)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         resp_wrong_ns = await async_client.delete(wrong_ns_url)
@@ -131,7 +131,7 @@ async def test_ownership_enforcement_wrong_namespace_and_non_superuser(
         assert row is not None, "post was wrongly deleted despite wrong namespace"
 
     # Step 2: non-superuser (alice herself) attempts delete → 403.
-    alice_url = _DELETE_PATH.format(username="ep30alice", id=post_id)
+    alice_url = _DELETE_PATH.format(user_id=ep30_alice["id"], id=post_id)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep30_alice
     try:
         resp_non_super = await async_client.delete(alice_url)

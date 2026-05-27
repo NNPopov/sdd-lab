@@ -3,6 +3,6 @@ from pydantic import BaseModel
 
 
 class ErasePostCommand(BaseModel):
-    username: str
+    user_id: int
     post_id: int
-    requester_username: str
+    requester_user_id: int

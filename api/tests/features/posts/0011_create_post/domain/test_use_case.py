@@ -15,8 +15,8 @@ from app.features.posts.create_post.domain.use_case import CreatePostUseCase
 
 _AUTHOR = UserIdentity(id=42, username="alice")
 _CMD = CreatePostCommand(
-    target_username="alice",
-    requester_username="alice",
+    target_user_id=42,
+    requester_user_id=42,
     title="Hello",
     text="World",
     media_url=None,
@@ -41,7 +41,7 @@ def _make_port(*, created: CreatedPost = _CREATED_POST) -> MagicMock:
 
 def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
     user_lookup = MagicMock()
-    user_lookup.get_active_user_by_username = AsyncMock(return_value=author)
+    user_lookup.get_active_user_by_id = AsyncMock(return_value=author)
     return user_lookup
 
 
@@ -50,7 +50,7 @@ def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
 
 @pytest.mark.asyncio
 async def test_raises_not_found_when_user_missing() -> None:
-    """F7 — get_active_user_by_username returns None → NotFoundDomainError."""
+    """F7 — get_active_user_by_id returns None → NotFoundDomainError."""
     use_case = CreatePostUseCase(port=_make_port(), user_lookup=_make_user_lookup(author=None))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)
@@ -62,10 +62,10 @@ async def test_raises_not_found_when_user_missing() -> None:
 
 @pytest.mark.asyncio
 async def test_raises_forbidden_when_requester_differs() -> None:
-    """F8 — requester_username != author.username → ForbiddenDomainError; create not called."""
+    """F8 — requester_user_id != author.id → bare ForbiddenDomainError; create not called."""
     cmd = CreatePostCommand(
-        target_username="alice",
-        requester_username="bob",
+        target_user_id=42,
+        requester_user_id=99,
         title="Hello",
         text="World",
         media_url=None,
@@ -74,7 +74,7 @@ async def test_raises_forbidden_when_requester_differs() -> None:
     use_case = CreatePostUseCase(port=port, user_lookup=_make_user_lookup())  # type: ignore[arg-type]
     with pytest.raises(ForbiddenDomainError) as exc_info:
         await use_case(cmd)
-    assert exc_info.value.message == "You can only post under your own username"
+    assert exc_info.value.message == ""
     port.create.assert_not_called()
 
 

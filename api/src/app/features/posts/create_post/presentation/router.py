@@ -14,20 +14,20 @@ router = APIRouter(tags=["posts"])
 
 
 @router.post(
-    "/{username}/post",
+    "/{user_id}/post",
     response_model=CreatePostResponse,
     status_code=status.HTTP_201_CREATED,
 )
 @inject
 async def create_post_endpoint(
-    username: str,
+    user_id: int,
     request: CreatePostRequest,
     current_user: Annotated[dict[str, Any], Depends(get_current_user)],
     use_case: Annotated[CreatePostUseCase, Depends(Provide[Container.create_post_use_case])],
 ) -> CreatePostResponse:
     command = CreatePostCommand(
-        target_username=username,
-        requester_username=current_user["username"],
+        target_user_id=user_id,
+        requester_user_id=current_user["id"],
         title=request.title,
         text=request.text,
         media_url=request.media_url,

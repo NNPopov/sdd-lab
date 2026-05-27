@@ -6,7 +6,7 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post"
+_ENDPOINT = "/api/v1/{user_id}/post"
 _VALID_BODY = {"title": "Hello world", "text": "My first post.", "media_url": None}
 
 
@@ -21,7 +21,7 @@ async def test_create_post_returns_status_in_response(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json=_VALID_BODY,
         )
     finally:

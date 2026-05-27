@@ -11,7 +11,7 @@ class EraseDbPostUseCase:
         self._user_lookup = user_lookup
 
     async def __call__(self, command: EraseDbPostCommand) -> None:
-        user = await self._user_lookup.get_active_user_by_username(command.username)
+        user = await self._user_lookup.get_active_user_by_id(command.user_id)
         if user is None:
             raise NotFoundDomainError("User not found")
         post = await self._port.find_post(command.post_id, owner_id=user.id)

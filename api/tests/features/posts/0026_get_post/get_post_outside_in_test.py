@@ -23,7 +23,7 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_READ_POST_PATH = "/api/v1/{username}/post/{id}"
+_READ_POST_PATH = "/api/v1/{user_id}/post/{id}"
 
 
 async def test_access_control_pending_post(
@@ -43,7 +43,7 @@ async def test_access_control_pending_post(
     from app.main import app as _fastapi_app
 
     url = _READ_POST_PATH.format(
-        username=gp26_alice["username"],
+        user_id=gp26_alice["id"],
         id=gp26_pending_post["id"],
     )
 
@@ -116,7 +116,7 @@ async def test_approved_post_visibility_and_not_found(
         await session.commit()
 
     url = _READ_POST_PATH.format(
-        username=gp26_alice["username"],
+        user_id=gp26_alice["id"],
         id=gp26_pending_post["id"],
     )
 
@@ -133,12 +133,12 @@ async def test_approved_post_visibility_and_not_found(
     assert "title" in body
     assert "text" in body
 
-    # Step 2 — unknown username → 404.
-    response = await async_client.get(_READ_POST_PATH.format(username="unknown_xyz_0026", id=gp26_pending_post["id"]))
-    assert response.status_code == 404, f"expected 404 (unknown username), got {response.status_code}: {response.text}"
+    # Step 2 — unknown user_id → 404 (no distinct "user not found").
+    response = await async_client.get(_READ_POST_PATH.format(user_id=999999, id=gp26_pending_post["id"]))
+    assert response.status_code == 404, f"expected 404 (unknown user_id), got {response.status_code}: {response.text}"
     assert response.json() == {"error": {"code": "notfound", "message": "Post not found"}}
 
     # Step 3 — unknown post id → 404.
-    response = await async_client.get(_READ_POST_PATH.format(username=gp26_alice["username"], id=99999))
+    response = await async_client.get(_READ_POST_PATH.format(user_id=gp26_alice["id"], id=99999))
     assert response.status_code == 404, f"expected 404 (unknown post id), got {response.status_code}: {response.text}"
     assert response.json() == {"error": {"code": "notfound", "message": "Post not found"}}

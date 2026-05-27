@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 
 class UpdatePostCommand(BaseModel):
-    target_username: str
-    requester_username: str
+    target_user_id: int
+    requester_user_id: int
     post_id: int
     title: str | None = None
     text: str | None = None

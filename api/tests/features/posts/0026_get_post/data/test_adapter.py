@@ -18,8 +18,8 @@ def _make_adapter() -> GetPostAdapter:
     return GetPostAdapter(session_factory=_di_container.session_factory())
 
 
-def _query(username: str, post_id: int) -> GetPostQuery:
-    return GetPostQuery(username=username, post_id=post_id)
+def _query(user_id: int, post_id: int) -> GetPostQuery:
+    return GetPostQuery(user_id=user_id, post_id=post_id)
 
 
 # ── isinstance / class declaration ────────────────────────────────────────────
@@ -59,7 +59,7 @@ async def test_returns_post_item_with_all_fields(async_client: AsyncClient) -> N
         await session.refresh(post)
 
     adapter = _make_adapter()
-    result = await adapter.get(_query(username=user.username, post_id=post.id))
+    result = await adapter.get(_query(user_id=user.id, post_id=post.id))
 
     assert isinstance(result, PostItem)
     assert result.id == post.id
@@ -75,9 +75,9 @@ async def test_returns_post_item_with_all_fields(async_client: AsyncClient) -> N
 
 
 async def test_returns_none_when_user_missing(async_client: AsyncClient) -> None:
-    """F16 — username not in DB → None."""
+    """F16 — user_id not in DB → None."""
     adapter = _make_adapter()
-    result = await adapter.get(_query(username="nonexistent_user_gp26", post_id=1))
+    result = await adapter.get(_query(user_id=999999, post_id=1))
     assert result is None
 
 
@@ -101,7 +101,7 @@ async def test_returns_none_when_post_missing(async_client: AsyncClient) -> None
         await session.refresh(user)
 
     adapter = _make_adapter()
-    result = await adapter.get(_query(username=user.username, post_id=99999))
+    result = await adapter.get(_query(user_id=user.id, post_id=99999))
     assert result is None
 
 
@@ -137,7 +137,7 @@ async def test_returns_none_for_soft_deleted_post(async_client: AsyncClient) -> 
         await session.commit()
 
     adapter = _make_adapter()
-    result = await adapter.get(_query(username=user.username, post_id=post_id))
+    result = await adapter.get(_query(user_id=user.id, post_id=post_id))
     assert result is None
 
 
@@ -172,7 +172,7 @@ async def test_returns_pending_review_post(async_client: AsyncClient) -> None:
         await session.refresh(post)
 
     adapter = _make_adapter()
-    result = await adapter.get(_query(username=user.username, post_id=post.id))
+    result = await adapter.get(_query(user_id=user.id, post_id=post.id))
 
     assert result is not None
     assert result.status == "pending_review"

@@ -14,7 +14,7 @@ class GetPostUseCase:
         if post is None:
             raise NotFoundDomainError("Post not found")
         if post.status != "approved":
-            if query.requester_username == query.username:
+            if query.requester_user_id == query.user_id:
                 return post
             if query.requester_is_privileged:
                 return post

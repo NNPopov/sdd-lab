@@ -14,8 +14,8 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_DELETE_PATH = "/api/v1/{username}/post/{id}"
-_GET_PATH = "/api/v1/{username}/post/{id}"
+_DELETE_PATH = "/api/v1/{user_id}/post/{id}"  # erase_post migrated to integer user_id (slice 0057)
+_GET_PATH = "/api/v1/{user_id}/post/{id}"  # get_post migrated to integer user_id (slice 0054)
 
 
 async def test_owner_deletes_post_db_shows_deleted_and_get_returns_404(
@@ -29,8 +29,8 @@ async def test_owner_deletes_post_db_shows_deleted_and_get_returns_404(
     from app.main import app as _fastapi_app
 
     post_id = ep29_alice_post["id"]
-    delete_url = _DELETE_PATH.format(username="ep29alice", id=post_id)
-    get_url = _GET_PATH.format(username="ep29alice", id=post_id)
+    delete_url = _DELETE_PATH.format(user_id=ep29_alice["id"], id=post_id)
+    get_url = _GET_PATH.format(user_id=ep29_alice["id"], id=post_id)
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_alice
     try:
@@ -70,7 +70,7 @@ async def test_ownership_gap_bob_uses_bobs_path_to_delete_alices_post_returns_40
     # Bob uses BOB's path segment (not Alice's), so no 403 check fires.
     # The new find_post(post_id, owner_id=bob.id) returns None because the post
     # belongs to alice — that is what closes the authorization gap.
-    delete_url = _DELETE_PATH.format(username="ep29bob", id=post_id)
+    delete_url = _DELETE_PATH.format(user_id=ep29_bob["id"], id=post_id)
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_bob
     try:

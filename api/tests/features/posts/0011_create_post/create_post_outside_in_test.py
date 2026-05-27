@@ -14,14 +14,14 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post"
+_ENDPOINT = "/api/v1/{user_id}/post"
 
 
 async def test_create_post_happy_path(
     async_client: AsyncClient,
     seeded_alice: dict,
 ) -> None:
-    """Scenario 1 — owner creates a post under their own username; response is 201."""
+    """Scenario 1 — owner creates a post under their own user_id; response is 201."""
     from app.bootstrap.container import container as _di_container
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
@@ -29,7 +29,7 @@ async def test_create_post_happy_path(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json={"title": "Hello world", "text": "My first post.", "media_url": None},
         )
     finally:
@@ -65,7 +65,7 @@ async def test_create_post_forbidden_wrong_owner(
     seeded_alice: dict,
     seeded_bob: dict,
 ) -> None:
-    """Scenario 2 — bob posts under alice's path; must receive 403 and no post is created."""
+    """Scenario 2 — bob posts under alice's id; must receive 403 and no post is created."""
     from app.bootstrap.container import container as _di_container
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
@@ -73,19 +73,14 @@ async def test_create_post_forbidden_wrong_owner(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_bob
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json={"title": "Intruder title", "text": "Intruder text."},
         )
     finally:
         del _fastapi_app.dependency_overrides[get_current_user]
 
     assert response.status_code == 403, response.text
-    assert response.json() == {
-        "error": {
-            "code": "forbidden",
-            "message": "You can only post under your own username",
-        }
-    }
+    assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
     # DB assertion: no post row was created.
     async with _di_container.session_factory()() as session:

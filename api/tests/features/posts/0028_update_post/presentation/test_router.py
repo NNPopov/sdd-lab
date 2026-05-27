@@ -1,12 +1,12 @@
 # FEATURE: update_post — endpoint integration tests.
 #
-# Covers: F1, F2, F3, F4, F5, F11.
+# Covers: F1, F2, F3, F4, F5, F11 (updated for the {user_id} migration — slice 0056).
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post/{id}"
+_ENDPOINT = "/api/v1/{user_id}/post/{id}"
 
 
 # ── F1: happy path → 200 ─────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ async def test_update_post_returns_200_with_correct_body(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="up28alice", id=up28_alice_post["id"])
+    url = _ENDPOINT.format(user_id=up28_alice["id"], id=up28_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_alice
     try:
         response = await async_client.patch(url, json={"title": "Changed title"})
@@ -41,11 +41,11 @@ async def test_update_post_returns_403_when_not_owner(
     up28_bob: dict,
     up28_alice_post: dict,
 ) -> None:
-    """F4 — requester does not own the username → 403."""
+    """F4 — requester does not own the user_id → bare 403."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="up28alice", id=up28_alice_post["id"])
+    url = _ENDPOINT.format(user_id=up28_alice["id"], id=up28_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_bob
     try:
         response = await async_client.patch(url, json={"title": "Stolen title"})
@@ -56,19 +56,19 @@ async def test_update_post_returns_403_when_not_owner(
     assert response.json()["error"]["code"] == "forbidden"
 
 
-# ── F3: unknown username → 404 ────────────────────────────────────────────────
+# ── F3: unknown user_id → 404 ─────────────────────────────────────────────────
 
 
-async def test_update_post_returns_404_for_unknown_username(
+async def test_update_post_returns_404_for_unknown_user(
     async_client: AsyncClient,
     up28_alice: dict,
     up28_alice_post: dict,
 ) -> None:
-    """F3 — username not in DB → 404."""
+    """F3 — user_id not in DB → 404."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ghost_xyz_up28", id=up28_alice_post["id"])
+    url = _ENDPOINT.format(user_id=999999999, id=up28_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_alice
     try:
         response = await async_client.patch(url, json={"title": "Any title"})
@@ -90,7 +90,7 @@ async def test_update_post_returns_404_for_unknown_post(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="up28alice", id=999999999)
+    url = _ENDPOINT.format(user_id=up28_alice["id"], id=999999999)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_alice
     try:
         response = await async_client.patch(url, json={"title": "Any title"})
@@ -106,10 +106,11 @@ async def test_update_post_returns_404_for_unknown_post(
 
 async def test_update_post_returns_401_without_token(
     async_client: AsyncClient,
+    up28_alice: dict,
     up28_alice_post: dict,
 ) -> None:
     """F2 — no Authorization header → 401."""
-    url = _ENDPOINT.format(username="up28alice", id=up28_alice_post["id"])
+    url = _ENDPOINT.format(user_id=up28_alice["id"], id=up28_alice_post["id"])
     response = await async_client.patch(url, json={"title": "Any title"})
     assert response.status_code == 401
 
@@ -126,7 +127,7 @@ async def test_update_post_returns_422_when_title_too_short(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="up28alice", id=up28_alice_post["id"])
+    url = _ENDPOINT.format(user_id=up28_alice["id"], id=up28_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: up28_alice
     try:
         response = await async_client.patch(url, json={"title": "x"})

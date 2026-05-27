@@ -6,7 +6,7 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post"
+_ENDPOINT = "/api/v1/{user_id}/post"
 _VALID_BODY = {"title": "Hello world", "text": "My first post.", "media_url": None}
 
 
@@ -24,7 +24,7 @@ async def test_create_post_returns_201_with_correct_schema(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json=_VALID_BODY,
         )
     finally:
@@ -42,21 +42,21 @@ async def test_create_post_returns_201_with_correct_schema(
     assert "is_deleted" not in body
 
 
-# ── F7: unknown username → 404 ────────────────────────────────────────────────
+# ── F7: unknown user_id → 404 ─────────────────────────────────────────────────
 
 
-async def test_create_post_returns_404_for_unknown_username(
+async def test_create_post_returns_404_for_unknown_user_id(
     async_client: AsyncClient,
     seeded_alice: dict,
 ) -> None:
-    """F7 — username not in DB → NotFoundDomainError → 404."""
+    """F7 — user_id not in DB → NotFoundDomainError → 404."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="ghost_xyz"),
+            _ENDPOINT.format(user_id=999999),
             json=_VALID_BODY,
         )
     finally:
@@ -76,26 +76,21 @@ async def test_create_post_returns_403_when_requester_is_not_owner(
     seeded_alice: dict,
     seeded_bob: dict,
 ) -> None:
-    """F8 — bob posts under alice's path → ForbiddenDomainError → 403."""
+    """F8 — bob posts under alice's id → bare ForbiddenDomainError → 403, no message."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_bob
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json=_VALID_BODY,
         )
     finally:
         del _fastapi_app.dependency_overrides[get_current_user]
 
     assert response.status_code == 403
-    assert response.json() == {
-        "error": {
-            "code": "forbidden",
-            "message": "You can only post under your own username",
-        }
-    }
+    assert response.json() == {"error": {"code": "forbidden", "message": ""}}
 
 
 # ── F2: missing title → 422 ───────────────────────────────────────────────────
@@ -112,7 +107,7 @@ async def test_create_post_returns_422_when_title_missing(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json={"text": "Some text."},
         )
     finally:
@@ -135,7 +130,7 @@ async def test_create_post_returns_422_when_text_missing(
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         response = await async_client.post(
-            _ENDPOINT.format(username="alice"),
+            _ENDPOINT.format(user_id=seeded_alice["id"]),
             json={"title": "A Title"},
         )
     finally:

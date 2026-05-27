@@ -14,24 +14,24 @@ from .schemas import ErasePostResponse
 router = APIRouter(tags=["posts"])
 
 
-@router.delete("/{username}/post/{id}", response_model=ErasePostResponse, status_code=200)
+@router.delete("/{user_id}/post/{id}", response_model=ErasePostResponse, status_code=200)
 @cache(
-    "{username}_post_cache",
+    "{user_id}_post_cache",
     resource_id_name="id",
-    to_invalidate_extra={"{username}_posts": "{username}"},
+    to_invalidate_extra={"{user_id}_posts": "{user_id}"},
 )
 @inject
 async def erase_post_endpoint(
     request: Request,
-    username: str,
+    user_id: int,
     id: int,
     current_user: Annotated[dict, Depends(get_current_user)],
     use_case: Annotated[ErasePostUseCase, Depends(Provide[Container.erase_post_use_case])],
 ) -> ErasePostResponse:
     command = ErasePostCommand(
-        username=username,
+        user_id=user_id,
         post_id=id,
-        requester_username=current_user["username"],
+        requester_user_id=current_user["id"],
     )
     await use_case(command)
     return ErasePostResponse(message="Post deleted")

@@ -1,6 +1,6 @@
 # FEATURE: erase_db_post — use-case unit tests.
 #
-# Covers: F2, F3, F4.
+# Covers: F2, F3, F4. (updated for the {user_id} migration — slice 0058)
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -13,7 +13,7 @@ from app.features.posts.erase_db_post.domain.use_case import EraseDbPostUseCase
 
 _AUTHOR = UserIdentity(id=1, username="alice")
 _POST = EraseDbPostRecord(id=10)
-_CMD = EraseDbPostCommand(username="alice", post_id=10)
+_CMD = EraseDbPostCommand(user_id=1, post_id=10)
 
 
 def _make_port(*, post: EraseDbPostRecord | None = _POST) -> MagicMock:
@@ -25,7 +25,7 @@ def _make_port(*, post: EraseDbPostRecord | None = _POST) -> MagicMock:
 
 def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
     user_lookup = MagicMock()
-    user_lookup.get_active_user_by_username = AsyncMock(return_value=author)
+    user_lookup.get_active_user_by_id = AsyncMock(return_value=author)
     return user_lookup
 
 
@@ -34,7 +34,7 @@ def _make_user_lookup(*, author: UserIdentity | None = _AUTHOR) -> MagicMock:
 
 @pytest.mark.asyncio
 async def test_raises_not_found_when_user_missing() -> None:
-    """F2 — get_active_user_by_username returns None → NotFoundDomainError('User not found')."""
+    """F2 — get_active_user_by_id returns None → NotFoundDomainError('User not found')."""
     use_case = EraseDbPostUseCase(port=_make_port(), user_lookup=_make_user_lookup(author=None))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
         await use_case(_CMD)

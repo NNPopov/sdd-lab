@@ -6,11 +6,11 @@ from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post/{id}"
+_ENDPOINT = "/api/v1/{user_id}/post/{id}"
 
 
-def _url(username: str, post_id: int) -> str:
-    return _ENDPOINT.format(username=username, id=post_id)
+def _url(user_id: int, post_id: int) -> str:
+    return _ENDPOINT.format(user_id=user_id, id=post_id)
 
 
 async def _seed_user(session_factory, *, username: str, is_moderator: bool = False, is_superuser: bool = False) -> dict:
@@ -58,7 +58,7 @@ async def test_approved_post_returns_200_unauthenticated(async_client: AsyncClie
     author = await _seed_user(sf, username="gp26rt_alice1")
     post = await _seed_post(sf, user_id=author["id"], status="approved")
 
-    response = await async_client.get(_url(author["username"], post.id))
+    response = await async_client.get(_url(author["id"], post.id))
 
     assert response.status_code == 200
     body = response.json()
@@ -81,7 +81,7 @@ async def test_pending_post_unauthenticated_returns_404(async_client: AsyncClien
     author = await _seed_user(sf, username="gp26rt_alice2")
     post = await _seed_post(sf, user_id=author["id"], status="pending_review")
 
-    response = await async_client.get(_url(author["username"], post.id))
+    response = await async_client.get(_url(author["id"], post.id))
 
     assert response.status_code == 404
 
@@ -101,7 +101,7 @@ async def test_pending_post_author_returns_200(async_client: AsyncClient) -> Non
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: author
     try:
-        response = await async_client.get(_url(author["username"], post.id))
+        response = await async_client.get(_url(author["id"], post.id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -125,7 +125,7 @@ async def test_pending_post_other_user_returns_404(async_client: AsyncClient) ->
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: bob
     try:
-        response = await async_client.get(_url(author["username"], post.id))
+        response = await async_client.get(_url(author["id"], post.id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -148,7 +148,7 @@ async def test_pending_post_moderator_returns_200(async_client: AsyncClient) -> 
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: mod
     try:
-        response = await async_client.get(_url(author["username"], post.id))
+        response = await async_client.get(_url(author["id"], post.id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -171,7 +171,7 @@ async def test_pending_post_superuser_returns_200(async_client: AsyncClient) -> 
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: superuser
     try:
-        response = await async_client.get(_url(author["username"], post.id))
+        response = await async_client.get(_url(author["id"], post.id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -189,7 +189,7 @@ async def test_changes_requested_post_unauthenticated_returns_404(async_client: 
     author = await _seed_user(sf, username="gp26rt_alice7")
     post = await _seed_post(sf, user_id=author["id"], status="changes_requested")
 
-    response = await async_client.get(_url(author["username"], post.id))
+    response = await async_client.get(_url(author["id"], post.id))
 
     assert response.status_code == 404
 
@@ -206,7 +206,7 @@ async def test_changes_requested_post_author_returns_200(async_client: AsyncClie
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: author
     try:
-        response = await async_client.get(_url(author["username"], post.id))
+        response = await async_client.get(_url(author["id"], post.id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
 
@@ -214,12 +214,12 @@ async def test_changes_requested_post_author_returns_200(async_client: AsyncClie
     assert response.json()["status"] == "changes_requested"
 
 
-# ── F6: unknown username → 404 ───────────────────────────────────────────────
+# ── F6: unknown user_id → 404 ────────────────────────────────────────────────
 
 
-async def test_unknown_username_returns_404(async_client: AsyncClient) -> None:
-    """F6 — username not in DB → 404."""
-    response = await async_client.get(_url("unknown_gp26rt_xyz", 1))
+async def test_unknown_user_id_returns_404(async_client: AsyncClient) -> None:
+    """F6 — user_id not in DB → 404 (no distinct 'user not found')."""
+    response = await async_client.get(_url(999999, 1))
     assert response.status_code == 404
 
 
@@ -233,7 +233,7 @@ async def test_unknown_post_id_returns_404(async_client: AsyncClient) -> None:
     sf = _di_container.session_factory()
     author = await _seed_user(sf, username="gp26rt_alice9")
 
-    response = await async_client.get(_url(author["username"], 99999))
+    response = await async_client.get(_url(author["id"], 99999))
     assert response.status_code == 404
 
 
@@ -249,5 +249,5 @@ async def test_post_id_of_different_user_returns_404(async_client: AsyncClient) 
     bob = await _seed_user(sf, username="gp26rt_bob10")
     post = await _seed_post(sf, user_id=bob["id"], status="approved")
 
-    response = await async_client.get(_url(alice["username"], post.id))
+    response = await async_client.get(_url(alice["id"], post.id))
     assert response.status_code == 404

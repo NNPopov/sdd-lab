@@ -1,12 +1,12 @@
 # FEATURE: erase_db_post — endpoint integration tests.
 #
-# Covers: F1, F8, F9, F11.
+# Covers: F1, F8, F9, F11. (updated for the {user_id} migration — slice 0058)
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/db_post/{id}"
+_ENDPOINT = "/api/v1/{user_id}/db_post/{id}"
 
 _SUPERUSER = {
     "id": 9998,
@@ -25,11 +25,11 @@ async def test_erase_db_post_returns_200_with_correct_body(
     ep30_alice: dict,
     ep30_alice_post: dict,
 ) -> None:
-    """F1 — superuser, valid username and post → 200 {'message': 'Post deleted from the database'}."""
+    """F1 — superuser, valid user_id and post → 200 {'message': 'Post deleted from the database'}."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep30alice", id=ep30_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep30_alice["id"], id=ep30_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(url)
@@ -40,19 +40,19 @@ async def test_erase_db_post_returns_200_with_correct_body(
     assert response.json() == {"message": "Post deleted from the database"}
 
 
-# ── F11: wrong namespace → 404 ───────────────────────────────────────────────
+# ── F11: unknown user_id → 404 ───────────────────────────────────────────────
 
 
-async def test_erase_db_post_returns_404_for_unknown_username(
+async def test_erase_db_post_returns_404_for_unknown_user_id(
     async_client: AsyncClient,
     ep30_alice: dict,
     ep30_alice_post: dict,
 ) -> None:
-    """F11 — superuser supplies username not in DB → 404 'User not found'."""
+    """F11 — superuser supplies user_id not in DB → 404 'User not found'."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ghost_xyz_ep30", id=ep30_alice_post["id"])
+    url = _ENDPOINT.format(user_id=999999999, id=ep30_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(url)
@@ -70,11 +70,11 @@ async def test_erase_db_post_returns_404_for_unknown_post(
     async_client: AsyncClient,
     ep30_alice: dict,
 ) -> None:
-    """F11 — superuser, valid username, post id not in DB → 404 'Post not found'."""
+    """F11 — superuser, valid user_id, post id not in DB → 404 'Post not found'."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep30alice", id=999999999)
+    url = _ENDPOINT.format(user_id=ep30_alice["id"], id=999999999)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(url)
@@ -85,7 +85,7 @@ async def test_erase_db_post_returns_404_for_unknown_post(
     assert response.json()["error"]["message"] == "Post not found"
 
 
-# ── F11: post belongs to different user (wrong namespace) → 404 ──────────────
+# ── F11: post belongs to different user (wrong owner id) → 404 ───────────────
 
 
 async def test_erase_db_post_returns_404_when_post_belongs_to_other_user(
@@ -94,11 +94,11 @@ async def test_erase_db_post_returns_404_when_post_belongs_to_other_user(
     ep30_bob: dict,
     ep30_alice_post: dict,
 ) -> None:
-    """F11 — superuser uses bob's namespace for alice's post_id → 404 (ownership filter)."""
+    """F11 — superuser uses bob's user_id for alice's post_id → 404 (ownership filter)."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep30bob", id=ep30_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep30_bob["id"], id=ep30_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(url)
@@ -134,7 +134,7 @@ async def test_erase_db_post_returns_404_for_soft_deleted_post(
         await session.refresh(post)
         post_id = post.id
 
-    url = _ENDPOINT.format(username="ep30alice", id=post_id)
+    url = _ENDPOINT.format(user_id=ep30_alice["id"], id=post_id)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: _SUPERUSER
     try:
         response = await async_client.delete(url)
@@ -157,7 +157,7 @@ async def test_erase_db_post_returns_403_for_non_superuser(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep30alice", id=ep30_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep30_alice["id"], id=ep30_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep30_alice
     try:
         response = await async_client.delete(url)
@@ -172,9 +172,10 @@ async def test_erase_db_post_returns_403_for_non_superuser(
 
 async def test_erase_db_post_returns_401_without_token(
     async_client: AsyncClient,
+    ep30_alice: dict,
     ep30_alice_post: dict,
 ) -> None:
     """F9 — no Authorization header → 401."""
-    url = _ENDPOINT.format(username="ep30alice", id=ep30_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep30_alice["id"], id=ep30_alice_post["id"])
     response = await async_client.delete(url)
     assert response.status_code == 401

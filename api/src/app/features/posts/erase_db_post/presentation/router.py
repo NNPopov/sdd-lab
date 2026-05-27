@@ -14,20 +14,20 @@ from .schemas import EraseDbPostResponse
 router = APIRouter(tags=["posts"])
 
 
-@router.delete("/{username}/db_post/{id}", response_model=EraseDbPostResponse, status_code=200)
+@router.delete("/{user_id}/db_post/{id}", response_model=EraseDbPostResponse, status_code=200)
 @cache(
-    "{username}_post_cache",
+    "{user_id}_post_cache",
     resource_id_name="id",
-    to_invalidate_extra={"{username}_posts": "{username}"},
+    to_invalidate_extra={"{user_id}_posts": "{user_id}"},
 )
 @inject
 async def erase_db_post_endpoint(
     request: Request,
-    username: str,
+    user_id: int,
     id: int,
     _: Annotated[dict, Depends(get_current_superuser)],
     use_case: Annotated[EraseDbPostUseCase, Depends(Provide[Container.erase_db_post_use_case])],
 ) -> EraseDbPostResponse:
-    command = EraseDbPostCommand(username=username, post_id=id)
+    command = EraseDbPostCommand(user_id=user_id, post_id=id)
     await use_case(command)
     return EraseDbPostResponse(message="Post deleted from the database")

@@ -18,7 +18,7 @@ class GetPostAdapter(GetPostPort):
             stmt = (
                 select(Post, User.username)
                 .join(User, Post.created_by_user_id == User.id)
-                .where(User.username == query.username)
+                .where(Post.created_by_user_id == query.user_id)
                 .where(Post.id == query.post_id)
                 .where(User.is_deleted == False)  # noqa: E712
                 .where(Post.is_deleted == False)  # noqa: E712

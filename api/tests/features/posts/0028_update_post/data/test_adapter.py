@@ -70,6 +70,7 @@ async def test_get_post_by_id_returns_none_for_soft_deleted(
 
 
 async def test_update_sets_fields_and_updated_at(
+    up28_alice: dict,
     up28_alice_post: dict,
     async_client: AsyncClient,
 ) -> None:
@@ -79,8 +80,8 @@ async def test_update_sets_fields_and_updated_at(
 
     adapter = _make_adapter()
     command = UpdatePostCommand(
-        target_username="up28alice",
-        requester_username="up28alice",
+        target_user_id=up28_alice["id"],
+        requester_user_id=up28_alice["id"],
         post_id=up28_alice_post["id"],
         title="New title",
     )

@@ -41,16 +41,25 @@ Global index of all slices. Owned by `/to-prd`. Other skills read; never write.
 | 0035 | tiers | get_tier | Complete | `specs/features/tiers/0035_get_tier/` |
 | 0036 | tiers | update_tier | Complete | `specs/features/tiers/0036_update_tier/` |
 | 0037 | tiers | delete_tier | Complete | `specs/features/tiers/0037_delete_tier/` |
-| 0038 | tiers | get_tier_by_id | Planned | `specs/features/tiers/0038_get_tier_by_id/` |
-| 0039 | tiers | update_tier_by_id | Planned | `specs/features/tiers/0039_update_tier_by_id/` |
-| 0040 | tiers | delete_tier_by_id | Planned | `specs/features/tiers/0040_delete_tier_by_id/` |
-| 0041 | users | get_user_by_id | Planned | `specs/features/users/0041_get_user_by_id/` |
-| 0042 | posts | migrate_list_posts_route_username_to_user_id | Planned | `specs/features/posts/0042_migrate_list_posts_route_username_to_user_id/` |
-| 0043 | users | update_user_route_to_user_id | Planned | `specs/features/users/0043_update_user_route_to_user_id/` |
-| 0044 | users | delete_user_route_to_user_id | Planned | `specs/features/users/0044_delete_user_route_to_user_id/` |
-| 0045 | users | delete_db_user_route_to_user_id | Planned | `specs/features/users/0045_delete_db_user_route_to_user_id/` |
-| 0046 | users | assign_moderator_route_to_user_id | Planned | `specs/features/users/0046_assign_moderator_route_to_user_id/` |
-| 0047 | users | revoke_moderator_route_to_user_id | Planned | `specs/features/users/0047_revoke_moderator_route_to_user_id/` |
-| 0048 | users | get_user_tier_route_to_user_id | Planned | `specs/features/users/0048_get_user_tier_route_to_user_id/` |
-| 0049 | users | rate_limits_route_to_user_id | Planned | `specs/features/users/0049_rate_limits_route_to_user_id/` |
-| 0050 | users | update_user_tier_route_to_user_id | Planned | `specs/features/users/0050_update_user_tier_route_to_user_id/` |
+| 0038 | tiers | get_tier_by_id | Complete | `specs/features/tiers/0038_get_tier_by_id/` |
+| 0039 | tiers | update_tier_by_id | Complete | `specs/features/tiers/0039_update_tier_by_id/` |
+| 0040 | tiers | delete_tier_by_id | Complete | `specs/features/tiers/0040_delete_tier_by_id/` |
+| 0041 | users | get_user_by_id | Complete | `specs/features/users/0041_get_user_by_id/` |
+| 0042 | posts | migrate_list_posts_route_username_to_user_id | Complete | `specs/features/posts/0042_migrate_list_posts_route_username_to_user_id/` |
+| 0043 | users | update_user_route_to_user_id | Complete | `specs/features/users/0043_update_user_route_to_user_id/` |
+| 0044 | users | delete_user_route_to_user_id | PlannCompleteed | `specs/features/users/0044_delete_user_route_to_user_id/` |
+| 0045 | users | delete_db_user_route_to_user_id | Complete | `specs/features/users/0045_delete_db_user_route_to_user_id/` |
+| 0046 | users | assign_moderator_route_to_user_id | Complete | `specs/features/users/0046_assign_moderator_route_to_user_id/` |
+| 0047 | users | revoke_moderator_route_to_user_id | Complete | `specs/features/users/0047_revoke_moderator_route_to_user_id/` |
+| 0048 | users | get_user_tier_route_to_user_id | Complete | `specs/features/users/0048_get_user_tier_route_to_user_id/` |
+| 0049 | users | rate_limits_route_to_user_id | Complete | `specs/features/users/0049_rate_limits_route_to_user_id/` |
+| 0050 | users | update_user_tier_route_to_user_id | Complete | `specs/features/users/0050_update_user_tier_route_to_user_id/` |
+| 0051 | posts (flutter) | post_details_edit_post_route_to_user_id | Complete | `flutter/specs/features/posts/0051_post_details_edit_post_route_to_user_id/` |
+| 0052 | posts (flutter) | delete_post_erase_db_post_route_to_user_id | Complete | `flutter/specs/features/posts/0052_delete_post_erase_db_post_route_to_user_id/` |
+| 0053 | posts (flutter) | user_posts_create_post_route_to_user_id | Complete | `flutter/specs/features/posts/0053_user_posts_create_post_route_to_user_id/` |
+| 0054 | posts | migrate_get_post_route_username_to_user_id | Complete | `specs/features/posts/0054_migrate_get_post_route_username_to_user_id/` |
+| 0055 | posts | migrate_create_post_route_username_to_user_id | Complete | `specs/features/posts/0055_migrate_create_post_route_username_to_user_id/` |
+| 0056 | posts | migrate_update_post_route_username_to_user_id | Complete | `specs/features/posts/0056_migrate_update_post_route_username_to_user_id/` |
+| 0057 | posts | migrate_erase_post_route_username_to_user_id | Planned | `specs/features/posts/0057_migrate_erase_post_route_username_to_user_id/` |
+| 0058 | posts | migrate_erase_db_post_route_username_to_user_id | Planned | `specs/features/posts/0058_migrate_erase_db_post_route_username_to_user_id/` |
+| 0059 | posts | remove_username_user_lookup | Planned | `specs/features/posts/0059_remove_username_user_lookup/` |

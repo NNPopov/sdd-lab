@@ -14,10 +14,10 @@ from sqlalchemy import text
 
 pytestmark = pytest.mark.asyncio
 
-_CREATE = "/api/v1/{username}/post"
+_CREATE = "/api/v1/{user_id}/post"
 _LIST = "/api/v1/{user_id}/posts"
 _LIST_ALL = "/api/v1/posts"
-_READ = "/api/v1/{username}/post/{id}"
+_READ = "/api/v1/{user_id}/post/{id}"
 
 
 def _valid_uuid(value: object) -> bool:
@@ -39,12 +39,11 @@ async def test_all_four_endpoints_return_valid_and_consistent_post_uuid(
     from app.features.users.dependencies import get_current_user, get_optional_user
     from app.main import app as _fastapi_app
 
-    username = seeded_alice["username"]
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: seeded_alice
     try:
         create_resp = await async_client.post(
-            _CREATE.format(username=username),
+            _CREATE.format(user_id=seeded_alice["id"]),
             json={"title": "Router UUID Test", "text": "Checking post_uuid in responses."},
         )
         assert create_resp.status_code == 201, create_resp.text
@@ -79,7 +78,7 @@ async def test_all_four_endpoints_return_valid_and_consistent_post_uuid(
         assert _valid_uuid(all_item["post_uuid"])
         all_uuid = all_item["post_uuid"]
 
-        read_resp = await async_client.get(_READ.format(username=username, id=post_id))
+        read_resp = await async_client.get(_READ.format(user_id=seeded_alice["id"], id=post_id))
         assert read_resp.status_code == 200, read_resp.text
         read_body = read_resp.json()
         assert "post_uuid" in read_body, f"post_uuid absent in read_post response; keys: {sorted(read_body)}"
@@ -102,11 +101,10 @@ async def test_read_post_response_contains_post_uuid_not_raw_uuid(
     from app.features.users.dependencies import get_current_user, get_optional_user
     from app.main import app as _fastapi_app
 
-    username = seeded_alice["username"]
     _fastapi_app.dependency_overrides[get_current_user] = lambda: seeded_alice
     try:
         create_resp = await async_client.post(
-            _CREATE.format(username=username),
+            _CREATE.format(user_id=seeded_alice["id"]),
             json={"title": "UUID Field Leak Check", "text": "Verifying uuid is excluded."},
         )
         assert create_resp.status_code == 201, create_resp.text
@@ -116,7 +114,7 @@ async def test_read_post_response_contains_post_uuid_not_raw_uuid(
 
     _fastapi_app.dependency_overrides[get_optional_user] = lambda: seeded_alice
     try:
-        read_resp = await async_client.get(_READ.format(username=username, id=post_id))
+        read_resp = await async_client.get(_READ.format(user_id=seeded_alice["id"], id=post_id))
     finally:
         del _fastapi_app.dependency_overrides[get_optional_user]
     assert read_resp.status_code == 200, read_resp.text

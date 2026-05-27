@@ -1,12 +1,12 @@
 # FEATURE: erase_post — endpoint integration tests.
 #
-# Covers: F1, F2, F3, F4, F5.
+# Covers: F1, F2, F3, F4, F5 (updated for the {user_id} migration — slice 0057).
 import pytest
 from httpx import AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
-_ENDPOINT = "/api/v1/{username}/post/{id}"
+_ENDPOINT = "/api/v1/{user_id}/post/{id}"
 
 
 # ── F1: happy path → 200 ─────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ async def test_erase_post_returns_200_with_correct_body(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep29alice", id=ep29_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep29_alice["id"], id=ep29_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_alice
     try:
         response = await async_client.delete(url)
@@ -41,11 +41,11 @@ async def test_erase_post_returns_403_when_not_owner(
     ep29_bob: dict,
     ep29_alice_post: dict,
 ) -> None:
-    """F4 — requester is bob, path username is alice → 403."""
+    """F4 — requester is bob, path user_id is alice → 403."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep29alice", id=ep29_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep29_alice["id"], id=ep29_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_bob
     try:
         response = await async_client.delete(url)
@@ -56,19 +56,19 @@ async def test_erase_post_returns_403_when_not_owner(
     assert response.json()["error"]["code"] == "forbidden"
 
 
-# ── F3: unknown username → 404 ────────────────────────────────────────────────
+# ── F3: unknown user_id → 404 ─────────────────────────────────────────────────
 
 
-async def test_erase_post_returns_404_for_unknown_username(
+async def test_erase_post_returns_404_for_unknown_user(
     async_client: AsyncClient,
     ep29_alice: dict,
     ep29_alice_post: dict,
 ) -> None:
-    """F3 — username not in DB → 404 'User not found'."""
+    """F3 — user_id not in DB → 404 'User not found'."""
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ghost_xyz_ep29", id=ep29_alice_post["id"])
+    url = _ENDPOINT.format(user_id=999999999, id=ep29_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_alice
     try:
         response = await async_client.delete(url)
@@ -90,7 +90,7 @@ async def test_erase_post_returns_404_for_unknown_post(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep29alice", id=999999999)
+    url = _ENDPOINT.format(user_id=ep29_alice["id"], id=999999999)
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_alice
     try:
         response = await async_client.delete(url)
@@ -114,7 +114,7 @@ async def test_erase_post_returns_404_when_post_belongs_to_other_user(
     from app.features.users.dependencies import get_current_user
     from app.main import app as _fastapi_app
 
-    url = _ENDPOINT.format(username="ep29bob", id=ep29_alice_post["id"])
+    url = _ENDPOINT.format(user_id=ep29_bob["id"], id=ep29_alice_post["id"])
     _fastapi_app.dependency_overrides[get_current_user] = lambda: ep29_bob
     try:
         response = await async_client.delete(url)
@@ -133,6 +133,6 @@ async def test_erase_post_returns_401_without_token(
     ep29_alice_post: dict,
 ) -> None:
     """F2 — no Authorization header → 401."""
-    url = _ENDPOINT.format(username="ep29alice", id=ep29_alice_post["id"])
+    url = _ENDPOINT.format(user_id=999999999, id=ep29_alice_post["id"])
     response = await async_client.delete(url)
     assert response.status_code == 401

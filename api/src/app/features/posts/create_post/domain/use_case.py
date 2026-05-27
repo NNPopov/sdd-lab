@@ -1,5 +1,6 @@
 # FEATURE: create_post — use case.
-from .....domain.errors import ForbiddenDomainError, NotFoundDomainError
+from .....domain.errors import NotFoundDomainError
+from ..._shared.policies import check_post_owner
 from ..._shared.user_lookup_port import UserLookupPort
 from .commands import CreatePostCommand, CreatePostInternalCommand
 from .entities import CreatedPost
@@ -12,11 +13,10 @@ class CreatePostUseCase:
         self._user_lookup = user_lookup
 
     async def __call__(self, command: CreatePostCommand) -> CreatedPost:
-        author = await self._user_lookup.get_active_user_by_username(command.target_username)
+        author = await self._user_lookup.get_active_user_by_id(command.target_user_id)
         if author is None:
             raise NotFoundDomainError("User not found")
-        if command.requester_username != author.username:
-            raise ForbiddenDomainError("You can only post under your own username")
+        check_post_owner(command.requester_user_id, author.id)
         internal = CreatePostInternalCommand(
             created_by_user_id=author.id,
             title=command.title,

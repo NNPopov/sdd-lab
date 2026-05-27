@@ -14,20 +14,20 @@ from .schemas import UpdatePostRequest, UpdatePostResponse
 router = APIRouter(tags=["posts"])
 
 
-@router.patch("/{username}/post/{id}", response_model=UpdatePostResponse, status_code=200)
-@cache("{username}_post_cache", resource_id_name="id", pattern_to_invalidate_extra=["{username}_posts:*"])
+@router.patch("/{user_id}/post/{id}", response_model=UpdatePostResponse, status_code=200)
+@cache("{user_id}_post_cache", resource_id_name="id", pattern_to_invalidate_extra=["{user_id}_posts:*"])
 @inject
 async def update_post_endpoint(
     request: Request,
-    username: str,
+    user_id: int,
     id: int,
     body: UpdatePostRequest,
     current_user: Annotated[dict, Depends(get_current_user)],
     use_case: Annotated[UpdatePostUseCase, Depends(Provide[Container.update_post_use_case])],
 ) -> UpdatePostResponse:
     command = UpdatePostCommand(
-        target_username=username,
-        requester_username=current_user["username"],
+        target_user_id=user_id,
+        requester_user_id=current_user["id"],
         post_id=id,
         **body.model_dump(),
     )

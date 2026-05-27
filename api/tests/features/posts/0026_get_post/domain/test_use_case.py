@@ -13,8 +13,9 @@ from app.features.posts.get_post.domain.commands import GetPostQuery
 from app.features.posts.get_post.domain.use_case import GetPostUseCase
 
 _POST_ID = 1
-_AUTHOR_USERNAME = "alice"
-_BOB_USERNAME = "bob"
+_AUTHOR_ID = 10
+_BOB_ID = 20
+_AUTHOR_USERNAME = "alice"  # display username on PostItem, sourced from the User JOIN
 
 _APPROVED_POST = PostItem(
     id=_POST_ID,
@@ -22,7 +23,7 @@ _APPROVED_POST = PostItem(
     text="Body",
     media_url=None,
     created_at=datetime.now(UTC),
-    created_by_user_id=10,
+    created_by_user_id=_AUTHOR_ID,
     username=_AUTHOR_USERNAME,
     status="approved",
     post_uuid=uuid.uuid4(),
@@ -40,9 +41,9 @@ def _make_port(*, post: PostItem | None) -> MagicMock:
 
 def _query(**overrides) -> GetPostQuery:
     defaults: dict = {
-        "username": _AUTHOR_USERNAME,
+        "user_id": _AUTHOR_ID,
         "post_id": _POST_ID,
-        "requester_username": None,
+        "requester_user_id": None,
         "requester_is_privileged": False,
     }
     defaults.update(overrides)
@@ -80,7 +81,7 @@ async def test_returns_approved_post_for_unauthenticated() -> None:
 async def test_author_can_see_pending_post() -> None:
     """F2 — pending_review post, requester is author → post returned."""
     use_case = GetPostUseCase(port=_make_port(post=_PENDING_POST))  # type: ignore[arg-type]
-    result = await use_case(_query(requester_username=_AUTHOR_USERNAME))
+    result = await use_case(_query(requester_user_id=_AUTHOR_ID))
     assert result.status == "pending_review"
 
 
@@ -88,7 +89,7 @@ async def test_author_can_see_pending_post() -> None:
 async def test_author_can_see_changes_requested_post() -> None:
     """F2/F13 — changes_requested post, requester is author → post returned."""
     use_case = GetPostUseCase(port=_make_port(post=_CHANGES_POST))  # type: ignore[arg-type]
-    result = await use_case(_query(requester_username=_AUTHOR_USERNAME))
+    result = await use_case(_query(requester_user_id=_AUTHOR_ID))
     assert result.status == "changes_requested"
 
 
@@ -99,7 +100,7 @@ async def test_author_can_see_changes_requested_post() -> None:
 async def test_privileged_user_can_see_pending_post() -> None:
     """F3 — pending_review post, requester is privileged → post returned."""
     use_case = GetPostUseCase(port=_make_port(post=_PENDING_POST))  # type: ignore[arg-type]
-    result = await use_case(_query(requester_username=_BOB_USERNAME, requester_is_privileged=True))
+    result = await use_case(_query(requester_user_id=_BOB_ID, requester_is_privileged=True))
     assert result.status == "pending_review"
 
 
@@ -107,7 +108,7 @@ async def test_privileged_user_can_see_pending_post() -> None:
 async def test_privileged_user_can_see_changes_requested_post() -> None:
     """F3/F13 — changes_requested post, requester is privileged → post returned."""
     use_case = GetPostUseCase(port=_make_port(post=_CHANGES_POST))  # type: ignore[arg-type]
-    result = await use_case(_query(requester_username=_BOB_USERNAME, requester_is_privileged=True))
+    result = await use_case(_query(requester_user_id=_BOB_ID, requester_is_privileged=True))
     assert result.status == "changes_requested"
 
 
@@ -128,7 +129,7 @@ async def test_raises_not_found_for_pending_post_non_author() -> None:
     """F4/F8 — pending_review post, different user, no privilege → NotFoundDomainError."""
     use_case = GetPostUseCase(port=_make_port(post=_PENDING_POST))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
-        await use_case(_query(requester_username=_BOB_USERNAME))
+        await use_case(_query(requester_user_id=_BOB_ID))
     assert exc_info.value.message == "Post not found"
 
 
@@ -137,5 +138,5 @@ async def test_raises_not_found_for_changes_requested_post_neither() -> None:
     """F4/F12 — changes_requested post, neither author nor privileged → NotFoundDomainError."""
     use_case = GetPostUseCase(port=_make_port(post=_CHANGES_POST))  # type: ignore[arg-type]
     with pytest.raises(NotFoundDomainError) as exc_info:
-        await use_case(_query(requester_username=_BOB_USERNAME))
+        await use_case(_query(requester_user_id=_BOB_ID))
     assert exc_info.value.message == "Post not found"

@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 
 class EraseDbPostCommand(BaseModel):
-    username: str
+    user_id: int
     post_id: int
