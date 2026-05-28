@@ -1,0 +1,81 @@
+# ============================================================
+# Dockerfile for Flutter Web frontend
+# Build context: монорепо root
+# Usage: docker build -f dockerfiles/Dockerfile.flutter -t fastapi-demo/frontend .
+# ============================================================
+
+# ---------- Stage 1: Flutter build ----------
+FROM ghcr.io/cirruslabs/flutter:stable AS builder
+
+WORKDIR /build
+
+# Копируем файлы Flutter проекта
+COPY flutter/pubspec.yaml flutter/pubspec.lock ./
+RUN flutter pub get
+
+# Копируем весь исходный код
+COPY flutter/ .
+
+# Генерируем локализации (slang/i18n)
+RUN dart run build_runner build --delete-conflicting-outputs || true
+
+# Собираем web build с оптимизациями
+RUN flutter build web \
+    --release \
+    --web-renderer canvaskit \
+    --dart-define=ENVIRONMENT=production
+
+# ---------- Stage 2: Nginx runtime ----------
+FROM nginx:1.25-alpine AS runtime
+
+# Удаляем дефолтный конфиг
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Кастомный nginx.conf для Flutter SPA
+COPY <<'EOF' /etc/nginx/conf.d/flutter.conf
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript
+               text/xml application/xml application/xml+rss text/javascript
+               application/wasm;
+    gzip_min_length 1000;
+
+    # Cache статических ассетов Flutter (хэши в именах файлов)
+    location ~* \.(js|css|wasm|png|jpg|ico|svg|woff2?)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # Flutter SPA: все роуты → index.html
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache";
+    }
+
+    # Healthcheck endpoint для K8s
+    location /healthz {
+        access_log off;
+        return 200 "ok\n";
+        add_header Content-Type text/plain;
+    }
+}
+EOF
+
+# Копируем собранный web build
+COPY --from=builder /build/build/web /usr/share/nginx/html
+
+# Непривилегированный порт и пользователь
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -qO- http://localhost/healthz || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

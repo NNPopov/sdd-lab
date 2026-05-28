@@ -1,0 +1,80 @@
+# ============================================================
+# Dockerfile.api — FastAPI backend
+# Build context: api/ (папка api монорепо)
+#
+# Сборка:
+#   cd monorepo/
+#   docker build -f docker/Dockerfile.api -t fastapi-demo/backend api/
+#
+# Локально через docker-compose — volume mount перекрывает
+# COPY src/app, поэтому --reload работает с живым кодом.
+# В K8s/продакшн — код запечён в образ, gunicorn без --reload.
+# ============================================================
+
+# --------- Stage 1: Builder (uv + зависимости) ---------
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
+
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+
+WORKDIR /app
+
+# Устанавливаем только зависимости (кэшируется отдельно от кода)
+# --no-dev исключает dev-зависимости (ruff, mypy, pytest) из образа
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project --no-dev
+
+# Копируем весь проект и устанавливаем
+COPY . /app
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable --no-dev
+
+# --------- Stage 2: Runtime ---------
+FROM python:3.11-slim-bookworm
+
+# Рантайм-зависимости OS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Непривилегированный пользователь — как в оригинале
+RUN groupadd --gid 1000 app \
+    && useradd --uid 1000 --gid app --shell /bin/bash --create-home app
+
+# Копируем venv из builder (все пакеты уже там)
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
+# Добавляем venv в PATH
+ENV PATH="/app/.venv/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+USER app
+
+# WORKDIR /code — как в оригинале
+# docker-compose монтирует: ./src/app → /code/app (hot reload)
+# K8s/CI: код копируется в образ через COPY ниже
+WORKDIR /code
+
+# Копируем приложение в образ
+# (в docker-compose это перекрывается volume mount — COPY не мешает)
+COPY --chown=app:app src/app ./app
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+# Продакшн: gunicorn + uvicorn workers (2 воркера для t3.micro)
+# Для локального --reload используй docker-compose с command: uvicorn ...
+CMD ["gunicorn", "app.main:app", \
+     "-w", "2", \
+     "-k", "uvicorn.workers.UvicornWorker", \
+     "-b", "0.0.0.0:8000", \
+     "--timeout", "60", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-"]
