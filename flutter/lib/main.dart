@@ -8,6 +8,8 @@ import 'package:flutter_application_1/core/auth/infrastructure/auth_guard.dart';
 import 'package:flutter_application_1/core/auth/infrastructure/auth_interceptor.dart';
 import 'package:flutter_application_1/core/auth/infrastructure/session_expired_listener.dart';
 import 'package:flutter_application_1/core/auth/infrastructure/token_holder.dart';
+import 'package:flutter_application_1/core/config/app_config.dart';
+import 'package:flutter_application_1/core/config/require_valid_app_config.dart';
 import 'package:flutter_application_1/core/di/injection.dart';
 import 'package:flutter_application_1/core/i18n/locale_cubit.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -26,6 +28,7 @@ void main() {
         WidgetsFlutterBinding.ensureInitialized();
         await Hive.initFlutter();
         configureDependencies();
+        requireValidAppConfig(getIt<AppConfig>());
 
         final logger = getIt<AppLogger>();
 

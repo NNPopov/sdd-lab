@@ -27,6 +27,8 @@ import 'package:flutter_application_1/core/auth/infrastructure/auth_guard.dart'
     as _i553;
 import 'package:flutter_application_1/core/auth/infrastructure/token_holder.dart'
     as _i623;
+import 'package:flutter_application_1/core/config/app_config.dart' as _i382;
+import 'package:flutter_application_1/core/config/config_module.dart' as _i431;
 import 'package:flutter_application_1/core/di/app_module.dart' as _i690;
 import 'package:flutter_application_1/core/i18n/hive_locale_storage_adapter.dart'
     as _i270;
@@ -273,13 +275,14 @@ _i174.GetIt init(
 }) {
   final gh = _i526.GetItHelper(getIt, environment, environmentFilter);
   final authModule = _$AuthModule();
+  final configModule = _$ConfigModule();
   final appModule = _$AppModule();
   final postsFeatureModule = _$PostsFeatureModule();
   final tiersFeatureModule = _$TiersFeatureModule();
   final usersFeatureModule = _$UsersFeatureModule();
   gh.lazySingleton<_i558.FlutterSecureStorage>(() => authModule.secureStorage);
   gh.lazySingleton<_i623.TokenHolder>(() => _i623.TokenHolder());
-  gh.lazySingleton<_i361.Dio>(() => appModule.dio());
+  gh.lazySingleton<_i382.AppConfig>(() => configModule.appConfig);
   gh.lazySingleton<_i964.PostEventBus>(
     () => _i964.PostEventBus(),
     dispose: (i) => i.dispose(),
@@ -288,6 +291,10 @@ _i174.GetIt init(
     () => _i761.SecureTokenStorageAdapter(gh<_i558.FlutterSecureStorage>()),
   );
   gh.lazySingleton<_i672.AppLogger>(() => _i896.ConsoleLoggerAdapter());
+  gh.lazySingleton<_i361.Dio>(() => appModule.dio(gh<_i382.AppConfig>()));
+  gh.lazySingleton<_i910.LocaleStoragePort>(
+    () => _i270.HiveLocaleStorageAdapter(gh<_i672.AppLogger>()),
+  );
   gh.lazySingleton<_i53.AuthApiClient>(
     () => authModule.authApiClient(gh<_i361.Dio>()),
   );
@@ -336,6 +343,9 @@ _i174.GetIt init(
       gh<_i72.PostsApiClient>(),
       gh<_i672.AppLogger>(),
     ),
+  );
+  gh.lazySingleton<_i1073.LocaleCubit>(
+    () => _i1073.LocaleCubit(gh<_i910.LocaleStoragePort>()),
   );
   gh.lazySingleton<_i970.PendingPostsPort>(
     () => _i482.PendingPostsAdapter(
@@ -459,9 +469,6 @@ _i174.GetIt init(
       gh<_i964.PostEventBus>(),
     ),
   );
-  gh.lazySingleton<_i910.LocaleStoragePort>(
-    () => _i270.HiveLocaleStorageAdapter(gh<_i672.AppLogger>()),
-  );
   gh.lazySingleton<_i430.UpdateUserPort>(
     () => _i672.UpdateUserAdapter(
       gh<_i405.UsersApiClient>(),
@@ -550,9 +557,6 @@ _i174.GetIt init(
   );
   gh.factory<_i1007.PostDetailsCubit>(
     () => _i1007.PostDetailsCubit(gh<_i637.GetPostUseCase>()),
-  );
-  gh.lazySingleton<_i1073.LocaleCubit>(
-    () => _i1073.LocaleCubit(gh<_i910.LocaleStoragePort>()),
   );
   gh.lazySingleton<_i830.ListTiersUseCase>(
     () => _i830.ListTiersUseCase(gh<_i359.ListTiersPort>()),
@@ -686,6 +690,8 @@ _i174.GetIt init(
 }
 
 class _$AuthModule extends _i136.AuthModule {}
+
+class _$ConfigModule extends _i431.ConfigModule {}
 
 class _$AppModule extends _i690.AppModule {}
 

@@ -3,3 +3,8 @@ api/.claude/settings.local.json
 flutter/.claude/settings.local.json
 api/.claude/settings.json
 flutter/.claude/settings.json
+
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/*.tfvars
