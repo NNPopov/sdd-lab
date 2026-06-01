@@ -157,8 +157,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=flutter
 
       - name: Output image digest
-        run: echo "Flutter image pushed: ${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:${{ github.sha }}"
-
+        run: echo "Flutter image pushed with SHA ${{ github.sha }}"
   # ============================================================
   # Final gate - used as a required PR check
   # Passes even if individual jobs were skipped (no changes)
