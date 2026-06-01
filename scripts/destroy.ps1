@@ -64,6 +64,7 @@ if ($LASTEXITCODE -ne 0) {
     Log "Cleaning up orphan Security Groups..."
     $sgs = aws ec2 describe-security-groups --region $REGION `
         --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" `
+          "Name=group-name,Values=k8s-*"
         --query "SecurityGroups[?GroupName!='default'].GroupId" `
         --output text 2>$null
 

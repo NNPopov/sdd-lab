@@ -69,7 +69,8 @@ if aws eks update-kubeconfig --region $REGION --name $CLUSTER 2>/dev/null; then
     # --- 5. Удалить orphan Security Groups ---
     log "Cleaning up orphan Security Groups..."
     sgs=$(aws ec2 describe-security-groups --region $REGION \
-        --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" \
+        --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" `
+          "Name=group-name,Values=k8s-*" \
         --query "SecurityGroups[?GroupName!='default'].GroupId" \
         --output text 2>/dev/null || true)
 
