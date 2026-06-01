@@ -1,20 +1,31 @@
 #!/bin/bash
 # ============================================================
-# deploy.sh — Build, Push, Deploy to EKS
+# deploy.sh - Build, Push, Deploy to EKS
 #
-# Использование:
-#   ./scripts/deploy.sh both      # backend + frontend
-#   ./scripts/deploy.sh api       # только backend
-#   ./scripts/deploy.sh flutter   # только frontend
-#   ./scripts/deploy.sh both --skip-build
+# Usage:
+#   ./scripts/deploy.sh both                  # build + push + deploy
+#   ./scripts/deploy.sh api                   # only backend
+#   ./scripts/deploy.sh flutter               # only frontend
+#   ./scripts/deploy.sh both --skip-build     # push + deploy (no build)
+#   ./scripts/deploy.sh both --deploy-only    # deploy only (no docker needed)
+#   ./scripts/deploy.sh both --apply-manifests # apply k8s/ manifests + deploy
 # ============================================================
 
 set -e
 
 SERVICE=${1:-both}
-SKIP_BUILD=${2:-""}
+SKIP_BUILD=false
+DEPLOY_ONLY=false
+APPLY_MANIFESTS=false
 
-# --- Конфигурация ---
+for arg in "$@"; do
+    case $arg in
+        --skip-build)    SKIP_BUILD=true ;;
+        --deploy-only)   DEPLOY_ONLY=true ;;
+        --apply-manifests) APPLY_MANIFESTS=true ;;
+    esac
+done
+
 ACCOUNT_ID="017091936354"
 REGION="us-east-1"
 CLUSTER="fastapi-demo-cluster"
@@ -23,57 +34,72 @@ REGISTRY="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 BACKEND_IMG="$REGISTRY/fastapi-demo/backend:latest"
 FRONTEND_IMG="$REGISTRY/fastapi-demo/frontend:latest"
 
-# Цвета
 CYAN='\033[0;36m'; GREEN='\033[0;32m'; RED='\033[0;31m'; NC='\033[0m'
 log()  { echo -e "${CYAN}==> $1${NC}"; }
-ok()   { echo -e "${GREEN}✅ $1${NC}"; }
-err()  { echo -e "${RED}❌ $1${NC}"; exit 1; }
+ok()   { echo -e "${GREEN}[OK] $1${NC}"; }
+err()  { echo -e "${RED}[ERR] $1${NC}"; exit 1; }
 
-# Путь к корню монорепо
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$ROOT_DIR"
 
-# --- 1. Логин в ECR ---
-log "Logging in to ECR..."
-aws ecr get-login-password --region $REGION | \
-    docker login --username AWS --password-stdin $REGISTRY
-ok "ECR login successful"
+# ============================================================
+# DOCKER STEPS (skipped when --deploy-only)
+# ============================================================
+if [ "$DEPLOY_ONLY" = false ]; then
 
-# --- 2. Build ---
-if [ "$SKIP_BUILD" != "--skip-build" ]; then
+    # 1. ECR Login
+    log "Logging in to ECR..."
+    aws ecr get-login-password --region $REGION | \
+        docker login --username AWS --password-stdin $REGISTRY
+    ok "ECR login successful"
+
+    # 2. Build
+    if [ "$SKIP_BUILD" = false ]; then
+        if [ "$SERVICE" = "api" ] || [ "$SERVICE" = "both" ]; then
+            log "Building API image..."
+            docker build -f docker/Dockerfile.api -t $BACKEND_IMG api/
+            ok "API image built"
+        fi
+
+        if [ "$SERVICE" = "flutter" ] || [ "$SERVICE" = "both" ]; then
+            log "Building Flutter image..."
+            docker build -f docker/Dockerfile.flutter -t $FRONTEND_IMG .
+            ok "Flutter image built"
+        fi
+    fi
+
+    # 3. Push
     if [ "$SERVICE" = "api" ] || [ "$SERVICE" = "both" ]; then
-        log "Building API image..."
-        docker build -f docker/Dockerfile.api -t $BACKEND_IMG api/
-        ok "API image built"
+        log "Pushing API image..."
+        docker push $BACKEND_IMG
+        ok "API image pushed"
     fi
 
     if [ "$SERVICE" = "flutter" ] || [ "$SERVICE" = "both" ]; then
-        log "Building Flutter image..."
-        docker build -f docker/Dockerfile.flutter -t $FRONTEND_IMG .
-        ok "Flutter image built"
+        log "Pushing Flutter image..."
+        docker push $FRONTEND_IMG
+        ok "Flutter image pushed"
     fi
 fi
 
-# --- 3. Push ---
-if [ "$SERVICE" = "api" ] || [ "$SERVICE" = "both" ]; then
-    log "Pushing API image..."
-    docker push $BACKEND_IMG
-    ok "API image pushed"
-fi
+# ============================================================
+# KUBECTL STEPS (always run)
+# ============================================================
 
-if [ "$SERVICE" = "flutter" ] || [ "$SERVICE" = "both" ]; then
-    log "Pushing Flutter image..."
-    docker push $FRONTEND_IMG
-    ok "Flutter image pushed"
-fi
-
-# --- 4. kubectl apply ---
-log "Applying K8s manifests..."
+# 4. Update kubeconfig
+log "Updating kubeconfig..."
 aws eks update-kubeconfig --region $REGION --name $CLUSTER
-ok "K8s manifests applied"
+ok "kubeconfig updated"
 
-# --- 5. Rollout restart ---
+# 5. Apply manifests (first deploy only)
+if [ "$APPLY_MANIFESTS" = true ]; then
+    log "Applying K8s manifests..."
+    kubectl apply -f k8s/
+    ok "K8s manifests applied"
+fi
+
+# 6. Rollout restart
 if [ "$SERVICE" = "api" ] || [ "$SERVICE" = "both" ]; then
     log "Restarting API deployment..."
     kubectl rollout restart deployment/fastapi-backend -n $NAMESPACE
@@ -88,7 +114,7 @@ if [ "$SERVICE" = "flutter" ] || [ "$SERVICE" = "both" ]; then
     ok "Flutter deployment updated"
 fi
 
-# --- 6. Статус ---
+# 7. Status
 echo ""
 log "Current pods:"
 kubectl get pods -n $NAMESPACE

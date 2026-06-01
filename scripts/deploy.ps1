@@ -1,24 +1,24 @@
 # ============================================================
 # deploy.ps1 - Build, Push, Deploy to EKS
 #
-# Ispolzovaniye:
-#   .\scripts\deploy.ps1 -Service both
-#   .\scripts\deploy.ps1 -Service api
-#   .\scripts\deploy.ps1 -Service flutter
-#   .\scripts\deploy.ps1 -Service both -SkipBuild
-#   .\scripts\deploy.ps1 -Service both -ApplyManifests
+# Usage:
+#   .\scripts\deploy.ps1 -Service both                  # build + push + deploy
+#   .\scripts\deploy.ps1 -Service api                   # only backend
+#   .\scripts\deploy.ps1 -Service flutter               # only frontend
+#   .\scripts\deploy.ps1 -Service both -SkipBuild       # push + deploy (no build)
+#   .\scripts\deploy.ps1 -Service both -DeployOnly      # deploy only (no docker needed)
 # ============================================================
 
 param(
     [ValidateSet("api", "flutter", "both")]
     [string]$Service = "both",
     [switch]$SkipBuild,
-    [switch]$ApplyManifests  # Primeniat k8s/ manifesty (tolko pri pervom deploye)
+    [switch]$DeployOnly,      # Skip build and push, only kubectl deploy
+    [switch]$ApplyManifests   # Apply k8s/ manifests (first deploy only)
 )
 
 $ErrorActionPreference = "Stop"
 
-# Konfiguratsiya
 $ACCOUNT_ID   = "017091936354"
 $REGION       = "us-east-1"
 $CLUSTER      = "fastapi-demo-cluster"
@@ -31,56 +31,66 @@ function Log($msg)  { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Ok($msg)   { Write-Host "[OK] $msg" -ForegroundColor Green }
 function Err($msg)  { Write-Host "[ERR] $msg" -ForegroundColor Red; exit 1 }
 
-# Pereiti v koren monorepo
+# Go to monorepo root
 $ROOT = Split-Path $PSScriptRoot -Parent
 Set-Location $ROOT
 
-# 1. Login v ECR
-Log "Logging in to ECR..."
-$token = aws ecr get-login-password --region $REGION
-docker login --username AWS --password $token $REGISTRY
-if ($LASTEXITCODE -ne 0) { Err "ECR login failed" }
-Ok "ECR login successful"
+# ============================================================
+# DOCKER STEPS (skipped when -DeployOnly)
+# ============================================================
+if (-not $DeployOnly) {
 
-# 2. Build
-if (-not $SkipBuild) {
+    # 1. ECR Login
+    Log "Logging in to ECR..."
+    $token = aws ecr get-login-password --region $REGION
+    docker login --username AWS --password $token $REGISTRY
+    if ($LASTEXITCODE -ne 0) { Err "ECR login failed" }
+    Ok "ECR login successful"
+
+    # 2. Build
+    if (-not $SkipBuild) {
+        if ($Service -eq "api" -or $Service -eq "both") {
+            Log "Building API image..."
+            docker build -f docker/Dockerfile.api -t $BACKEND_IMG api/
+            if ($LASTEXITCODE -ne 0) { Err "API build failed" }
+            Ok "API image built"
+        }
+
+        if ($Service -eq "flutter" -or $Service -eq "both") {
+            Log "Building Flutter image..."
+            docker build -f docker/Dockerfile.flutter -t $FRONTEND_IMG .
+            if ($LASTEXITCODE -ne 0) { Err "Flutter build failed" }
+            Ok "Flutter image built"
+        }
+    }
+
+    # 3. Push
     if ($Service -eq "api" -or $Service -eq "both") {
-        Log "Building API image..."
-        docker build -f docker/Dockerfile.api -t $BACKEND_IMG api/
-        if ($LASTEXITCODE -ne 0) { Err "API build failed" }
-        Ok "API image built"
+        Log "Pushing API image..."
+        docker push $BACKEND_IMG
+        if ($LASTEXITCODE -ne 0) { Err "API push failed" }
+        Ok "API image pushed"
     }
 
     if ($Service -eq "flutter" -or $Service -eq "both") {
-        Log "Building Flutter image..."
-        docker build -f docker/Dockerfile.flutter -t $FRONTEND_IMG .
-        if ($LASTEXITCODE -ne 0) { Err "Flutter build failed" }
-        Ok "Flutter image built"
+        Log "Pushing Flutter image..."
+        docker push $FRONTEND_IMG
+        if ($LASTEXITCODE -ne 0) { Err "Flutter push failed" }
+        Ok "Flutter image pushed"
     }
 }
 
-# 3. Push
-if ($Service -eq "api" -or $Service -eq "both") {
-    Log "Pushing API image..."
-    docker push $BACKEND_IMG
-    if ($LASTEXITCODE -ne 0) { Err "API push failed" }
-    Ok "API image pushed"
-}
+# ============================================================
+# KUBECTL STEPS (always run)
+# ============================================================
 
-if ($Service -eq "flutter" -or $Service -eq "both") {
-    Log "Pushing Flutter image..."
-    docker push $FRONTEND_IMG
-    if ($LASTEXITCODE -ne 0) { Err "Flutter push failed" }
-    Ok "Flutter image pushed"
-}
-
-# 4. Obnovit kubeconfig
+# 4. Update kubeconfig
 Log "Updating kubeconfig..."
 aws eks update-kubeconfig --region $REGION --name $CLUSTER
 if ($LASTEXITCODE -ne 0) { Err "kubeconfig update failed" }
 Ok "kubeconfig updated"
 
-# 5. Primeniat manifesty (tolko esli -ApplyManifests)
+# 5. Apply manifests (first deploy only, use -ApplyManifests flag)
 if ($ApplyManifests) {
     Log "Applying K8s manifests..."
     kubectl apply -f k8s/
