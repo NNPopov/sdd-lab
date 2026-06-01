@@ -1,0 +1,70 @@
+# ============================================================
+# Flutter Web Frontend — Deployment + Service
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flutter-frontend
+  namespace: fastapi-demo
+  labels:
+    app: flutter-frontend
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flutter-frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: flutter-frontend
+        tier: frontend
+    spec:
+      containers:
+        - name: flutter-nginx
+          # ECR image — replace account_id and region
+          image: 017091936354.dkr.ecr.us-east-1.amazonaws.com/fastapi-demo/frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flutter-service
+  namespace: fastapi-demo
+  labels:
+    app: flutter-frontend
+spec:
+  selector:
+    app: flutter-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      name: http

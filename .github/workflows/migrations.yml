@@ -1,0 +1,156 @@
+# ============================================================
+# Migrations: Auto-run Alembic when migrations/ folder changes
+#
+# Triggers:
+#   - push to main when api/src/app/migrations/** changed
+#   - manual trigger (workflow_dispatch) with custom image tag
+#
+# This workflow ONLY runs migrations.
+# Code deployment is handled separately by cd.yml.
+#
+# Required secrets (Settings -> Secrets -> Actions):
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+# ============================================================
+name: Migrations — Alembic upgrade head
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/src/app/migrations/**'
+      - 'api/src/app/alembic.ini'
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "API image tag to run migrations with"
+        required: true
+        default: "latest"
+        type: string
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 017091936354.dkr.ecr.us-east-1.amazonaws.com
+  EKS_CLUSTER: fastapi-demo-cluster
+  K8S_NAMESPACE: fastapi-demo
+
+jobs:
+  migrate:
+    name: Run Alembic migrations
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Use selected tag on manual trigger, 'latest' on push
+      - name: Set image tag
+        id: tag
+        run: |
+          TAG="${{ inputs.image_tag || 'latest' }}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Using image tag: $TAG"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name ${{ env.EKS_CLUSTER }}
+
+      # Show which migration files triggered this run
+      - name: Show changed migration files
+        if: github.event_name == 'push'
+        run: |
+          echo "Changed migration files:"
+          git diff --name-only HEAD~1 HEAD -- 'api/src/app/migrations/'
+
+      # Remove previous job to avoid name conflicts
+      - name: Cleanup old migration job
+        run: |
+          kubectl delete job alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --ignore-not-found=true
+          kubectl wait job/alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --for=delete \
+            --timeout=30s 2>/dev/null || true
+
+      # Run migrations as a K8s Job (not inside the running pod)
+      # This ensures migrations complete before traffic hits new code
+      - name: Create migration Job
+        run: |
+          cat <<EOF | kubectl apply -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: alembic-migrate
+            namespace: ${{ env.K8S_NAMESPACE }}
+            labels:
+              app: alembic-migrate
+              triggered-by: github-actions
+              commit: "${{ github.sha }}"
+          spec:
+            ttlSecondsAfterFinished: 3600
+            backoffLimit: 2
+            template:
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: alembic
+                    image: ${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ steps.tag.outputs.tag }}
+                    command: ["alembic", "upgrade", "head"]
+                    envFrom:
+                      - secretRef:
+                          name: fastapi-demo-secret
+                    resources:
+                      requests:
+                        memory: "128Mi"
+                        cpu: "100m"
+                      limits:
+                        memory: "256Mi"
+                        cpu: "200m"
+          EOF
+
+      - name: Wait for migrations
+        run: |
+          kubectl wait job/alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --for=condition=complete \
+            --timeout=300s
+
+      - name: Show migration logs
+        if: always()
+        run: |
+          kubectl logs job/alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} || true
+
+      - name: Check job status
+        run: |
+          STATUS=$(kubectl get job alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            -o jsonpath='{.status.conditions[0].type}')
+          if [ "$STATUS" == "Complete" ]; then
+            echo "Migrations completed successfully!"
+          else
+            echo "Migrations failed! Status: $STATUS"
+            exit 1
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Migration Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Image tag | ${{ steps.tag.outputs.tag }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Event | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY

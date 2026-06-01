@@ -1,0 +1,185 @@
+# ============================================================
+# CI: Build & Push Docker images to ECR
+#
+# Triggers:
+#   - push to develop branch
+#   - pull request to main branch
+#   - manual trigger (workflow_dispatch)
+#
+# What it does:
+#   1. Detects which services changed (api/ or flutter/)
+#   2. Builds only changed images (saves time and cost)
+#   3. Pushes to ECR with two tags: git SHA + latest
+#
+# Required secrets (Settings -> Secrets -> Actions):
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+# ============================================================
+name: CI — Build & Push to ECR
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      service:
+        description: "Which service to build"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - both
+          - api
+          - flutter
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: "017091936354"
+  ECR_REGISTRY: 017091936354.dkr.ecr.us-east-1.amazonaws.com
+
+jobs:
+  # ============================================================
+  # Detect which parts of the monorepo changed
+  # Skips build if no relevant files were modified
+  # ============================================================
+  changes:
+    name: Detect changed services
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+      flutter: ${{ steps.filter.outputs.flutter }}
+      migrations: ${{ steps.filter.outputs.migrations }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api/**'
+              - 'docker/Dockerfile.api'
+            flutter:
+              - 'flutter/**'
+              - 'docker/Dockerfile.flutter'
+            migrations:
+              - 'api/src/app/migrations/**'
+
+  # ============================================================
+  # Build & Push: FastAPI backend
+  # Only runs if api/ or Dockerfile.api changed
+  # ============================================================
+  build-api:
+    name: Build & Push API
+    runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.api == 'true' ||
+      github.event.inputs.service == 'api' ||
+      github.event.inputs.service == 'both'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          file: ./docker/Dockerfile.api
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/fastapi-demo/backend:latest
+          # Layer cache via GitHub Actions cache (speeds up repeated builds)
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
+
+      - name: Output image digest
+        run: echo "API image pushed: ${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ github.sha }}"
+
+  # ============================================================
+  # Build & Push: Flutter Web frontend
+  # Only runs if flutter/ or Dockerfile.flutter changed
+  # Build context is monorepo root (needs flutter/ directory)
+  # ============================================================
+  build-flutter:
+    name: Build & Push Flutter
+    runs-on: ubuntu-latest
+    needs: changes
+    if: |
+      needs.changes.outputs.flutter == 'true' ||
+      github.event.inputs.service == 'flutter' ||
+      github.event.inputs.service == 'both'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Flutter image
+        uses: docker/build-push-action@v5
+        with:
+          # Context is monorepo root because Dockerfile copies flutter/ directory
+          context: .
+          file: ./docker/Dockerfile.flutter
+          push: true
+          tags: |
+            ${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:latest
+          cache-from: type=gha,scope=flutter
+          cache-to: type=gha,mode=max,scope=flutter
+
+      - name: Output image digest
+        run: echo "Flutter image pushed: ${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:${{ github.sha }}"
+
+  # ============================================================
+  # Final gate — used as a required PR check
+  # Passes even if individual jobs were skipped (no changes)
+  # ============================================================
+  ci-success:
+    name: CI passed
+    runs-on: ubuntu-latest
+    needs: [build-api, build-flutter]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          if [[ "${{ needs.build-api.result }}" == "failure" || \
+                "${{ needs.build-flutter.result }}" == "failure" ]]; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI passed (or skipped — no changes detected in service)"

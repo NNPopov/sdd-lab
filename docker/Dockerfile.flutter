@@ -1,6 +1,6 @@
 # ============================================================
 # Dockerfile for Flutter Web frontend
-# Build context: монорепо root
+# Build context: monorepo root
 # Usage: docker build -f dockerfiles/Dockerfile.flutter -t fastapi-demo/frontend .
 # ============================================================
 
@@ -9,29 +9,28 @@ FROM ghcr.io/cirruslabs/flutter:stable AS builder
 
 WORKDIR /build
 
-# Копируем файлы Flutter проекта
+# Copy Flutter project files
 COPY flutter/pubspec.yaml flutter/pubspec.lock ./
 RUN flutter pub get
 
-# Копируем весь исходный код
+# Copy the entire source code
 COPY flutter/ .
 
-# Генерируем локализации (slang/i18n)
+# Generate localizations (slang/i18n)
 RUN dart run build_runner build --delete-conflicting-outputs || true
 
-# Собираем web build с оптимизациями
+# Build web bundle with optimizations
 RUN flutter build web \
     --release \
-    --web-renderer canvaskit \
-    --dart-define=ENVIRONMENT=production
+    --dart-define-from-file=config/prod-web.json
 
 # ---------- Stage 2: Nginx runtime ----------
 FROM nginx:1.25-alpine AS runtime
 
-# Удаляем дефолтный конфиг
+# Remove the default config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Кастомный nginx.conf для Flutter SPA
+# Custom nginx.conf for Flutter SPA
 COPY <<'EOF' /etc/nginx/conf.d/flutter.conf
 server {
     listen 80;
@@ -47,20 +46,20 @@ server {
                application/wasm;
     gzip_min_length 1000;
 
-    # Cache статических ассетов Flutter (хэши в именах файлов)
+    # Cache Flutter static assets (hashes in file names)
     location ~* \.(js|css|wasm|png|jpg|ico|svg|woff2?)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
     }
 
-    # Flutter SPA: все роуты → index.html
+    # Flutter SPA: all routes → index.html
     location / {
         try_files $uri $uri/ /index.html;
         add_header Cache-Control "no-cache";
     }
 
-    # Healthcheck endpoint для K8s
+    # Healthcheck endpoint for K8s
     location /healthz {
         access_log off;
         return 200 "ok\n";
@@ -69,10 +68,10 @@ server {
 }
 EOF
 
-# Копируем собранный web build
+# Copy the built web bundle
 COPY --from=builder /build/build/web /usr/share/nginx/html
 
-# Непривилегированный порт и пользователь
+# Unprivileged port and user
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

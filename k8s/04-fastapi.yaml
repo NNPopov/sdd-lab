@@ -1,0 +1,106 @@
+# ============================================================
+# FastAPI Backend — Deployment + Service
+#
+# REPLACE before applying:
+#   YOUR_AWS_ACCOUNT_ID → 017091936354
+#   YOUR_REGION        → us-east-1
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-backend
+  namespace: fastapi-demo
+  labels:
+    app: fastapi-backend
+    tier: backend
+spec:
+  replicas: 1   # Start with 1 on t3.micro
+  selector:
+    matchLabels:
+      app: fastapi-backend
+  # Rolling update — zero downtime deploy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: fastapi-backend
+        tier: backend
+    spec:
+      # Wait for the DB to be ready before starting (init container)
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z postgres-service 5432; do
+                echo "Waiting for PostgreSQL..."
+                sleep 3
+              done
+              echo "PostgreSQL is ready!"
+        - name: wait-for-redis
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z redis-service 6379; do
+                echo "Waiting for Redis..."
+                sleep 3
+              done
+              echo "Redis is ready!"
+      containers:
+        - name: fastapi
+          # ECR image — replace account_id and region
+          image: 017091936354.dkr.ecr.us-east-1.amazonaws.com/fastapi-demo/backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: http
+          # All variables from Secret in one go
+          envFrom:
+            - secretRef:
+                name: fastapi-demo-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+  namespace: fastapi-demo
+  labels:
+    app: fastapi-backend
+spec:
+  selector:
+    app: fastapi-backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http

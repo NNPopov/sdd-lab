@@ -1,0 +1,172 @@
+# ============================================================
+# CD: Deploy to EKS (manual trigger only)
+#
+# Trigger: workflow_dispatch (Actions -> Run workflow button)
+#
+# Parameters:
+#   image_tag     - Docker image tag to deploy (SHA or 'latest')
+#   service       - Which service to deploy: api / flutter / both
+#   run_migrations - Run Alembic migrations before deploying API
+#
+# Deploy flow:
+#   1. (optional) Run Alembic migrations as a K8s Job
+#   2. kubectl set image -> triggers rolling update
+#   3. Wait for rollout to complete
+#   4. Print pod status and ingress URL
+#
+# Required secrets (Settings -> Secrets -> Actions):
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+# ============================================================
+name: CD — Deploy to EKS
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Docker image tag to deploy (git SHA or 'latest')"
+        required: true
+        default: "latest"
+        type: string
+      service:
+        description: "Which service to deploy"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - both
+          - api
+          - flutter
+      run_migrations:
+        description: "Run Alembic migrations before deploying API?"
+        required: true
+        default: false
+        type: boolean
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 017091936354.dkr.ecr.us-east-1.amazonaws.com
+  EKS_CLUSTER: fastapi-demo-cluster
+  K8S_NAMESPACE: fastapi-demo
+
+jobs:
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    # Remove 'environment: production' line if you haven't configured
+    # GitHub Environments yet — it will block the workflow otherwise
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ env.AWS_REGION }} \
+            --name ${{ env.EKS_CLUSTER }}
+
+      # ============================================================
+      # Alembic migrations (optional)
+      # Runs as a Kubernetes Job BEFORE updating the deployment
+      # so the new code starts with the schema already migrated
+      # ============================================================
+      - name: Run Alembic migrations
+        if: inputs.run_migrations == true && (inputs.service == 'api' || inputs.service == 'both')
+        run: |
+          echo "Running Alembic migrations..."
+
+          # Remove previous migration job if exists
+          kubectl delete job alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --ignore-not-found=true
+
+          # Create Job from the API image
+          kubectl create job alembic-migrate \
+            --image=${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ inputs.image_tag }} \
+            -n ${{ env.K8S_NAMESPACE }} \
+            -- alembic upgrade head
+
+          # Inject app secrets into the Job
+          kubectl patch job alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --type=json \
+            -p='[{
+              "op": "add",
+              "path": "/spec/template/spec/containers/0/envFrom",
+              "value": [{"secretRef": {"name": "fastapi-demo-secret"}}]
+            }]'
+
+          # Wait for Job to complete (5 minute timeout)
+          kubectl wait job/alembic-migrate \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --for=condition=complete \
+            --timeout=300s
+
+          echo "Migration logs:"
+          kubectl logs job/alembic-migrate -n ${{ env.K8S_NAMESPACE }}
+          echo "Migrations completed!"
+
+      # ============================================================
+      # Deploy FastAPI backend
+      # Uses rolling update — zero downtime
+      # ============================================================
+      - name: Deploy API
+        if: inputs.service == 'api' || inputs.service == 'both'
+        run: |
+          echo "Deploying API with tag: ${{ inputs.image_tag }}"
+
+          kubectl set image deployment/fastapi-backend \
+            fastapi=${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ inputs.image_tag }} \
+            -n ${{ env.K8S_NAMESPACE }}
+
+          kubectl rollout status deployment/fastapi-backend \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --timeout=300s
+
+          echo "API deployed successfully!"
+
+      # ============================================================
+      # Deploy Flutter Web frontend
+      # ============================================================
+      - name: Deploy Flutter
+        if: inputs.service == 'flutter' || inputs.service == 'both'
+        run: |
+          echo "Deploying Flutter with tag: ${{ inputs.image_tag }}"
+
+          kubectl set image deployment/flutter-frontend \
+            flutter-nginx=${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:${{ inputs.image_tag }} \
+            -n ${{ env.K8S_NAMESPACE }}
+
+          kubectl rollout status deployment/flutter-frontend \
+            -n ${{ env.K8S_NAMESPACE }} \
+            --timeout=300s
+
+          echo "Flutter deployed successfully!"
+
+      # ============================================================
+      # Print deployment summary to GitHub Actions UI
+      # ============================================================
+      - name: Deployment summary
+        if: always()
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | ${{ inputs.service }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image Tag | ${{ inputs.image_tag }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Migrations | ${{ inputs.run_migrations }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo ""
+          echo "### Current pods:"
+          kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+          echo ""
+          echo "### Ingress URL:"
+          kubectl get ingress -n ${{ env.K8S_NAMESPACE }}

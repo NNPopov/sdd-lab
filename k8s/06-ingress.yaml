@@ -1,0 +1,74 @@
+# ============================================================
+# Ingress — external traffic routing
+#
+# Requires AWS Load Balancer Controller in the cluster.
+# Install: https://kubernetes-sigs.github.io/aws-load-balancer-controller/
+#
+# Routing strategy:
+#   /api/*  → FastAPI backend (port 8000)
+#   /docs   → FastAPI Swagger UI
+#   /redoc  → FastAPI ReDoc
+#   /*      → Flutter Web frontend (nginx, port 80)
+#
+# REPLACE: your-domain.com with the real domain or
+# use the Load Balancer DNS name (you'll get it after apply)
+# ============================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fastapi-demo-ingress
+  namespace: fastapi-demo
+  annotations:
+    # AWS ALB (Application Load Balancer)
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    # Health check for ALB
+    alb.ingress.kubernetes.io/healthcheck-path: /api/v1/health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+    # Timeouts
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=60
+spec:
+  ingressClassName: alb
+  rules:
+    # No domain — ALB will provide its own DNS name
+    - http:
+        paths:
+          # FastAPI API routes
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 8000
+          # FastAPI documentation
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 8000
+          - path: /redoc
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 8000
+          # OpenAPI schema
+          - path: /openapi.json
+            pathType: Exact
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 8000
+          # Everything else — Flutter SPA
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: flutter-service
+                port:
+                  number: 80

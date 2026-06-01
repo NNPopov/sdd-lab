@@ -4,7 +4,31 @@ flutter/.claude/settings.local.json
 api/.claude/settings.json
 flutter/.claude/settings.json
 
-terraform/.terraform/
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
-terraform/*.tfvars
+# Terraform
+terraform/eks/.terraform/
+terraform/eks/terraform.tfstate
+terraform/eks/terraform.tfstate.backup
+terraform/eks/*.tfvars
+terraform/serverless/.terraform/
+terraform/serverless/terraform.tfstate
+terraform/serverless/terraform.tfstate.backup
+terraform/serverless/*.tfvars
+terraform/eks/.terraform.tfstate.lock.info
+terraform/serverless/.terraform.tfstate.lock.info
+
+# Secrets - NEVER commit
+k8s/01-secret.yaml
+**/.env
+**/src/.env
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/.venv/
+
+# Docker
+**/crudadmin_data/
+
+# OS
+.DS_Store
+Thumbs.db
