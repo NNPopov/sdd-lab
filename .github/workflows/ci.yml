@@ -113,7 +113,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=api
 
       - name: Output image digest
-        run: echo "API image pushed: ${{ env.ECR_REGISTRY }}/fastapi-demo/backend:${{ github.sha }}"
+        run: echo "API image pushed ${{ github.sha }}"
 
   # ============================================================
   # Build & Push: Flutter Web frontend
