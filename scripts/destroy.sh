@@ -68,10 +68,12 @@ if aws eks update-kubeconfig --region $REGION --name $CLUSTER 2>/dev/null; then
 
     # --- 5. Удалить orphan Security Groups ---
     log "Cleaning up orphan Security Groups..."
+    # Only delete SGs created by LBC (name starts with k8s-)
+    # Skip eks-cluster-sg-* which is managed by Terraform
     sgs=$(aws ec2 describe-security-groups --region $REGION \
-        --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" `
-          "Name=group-name,Values=k8s-*" \
-        --query "SecurityGroups[?GroupName!='default'].GroupId" \
+        --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" \
+                  "Name=group-name,Values=k8s-*" \
+        --query "SecurityGroups[].GroupId" \
         --output text 2>/dev/null || true)
 
     for sg in $sgs; do
@@ -87,6 +89,6 @@ fi
 
 # --- 6. Terraform destroy ---
 log "Running terraform destroy..."
-cd "$ROOT_DIR/terraform/eks"
+cd "$ROOT_DIR/terraform"
 terraform destroy -auto-approve
 ok "All resources destroyed!"

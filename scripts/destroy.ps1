@@ -62,10 +62,12 @@ if ($LASTEXITCODE -ne 0) {
 
     # 5. Udalit orphan Security Groups
     Log "Cleaning up orphan Security Groups..."
+    # Only delete SGs created by LBC (name starts with k8s-)
+    # Skip eks-cluster-sg-* which is managed by Terraform
     $sgs = aws ec2 describe-security-groups --region $REGION `
         --filters "Name=tag:kubernetes.io/cluster/$CLUSTER,Values=owned" `
-          "Name=group-name,Values=k8s-*"
-        --query "SecurityGroups[?GroupName!='default'].GroupId" `
+                  "Name=group-name,Values=k8s-*" `
+        --query "SecurityGroups[].GroupId" `
         --output text 2>$null
 
     if (-not [string]::IsNullOrWhiteSpace($sgs) -and $sgs -ne "None") {
