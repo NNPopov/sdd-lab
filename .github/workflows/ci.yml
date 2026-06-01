@@ -15,7 +15,7 @@
 #   AWS_ACCESS_KEY_ID
 #   AWS_SECRET_ACCESS_KEY
 # ============================================================
-name: CI — Build & Push to ECR
+name: CI - Build & Push to ECR
 
 on:
   push:
@@ -160,7 +160,7 @@ jobs:
         run: echo "Flutter image pushed: ${{ env.ECR_REGISTRY }}/fastapi-demo/frontend:${{ github.sha }}"
 
   # ============================================================
-  # Final gate — used as a required PR check
+  # Final gate - used as a required PR check
   # Passes even if individual jobs were skipped (no changes)
   # ============================================================
   ci-success:
@@ -176,4 +176,4 @@ jobs:
             echo "CI failed"
             exit 1
           fi
-          echo "CI passed (or skipped — no changes detected in service)"
+          echo "CI passed (or skipped - no changes detected in service)"
