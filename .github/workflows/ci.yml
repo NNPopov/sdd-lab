@@ -3,7 +3,7 @@ name: CI - Build and Push to ECR
 on:
   push:
     branches:
-      - develop
+      - dev
   pull_request:
     branches:
       - main
