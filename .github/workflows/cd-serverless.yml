@@ -1,0 +1,238 @@
+name: CD - Deploy to Serverless (ECS Fargate)
+
+# Same action selector as the EKS cd.yml, but targets the serverless
+# stack: ECS Fargate (API) + S3/CloudFront (Flutter). No kubectl.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to do"
+        required: true
+        default: "deploy-only"
+        type: choice
+        options:
+          - build-only
+          - build-push
+          - build-push-deploy
+          - deploy-only
+      service:
+        description: "Which service"
+        required: true
+        default: "both"
+        type: choice
+        options:
+          - both
+          - api
+          - flutter
+      image_tag:
+        description: "Image tag to deploy (used for deploy-only)"
+        required: false
+        default: "latest"
+        type: string
+      run_migrations:
+        description: "Run Alembic migrations (ECS run-task) before deploy?"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 017091936354.dkr.ecr.us-east-1.amazonaws.com
+  ECR_BACKEND: fastapi-demo-sl/backend
+  ECS_CLUSTER: fastapi-demo-sl-cluster
+  ECS_SERVICE: fastapi-demo-sl-api
+  ECS_TASK_FAMILY: fastapi-demo-sl-api
+  CONTAINER_NAME: api
+
+jobs:
+  cd:
+    name: ${{ inputs.action }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ============================================================
+      # Resolve the tag to deploy: github.sha for fresh builds,
+      # otherwise the manually supplied image_tag.
+      # ============================================================
+      - name: Resolve image tag
+        id: tag
+        run: |
+          if [ "${{ inputs.action }}" == "build-push-deploy" ]; then
+            echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ inputs.image_tag }}" >> $GITHUB_OUTPUT
+          fi
+
+      # ============================================================
+      # BUILD (build-only, build-push, build-push-deploy)
+      # ============================================================
+      - name: Set up Docker Buildx
+        if: inputs.action != 'deploy-only'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to ECR
+        if: inputs.action != 'deploy-only'
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build API image
+        if: inputs.action != 'deploy-only' && (inputs.service == 'api' || inputs.service == 'both')
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          file: ./docker/Dockerfile.api
+          push: ${{ inputs.action == 'build-push' || inputs.action == 'build-push-deploy' }}
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_BACKEND }}:${{ github.sha }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_BACKEND }}:latest
+          cache-from: type=gha,scope=sl-api
+          cache-to: type=gha,mode=max,scope=sl-api
+
+      # ============================================================
+      # MIGRATIONS — one-shot ECS run-task (same task def, command override)
+      # Runs before the API rollout so the schema is ready first.
+      # ============================================================
+      - name: Run Alembic migrations (ECS run-task)
+        if: |
+          inputs.run_migrations == true &&
+          (inputs.action == 'build-push-deploy' || inputs.action == 'deploy-only') &&
+          (inputs.service == 'api' || inputs.service == 'both')
+        run: |
+          set -euo pipefail
+
+          # Reuse the running service's network configuration (subnets + SG)
+          NETWORK=$(aws ecs describe-services \
+            --cluster "$ECS_CLUSTER" --services "$ECS_SERVICE" \
+            --query 'services[0].networkConfiguration' --output json)
+
+          TASK_ARN=$(aws ecs run-task \
+            --cluster "$ECS_CLUSTER" \
+            --task-definition "$ECS_TASK_FAMILY" \
+            --launch-type FARGATE \
+            --network-configuration "$NETWORK" \
+            --overrides '{"containerOverrides":[{"name":"'"$CONTAINER_NAME"'","command":["alembic","upgrade","head"]}]}' \
+            --query 'tasks[0].taskArn' --output text)
+
+          echo "Migration task: $TASK_ARN"
+          aws ecs wait tasks-stopped --cluster "$ECS_CLUSTER" --tasks "$TASK_ARN"
+
+          EXIT_CODE=$(aws ecs describe-tasks --cluster "$ECS_CLUSTER" --tasks "$TASK_ARN" \
+            --query "tasks[0].containers[?name=='$CONTAINER_NAME'].exitCode | [0]" --output text)
+          echo "Migration exit code: $EXIT_CODE"
+          if [ "$EXIT_CODE" != "0" ]; then
+            echo "::error::Migrations failed (exit $EXIT_CODE)"
+            exit 1
+          fi
+
+      # ============================================================
+      # DEPLOY API — register a new task def revision with the chosen
+      # image tag, then force a new deployment and wait for stability.
+      # ============================================================
+      - name: Deploy API to ECS
+        if: |
+          (inputs.action == 'build-push-deploy' || inputs.action == 'deploy-only') &&
+          (inputs.service == 'api' || inputs.service == 'both')
+        run: |
+          set -euo pipefail
+          IMAGE="$ECR_REGISTRY/$ECR_BACKEND:${{ steps.tag.outputs.tag }}"
+          echo "Deploying image: $IMAGE"
+
+          # Take the current task definition, swap the image, strip
+          # read-only fields, and register a new revision.
+          NEW_DEF=$(aws ecs describe-task-definition --task-definition "$ECS_TASK_FAMILY" \
+            --query 'taskDefinition' --output json \
+            | jq --arg IMG "$IMAGE" --arg NAME "$CONTAINER_NAME" '
+                (.containerDefinitions[] | select(.name==$NAME) | .image) = $IMG
+                | del(.taskDefinitionArn, .revision, .status, .requiresAttributes,
+                      .compatibilities, .registeredAt, .registeredBy)')
+
+          echo "$NEW_DEF" > new-task-def.json
+          aws ecs register-task-definition --cli-input-json file://new-task-def.json >/dev/null
+
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --task-definition "$ECS_TASK_FAMILY" \
+            --force-new-deployment >/dev/null
+
+          aws ecs wait services-stable --cluster "$ECS_CLUSTER" --services "$ECS_SERVICE"
+          echo "API deployment stable."
+
+      # ============================================================
+      # DEPLOY FLUTTER — build web, sync to S3, invalidate CloudFront.
+      # ============================================================
+      - name: Set up Flutter
+        if: |
+          (inputs.action == 'build-push-deploy' || inputs.action == 'deploy-only') &&
+          (inputs.service == 'flutter' || inputs.service == 'both')
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Build and deploy Flutter web
+        if: |
+          (inputs.action == 'build-push-deploy' || inputs.action == 'deploy-only') &&
+          (inputs.service == 'flutter' || inputs.service == 'both')
+        run: |
+          set -euo pipefail
+          cd flutter
+          flutter pub get
+          flutter build web --release --dart-define-from-file=config/prod-web.json
+          cd ..
+
+          # Bucket name is deterministic: <project>-web-<account_id>
+          BUCKET="fastapi-demo-sl-web-017091936354"
+          DIST_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Comment=='fastapi-demo-sl — Flutter web + /api proxy'].Id | [0]" \
+            --output text)
+
+          aws s3 sync flutter/build/web "s3://$BUCKET" --delete
+          aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*"
+          echo "Flutter deployed to s3://$BUCKET and CloudFront invalidated."
+
+      # ============================================================
+      # SMOKE TEST — hit the health endpoint via CloudFront (HTTPS).
+      # ============================================================
+      - name: Smoke test API health
+        if: |
+          (inputs.action == 'build-push-deploy' || inputs.action == 'deploy-only') &&
+          (inputs.service == 'api' || inputs.service == 'both')
+        run: |
+          set -euo pipefail
+          DOMAIN=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Comment=='fastapi-demo-sl — Flutter web + /api proxy'].DomainName | [0]" \
+            --output text)
+          URL="https://$DOMAIN/api/v1/health"
+          echo "Checking $URL"
+          for i in $(seq 1 10); do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
+            if [ "$CODE" == "200" ]; then
+              echo "Health OK (200)"; exit 0
+            fi
+            echo "Attempt $i: got $CODE, retrying in 15s..."; sleep 15
+          done
+          echo "::error::Health check did not return 200"; exit 1
+
+      # ============================================================
+      # SUMMARY
+      # ============================================================
+      - name: Summary
+        if: always()
+        run: |
+          echo "## CD (serverless) Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Action | ${{ inputs.action }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | ${{ inputs.service }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image tag | ${{ steps.tag.outputs.tag }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Migrations | ${{ inputs.run_migrations }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
