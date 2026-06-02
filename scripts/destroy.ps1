@@ -82,7 +82,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # 6. Terraform destroy
 Log "Running terraform destroy..."
-$terraformPath = Join-Path $PSScriptRoot "..\terraform"
+$terraformPath = Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) "terraform") "eks"
 Set-Location $terraformPath
 terraform destroy -auto-approve
 if ($LASTEXITCODE -ne 0) {

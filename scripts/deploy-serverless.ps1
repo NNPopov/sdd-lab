@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 # deploy-serverless.ps1 - Build, Push (ECR), Deploy (ECS + S3/CloudFront)
 #
 # Mirrors deploy.ps1 but targets the serverless stack:
@@ -30,7 +30,7 @@ $REGISTRY     = "$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 $BACKEND_REPO = "$PROJECT/backend"
 $BACKEND_IMG  = "$REGISTRY/$BACKEND_REPO`:latest"
 $CLUSTER      = "$PROJECT-cluster"
-$SERVICE      = "$PROJECT-api"
+$ECS_SERVICE      = "$PROJECT-api"
 $TASK_FAMILY  = "$PROJECT-api"
 $CONTAINER    = "api"
 $BUCKET       = "$PROJECT-web-$ACCOUNT_ID"
@@ -70,7 +70,7 @@ if (-not $DeployOnly -and ($Service -eq "api" -or $Service -eq "both")) {
 # ============================================================
 if ($RunMigrations -and ($Service -eq "api" -or $Service -eq "both")) {
     Log "Running Alembic migrations as an ECS task..."
-    $network = aws ecs describe-services --cluster $CLUSTER --services $SERVICE `
+    $network = aws ecs describe-services --cluster $CLUSTER --services $ECS_SERVICE `
         --query "services[0].networkConfiguration" --output json
     $overrides = '{"containerOverrides":[{"name":"' + $CONTAINER + '","command":["alembic","upgrade","head"]}]}'
     $taskArn = aws ecs run-task --cluster $CLUSTER --task-definition $TASK_FAMILY `
@@ -91,16 +91,22 @@ if ($Service -eq "api" -or $Service -eq "both") {
     Log "Registering new task definition revision..."
     $image = "$REGISTRY/$BACKEND_REPO`:latest"
     $defJson = aws ecs describe-task-definition --task-definition $TASK_FAMILY --query "taskDefinition" --output json
-    $newDef = $defJson | jq --arg IMG "$image" --arg NAME "$CONTAINER" `
-        '(.containerDefinitions[] | select(.name==$NAME) | .image) = $IMG | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)'
-    $newDef | Out-File -FilePath "$ROOT\new-task-def.json" -Encoding utf8
-    aws ecs register-task-definition --cli-input-json "file://$ROOT/new-task-def.json" | Out-Null
-    Remove-Item "$ROOT\new-task-def.json" -Force
+    # Native JSON edit (no jq dependency) so this works on Windows PowerShell 5.1 and pwsh/Linux:
+    $def = ($defJson -join "`n" | ConvertFrom-Json)
+    foreach ($c in $def.containerDefinitions) { if ($c.name -eq $CONTAINER) { $c.image = $image } }
+    foreach ($f in 'taskDefinitionArn','revision','status','requiresAttributes','compatibilities','registeredAt','registeredBy','deregisteredAt') {
+        $def.PSObject.Properties.Remove($f)
+    }
+    $taskDefPath = Join-Path $ROOT "new-task-def.json"
+    $jsonOut = $def | ConvertTo-Json -Depth 100
+    [System.IO.File]::WriteAllText($taskDefPath, $jsonOut, (New-Object System.Text.UTF8Encoding($false)))
+    aws ecs register-task-definition --cli-input-json "file://$taskDefPath" | Out-Null
+    Remove-Item $taskDefPath -Force
 
     Log "Forcing new ECS deployment..."
-    aws ecs update-service --cluster $CLUSTER --service $SERVICE `
+    aws ecs update-service --cluster $CLUSTER --service $ECS_SERVICE `
         --task-definition $TASK_FAMILY --force-new-deployment | Out-Null
-    aws ecs wait services-stable --cluster $CLUSTER --services $SERVICE
+    aws ecs wait services-stable --cluster $CLUSTER --services $ECS_SERVICE
     Ok "API deployment stable"
 }
 

@@ -89,6 +89,6 @@ fi
 
 # --- 6. Terraform destroy ---
 log "Running terraform destroy..."
-cd "$ROOT_DIR/terraform"
+cd "$ROOT_DIR/terraform/eks"
 terraform destroy -auto-approve
 ok "All resources destroyed!"

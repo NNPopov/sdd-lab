@@ -105,6 +105,17 @@ flutter test
 Features: `users`, `posts`, `tiers`, `core/auth`, `core/rbac`,
 `core/routing`, `core/i18n`, `core/quality`.
 
+## Deployment
+
+Both projects deploy to AWS via one of two independent stacks — **EKS**
+(Kubernetes) or **serverless** (ECS Fargate + S3/CloudFront). They never overlap,
+so you can bring one up, tear it down, and try the other.
+
+See **[`DEPLOYMENT.md`](DEPLOYMENT.md)** for the full guide (stack comparison,
+prerequisites, deploy/teardown scripts and CI/CD). Per-stack Terraform docs:
+[`terraform/eks/`](terraform/eks/README.md) ·
+[`terraform/serverless/`](terraform/serverless/README.md).
+
 ## Acknowledgements
 
 This project draws ideas and patterns from:
