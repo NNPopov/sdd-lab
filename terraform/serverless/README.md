@@ -1,5 +1,11 @@
 # Serverless stack (ECS Fargate + RDS + ElastiCache + S3/CloudFront)
 
+> **One of two deploy stacks.** This is the **serverless** stack — pick it for
+> lower cost, free HTTPS, and a clean single-step teardown. The alternative is
+> the [**EKS** stack](../eks/README.md) (Kubernetes + pods + ALB), for when you
+> want to run real Kubernetes. Full side-by-side comparison:
+> [`DEPLOYMENT.md`](../../DEPLOYMENT.md).
+
 A fully self-contained alternative to the EKS stack. Brought up on a clean
 environment, used, then destroyed. It never overlaps with the EKS stack —
 its own VPC (`10.1.0.0/16`), its own ECR (`fastapi-demo-sl/backend`),

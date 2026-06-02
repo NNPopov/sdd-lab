@@ -1,5 +1,11 @@
 # EKS stack (Kubernetes on EKS + ALB + in-cluster Postgres/Redis)
 
+> **One of two deploy stacks.** This is the **EKS** stack — pick it to run real
+> Kubernetes (cluster + pods + ALB). The alternative is the
+> [**serverless** stack](../serverless/README.md) (ECS Fargate + S3/CloudFront),
+> which is cheaper and tears down in a single step. Full side-by-side comparison:
+> [`DEPLOYMENT.md`](../../DEPLOYMENT.md).
+
 The "full Kubernetes" alternative to the serverless stack. Provisions a real
 EKS cluster and runs everything — API, Flutter web, Postgres and Redis — as
 pods inside it. It never overlaps with the serverless stack: its own VPC
